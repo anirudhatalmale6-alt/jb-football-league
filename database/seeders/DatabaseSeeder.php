@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ──────────────────────────────────────────────
-        // 1. Users (created without team_id first)
+        // 1. Users
         // ──────────────────────────────────────────────
         $superAdmin = User::create([
             'name'     => 'JBFA Admin',
@@ -62,43 +62,65 @@ class DatabaseSeeder extends Seeder
         // 2. Competitions
         // ──────────────────────────────────────────────
 
-        // (a) JBFA Super League 2026 — round robin, 10 teams, no groups
+        // (a) SUMBANGSIH CUP
+        $sumbangsihCup = Competition::create([
+            'name'        => 'SUMBANGSIH CUP',
+            'season'      => '2026',
+            'type'        => 'knockout',
+            'status'      => 'upcoming',
+            'start_date'  => '2026-01-01',
+            'end_date'    => '2026-01-15',
+            'description' => 'Pre-season knockout cup between the top two clubs.',
+        ]);
+
+        // (b) JBFA SUPER LEAGUE
         $superLeague = Competition::create([
-            'name'          => 'JBFA Super League 2026',
+            'name'          => 'JBFA SUPER LEAGUE',
             'season'        => '2026',
             'type'          => 'league',
             'status'        => 'active',
             'start_date'    => '2026-01-15',
             'end_date'      => '2026-06-30',
-            'description'   => 'Top-tier league of the Johor Bahru Football Association featuring the best clubs in the state.',
+            'description'   => 'Top-tier league of the Johor Bahru Football Association.',
             'max_players'   => 25,
             'max_officials' => 7,
         ]);
 
-        // (b) JBFA Premier League 2026 — 2 groups, 12 teams (6 per group)
+        // (c) JBFA PREMIER LEAGUE
         $premierLeague = Competition::create([
-            'name'          => 'JBFA Premier League 2026',
+            'name'          => 'JBFA PREMIER LEAGUE',
             'season'        => '2026',
             'type'          => 'league',
             'status'        => 'active',
             'start_date'    => '2026-02-01',
             'end_date'      => '2026-07-15',
-            'description'   => 'Second-tier league competition divided into two groups.',
+            'description'   => 'Second-tier league divided into two groups.',
             'max_players'   => 25,
             'max_officials' => 7,
         ]);
 
-        // (c) JBFA Divisyen League 2026 — 6 groups, 30 teams (5 per group)
-        $divisyenLeague = Competition::create([
-            'name'          => 'JBFA Divisyen League 2026',
+        // (d) JBFA DIVISION LEAGUE
+        $divisionLeague = Competition::create([
+            'name'          => 'JBFA DIVISION LEAGUE',
             'season'        => '2026',
             'type'          => 'league',
             'status'        => 'active',
             'start_date'    => '2026-03-01',
             'end_date'      => '2026-08-30',
-            'description'   => 'Grassroots divisional league with six regional groups across Johor.',
+            'description'   => 'Grassroots divisional league with six regional groups.',
             'max_players'   => 25,
             'max_officials' => 7,
+        ]);
+
+        // (e) JBFA FA CUP
+        $faCup = Competition::create([
+            'name'        => 'JBFA FA CUP',
+            'season'      => '2026',
+            'type'        => 'knockout',
+            'status'      => 'upcoming',
+            'start_date'  => '2026-04-01',
+            'end_date'    => '2026-06-30',
+            'description' => 'Knockout cup competition open to top clubs across divisions.',
         ]);
 
         // ──────────────────────────────────────────────
@@ -109,11 +131,11 @@ class DatabaseSeeder extends Seeder
         $premierGroupA = Group::create(['competition_id' => $premierLeague->id, 'name' => 'Kumpulan A', 'order' => 1]);
         $premierGroupB = Group::create(['competition_id' => $premierLeague->id, 'name' => 'Kumpulan B', 'order' => 2]);
 
-        // Divisyen League — 6 groups
-        $divisyenGroups = [];
+        // Division League — 6 groups
+        $divisionGroups = [];
         for ($g = 1; $g <= 6; $g++) {
-            $divisyenGroups[] = Group::create([
-                'competition_id' => $divisyenLeague->id,
+            $divisionGroups[] = Group::create([
+                'competition_id' => $divisionLeague->id,
                 'name'           => 'Kumpulan ' . $g,
                 'order'          => $g,
             ]);
@@ -123,112 +145,164 @@ class DatabaseSeeder extends Seeder
         // 4. Teams
         // ──────────────────────────────────────────────
 
-        // --- Super League (10 teams, no group) ---
-        $superLeagueTeamData = [
-            ['name' => 'Johor Bahru FC',       'short_name' => 'JB FC',       'manager_name' => 'Ahmad Razak',         'contact_email' => 'info@johorbahrufc.com'],
-            ['name' => 'Pasir Gudang United',   'short_name' => 'PG United',   'manager_name' => 'Lim Wei Keat',        'contact_email' => 'info@pgunited.com'],
-            ['name' => 'Skudai City FC',        'short_name' => 'Skudai FC',   'manager_name' => 'Mohd Faizal Ismail',  'contact_email' => 'admin@skudaicityfc.com'],
-            ['name' => 'Kulai Rangers',         'short_name' => 'Kulai RG',    'manager_name' => 'Tan Chee Hong',       'contact_email' => 'info@kulairangers.com'],
-            ['name' => 'Kota Tinggi Warriors',  'short_name' => 'KT Warriors', 'manager_name' => 'Syed Amir Hamzah',    'contact_email' => 'info@ktwarriors.com'],
-            ['name' => 'Pontian FC',            'short_name' => 'Pontian FC',  'manager_name' => 'R. Gunasegaran',      'contact_email' => 'office@pontianfc.com'],
-            ['name' => 'Segamat United',        'short_name' => 'Segamat UT',  'manager_name' => 'Mohd Zulkifli Yusof', 'contact_email' => 'info@segamatunited.com'],
-            ['name' => 'Mersing Strikers',      'short_name' => 'Mersing SK',  'manager_name' => 'Lee Chong Wei',       'contact_email' => 'info@mersingstrikers.com'],
-            ['name' => 'Kluang City FC',        'short_name' => 'Kluang FC',   'manager_name' => 'K. Thanaraj',         'contact_email' => 'admin@kluangcityfc.com'],
-            ['name' => 'Muar United',           'short_name' => 'Muar UT',     'manager_name' => 'Kamal Bahari',        'contact_email' => 'info@muarunited.com'],
+        // Helper to generate email from team name
+        $makeEmail = function (string $name): string {
+            $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '', $name));
+            return 'info@' . $slug . '.com';
+        };
+
+        // Helper to generate short name from team name
+        $makeShortName = function (string $name): string {
+            // Remove " FC" suffix for abbreviation
+            $clean = preg_replace('/\s+FC$/i', '', $name);
+            $words = preg_split('/\s+/', $clean);
+            if (count($words) === 1) {
+                return strtoupper(substr($clean, 0, 3));
+            }
+            $abbr = '';
+            foreach ($words as $w) {
+                $abbr .= strtoupper(substr($w, 0, 1));
+            }
+            // Append FC if original had it
+            if (preg_match('/FC$/i', $name)) {
+                $abbr .= ' FC';
+            }
+            return $abbr;
+        };
+
+        // Malaysian manager names pool
+        $managerNames = [
+            'Mohd Tarmizi Ali', 'Kamal Bahari', 'Zainol Abidin', 'Ismail Sabri', 'Roslan Mat Daud',
+            'Hasbullah Awang', 'Mohd Nor Ibrahim', 'Ahmad Tajuddin', 'Zainal Abidin Mat', 'Mohd Razali Hassan',
+            'Lee Hock Seng', 'Tan Boon Keat', 'Ong Chin Huat', 'Wong Siu Lun', 'Lim Teik Bee',
+            'Yap Chee Seng', 'Foo Wai Meng', 'Goh Choon Keat', 'Lim Boon Chong', 'Chan Wai Kit',
+            'R. Gunasegaran', 'K. Thanaraj', 'S. Kuganesh', 'Muthu Kannan', 'Bala Subramaniam',
+            'Ahmad Fadzil Hamid', 'Mohd Azlan Yusof', 'Mohd Safwan Ali', 'Ahmad Nazmi Kadir', 'Mohd Ridzuan Nordin',
+            'Mohd Aizat Wahab', 'Ahmad Luqman Hakim', 'Mohd Zikri Azman', 'Mohd Afiq Roslan', 'Ahmad Kamal Noor',
+            'Ng Jia Hao', 'Koh Boon Huat', 'Teo Wei Lun', 'Cheah Hong Leong', 'Sim Wei Chong',
+            'P. Navin Kumar', 'V. Sutharsan', 'L. Kogulraj', 'N. Harindran', 'T. Saravanan',
+            'Mohd Khairul Anwar', 'Goh Yong Seng', 'Lau Kah Fai', 'Ahmad Fitri Hussin', 'Mohd Farhan Idris',
+            'Mohd Izzuddin Shah', 'Yap Jian Ming', 'Foo Kok Wai', 'Mohd Shahril Ishak', 'Ahmad Fadhil Hamdan',
+            'Mohd Ikmal Harun', 'A. Vikneswaran', 'R. Praveen Kumar', 'S. Mahendran', 'K. Ravichandran',
+            'Ahmad Hazim Latif', 'Mohd Aiman Zakaria', 'Mohd Taufiq Hidayat', 'Ahmad Syahmi Redzuan', 'Mohd Adib Azfar',
+            'Chong Kok Wah', 'Tan Chee Hong', 'Lee Zhi Wei', 'Tan Jun Hao', 'Lim Kai Xiang',
+        ];
+        $managerIndex = 0;
+
+        $getManager = function () use (&$managerNames, &$managerIndex): string {
+            $name = $managerNames[$managerIndex % count($managerNames)];
+            $managerIndex++;
+            return $name;
+        };
+
+        // --- (a) SUMBANGSIH CUP (2 teams) ---
+        $sumbangsihTeamNames = ['MBIP FC', 'JMF FC'];
+        foreach ($sumbangsihTeamNames as $tName) {
+            Team::create([
+                'competition_id' => $sumbangsihCup->id,
+                'group_id'       => null,
+                'name'           => $tName,
+                'short_name'     => $makeShortName($tName),
+                'manager_name'   => $getManager(),
+                'contact_email'  => $makeEmail($tName),
+                'status'         => 'approved',
+            ]);
+        }
+
+        // --- (b) JBFA SUPER LEAGUE (10 teams, no groups) ---
+        $superLeagueTeamNames = [
+            'MBIP FC', 'JMF FC', 'PTP FC', 'MBPG FC', 'MASAI UNITED FC',
+            'ALOYA FC', 'SG TIRAM FC', 'MBJB FC', 'HUMA WARRIOR FC', 'KANGKAR PULAI FC',
         ];
 
         $superLeagueTeams = [];
-        foreach ($superLeagueTeamData as $data) {
-            $superLeagueTeams[] = Team::create(array_merge($data, [
+        foreach ($superLeagueTeamNames as $tName) {
+            $superLeagueTeams[] = Team::create([
                 'competition_id' => $superLeague->id,
                 'group_id'       => null,
+                'name'           => $tName,
+                'short_name'     => $makeShortName($tName),
+                'manager_name'   => $getManager(),
+                'contact_email'  => $makeEmail($tName),
                 'status'         => 'approved',
-            ]));
+            ]);
         }
 
-        // --- Premier League (12 teams, 6 per group) ---
-        $premierTeamData = [
-            // Group A
-            ['name' => 'Batu Pahat FC',        'short_name' => 'BP FC',       'manager_name' => 'Ismail Sabri',          'contact_email' => 'info@batupahatfc.com',    'group_id' => $premierGroupA->id],
-            ['name' => 'Tangkak Rangers',       'short_name' => 'Tangkak RG',  'manager_name' => 'Ong Chin Huat',         'contact_email' => 'info@tangkakrangers.com', 'group_id' => $premierGroupA->id],
-            ['name' => 'Simpang Renggam FC',    'short_name' => 'SR FC',       'manager_name' => 'Mohd Ridzuan Nordin',   'contact_email' => 'info@srfc.com',           'group_id' => $premierGroupA->id],
-            ['name' => 'Gelang Patah United',   'short_name' => 'GP United',   'manager_name' => 'Wong Siu Lun',          'contact_email' => 'info@gpunited.com',       'group_id' => $premierGroupA->id],
-            ['name' => 'Nusajaya City',         'short_name' => 'Nusajaya CT', 'manager_name' => 'Ahmad Nazmi Kadir',     'contact_email' => 'info@nusajayacity.com',   'group_id' => $premierGroupA->id],
-            ['name' => 'Permas Jaya FC',        'short_name' => 'PJ FC',       'manager_name' => 'S. Kuganesh',           'contact_email' => 'info@permasjayafc.com',   'group_id' => $premierGroupA->id],
-            // Group B
-            ['name' => 'Larkin United',         'short_name' => 'Larkin UT',   'manager_name' => 'Mohd Hafiz Rahman',     'contact_email' => 'info@larkinunited.com',   'group_id' => $premierGroupB->id],
-            ['name' => 'Senai Strikers',        'short_name' => 'Senai SK',    'manager_name' => 'Tan Boon Keat',         'contact_email' => 'info@senaistrikers.com',  'group_id' => $premierGroupB->id],
-            ['name' => 'Ulu Tiram FC',          'short_name' => 'UT FC',       'manager_name' => 'Roslan Mat Daud',       'contact_email' => 'info@ulutiramfc.com',     'group_id' => $premierGroupB->id],
-            ['name' => 'Iskandar Puteri FC',    'short_name' => 'IP FC',       'manager_name' => 'Muthu Kannan',          'contact_email' => 'info@ipfc.com',           'group_id' => $premierGroupB->id],
-            ['name' => 'Masai City FC',         'short_name' => 'Masai FC',    'manager_name' => 'Chong Kok Wah',         'contact_email' => 'info@masaicityfc.com',    'group_id' => $premierGroupB->id],
-            ['name' => 'Tebrau Rangers',        'short_name' => 'Tebrau RG',   'manager_name' => 'Hasbullah Awang',       'contact_email' => 'info@tebraurangers.com',  'group_id' => $premierGroupB->id],
+        // --- (c) JBFA PREMIER LEAGUE (12 teams, 2 groups of 6) ---
+        $premierTeamNames = [
+            // Group A (first 6)
+            'SAUJANA FC', 'RMPJB FC', 'JMF JUNIOR FC', 'BUKIT MUTIARA FC', 'MELOR FC', 'IPGKTI FC',
+            // Group B (last 6)
+            'AMPM FC', 'IMIGRESEN JOHOR FC', 'GELANG PATAH FC', 'NEWSTAR FC', 'MALABAR FC', 'PG CITY FC',
         ];
 
-        foreach ($premierTeamData as $data) {
-            $groupId = $data['group_id'];
-            unset($data['group_id']);
-            Team::create(array_merge($data, [
+        foreach ($premierTeamNames as $idx => $tName) {
+            $groupId = $idx < 6 ? $premierGroupA->id : $premierGroupB->id;
+            Team::create([
                 'competition_id' => $premierLeague->id,
                 'group_id'       => $groupId,
+                'name'           => $tName,
+                'short_name'     => $makeShortName($tName),
+                'manager_name'   => $getManager(),
+                'contact_email'  => $makeEmail($tName),
                 'status'         => 'approved',
-            ]));
+            ]);
         }
 
-        // --- Divisyen League (30 teams, 5 per group) ---
-        $divisyenTeamData = [
+        // --- (d) JBFA DIVISION LEAGUE (30 teams, 6 groups of 5) ---
+        $divisionTeamNames = [
             // Kumpulan 1
-            ['name' => 'Taman Perling FC',     'short_name' => 'TP FC',       'manager_name' => 'Mohd Azlan Yusof',     'contact_email' => 'info@tpfc.com',             'group' => 0],
-            ['name' => 'Johor Jaya United',    'short_name' => 'JJ United',   'manager_name' => 'Lau Kah Fai',          'contact_email' => 'info@jjunited.com',         'group' => 0],
-            ['name' => 'Tampoi City',          'short_name' => 'Tampoi CT',   'manager_name' => 'Ahmad Fadzil Hamid',   'contact_email' => 'info@tampoicity.com',       'group' => 0],
-            ['name' => 'Kangkar Pulai FC',     'short_name' => 'KP FC',       'manager_name' => 'Ng Jia Hao',           'contact_email' => 'info@kpfc.com',             'group' => 0],
-            ['name' => 'Danga Bay FC',         'short_name' => 'DB FC',       'manager_name' => 'V. Sutharsan',          'contact_email' => 'info@dangabayfc.com',       'group' => 0],
+            'ULU TEBRAU UNITED FC', 'PSJ FC', 'MY JB CITY FC', 'ONE DREAM FC', 'JBC FC',
             // Kumpulan 2
-            ['name' => 'Tanjung Puteri FC',    'short_name' => 'TJ Puteri',   'manager_name' => 'Mohd Safwan Ali',      'contact_email' => 'info@tjputerifc.com',       'group' => 1],
-            ['name' => 'Stulang Laut United',  'short_name' => 'SL United',   'manager_name' => 'Chan Wai Kit',         'contact_email' => 'info@slunited.com',         'group' => 1],
-            ['name' => 'Majidee FC',           'short_name' => 'Majidee FC',  'manager_name' => 'P. Navin Kumar',       'contact_email' => 'info@majideefc.com',        'group' => 1],
-            ['name' => 'Plentong Warriors',    'short_name' => 'Plentong WR', 'manager_name' => 'Mohd Khairul Anwar',   'contact_email' => 'info@plentongwarriors.com', 'group' => 1],
-            ['name' => 'Perling United',       'short_name' => 'Perling UT',  'manager_name' => 'Goh Yong Seng',        'contact_email' => 'info@perlingunited.com',    'group' => 1],
+            'VOCKET FC', 'BORRNEO FC', 'SEDAGHER FC', 'LARKIN RANGERS FC', 'SKUDAI TIGERS FC',
             // Kumpulan 3
-            ['name' => 'Skudai Utama FC',      'short_name' => 'SU FC',       'manager_name' => 'Mohd Aizat Wahab',     'contact_email' => 'info@skudaiutamafc.com',    'group' => 2],
-            ['name' => 'Taman Universiti FC',  'short_name' => 'TU FC',       'manager_name' => 'Koh Boon Huat',        'contact_email' => 'info@tufc.com',             'group' => 2],
-            ['name' => 'Bukit Indah City',     'short_name' => 'BI City',     'manager_name' => 'Ahmad Luqman Hakim',   'contact_email' => 'info@bukitindahcity.com',   'group' => 2],
-            ['name' => 'Setia Tropika FC',     'short_name' => 'ST FC',       'manager_name' => 'T. Saravanan',         'contact_email' => 'info@setiatropikafc.com',   'group' => 2],
-            ['name' => 'Horizon Hills FC',     'short_name' => 'HH FC',       'manager_name' => 'Yap Jian Ming',        'contact_email' => 'info@hhfc.com',             'group' => 2],
+            'BEMBAN JUNIOR FC', 'COLONY FC', 'PENDAS BARU FC', 'COUSIN UNITED FC', 'PUTERA TIMUR FC',
             // Kumpulan 4
-            ['name' => 'Taman Daya FC',        'short_name' => 'TD FC',       'manager_name' => 'Mohd Zikri Azman',     'contact_email' => 'info@tamandayafc.com',      'group' => 3],
-            ['name' => 'Pasir Pelangi United', 'short_name' => 'PP United',   'manager_name' => 'Cheah Hong Leong',     'contact_email' => 'info@ppunited.com',         'group' => 3],
-            ['name' => 'Mount Austin FC',      'short_name' => 'MA FC',       'manager_name' => 'R. Praveen',           'contact_email' => 'info@mountaustinfc.com',    'group' => 3],
-            ['name' => 'Taman Molek FC',       'short_name' => 'TM FC',       'manager_name' => 'Ahmad Fitri Hassan',   'contact_email' => 'info@tamanmolekfc.com',     'group' => 3],
-            ['name' => 'Pandan Perdana FC',    'short_name' => 'PP FC',       'manager_name' => 'Foo Kok Wai',          'contact_email' => 'info@pandanperdanafc.com',  'group' => 3],
+            'BBU FC', 'KASTAM FC', 'PINE FC', 'TEBU HITAM FC', 'TEMPORARY FC',
             // Kumpulan 5
-            ['name' => 'Taman Sentosa FC',     'short_name' => 'TS FC',       'manager_name' => 'Mohd Afiq Roslan',     'contact_email' => 'info@tamansentosafc.com',   'group' => 4],
-            ['name' => 'Sri Stulang United',   'short_name' => 'SS United',   'manager_name' => 'Sim Wei Chong',        'contact_email' => 'info@sristulang.com',       'group' => 4],
-            ['name' => 'Bandar Baru Uda FC',   'short_name' => 'BBU FC',      'manager_name' => 'A. Vikneswaran',       'contact_email' => 'info@bbufc.com',            'group' => 4],
-            ['name' => 'Taman Pelangi FC',     'short_name' => 'TPL FC',      'manager_name' => 'Mohd Farhan Idris',    'contact_email' => 'info@tamanpelangifc.com',   'group' => 4],
-            ['name' => 'Dato Onn United',      'short_name' => 'DO United',   'manager_name' => 'Teo Wei Lun',          'contact_email' => 'info@datoonunited.com',     'group' => 4],
+            'PERLING LEGENDS FC', 'BAYU LEGEND FC', 'VACASIA FC', 'MAJIDEE BARU FC', 'TDA FC',
             // Kumpulan 6
-            ['name' => 'Taman Sutera FC',      'short_name' => 'TSU FC',      'manager_name' => 'Ahmad Kamal Noor',     'contact_email' => 'info@tamansuterafc.com',    'group' => 5],
-            ['name' => 'Setia Indah FC',       'short_name' => 'SI FC',       'manager_name' => 'L. Kogulraj',          'contact_email' => 'info@setiaindahfc.com',     'group' => 5],
-            ['name' => 'Taman Mutiara FC',     'short_name' => 'TMU FC',      'manager_name' => 'Mohd Izzuddin Shah',   'contact_email' => 'info@tamanmutiarafc.com',   'group' => 5],
-            ['name' => 'Sri Pulai Perdana FC', 'short_name' => 'SPP FC',      'manager_name' => 'N. Harindran',         'contact_email' => 'info@sripulaifc.com',       'group' => 5],
-            ['name' => 'Bandar Putra FC',      'short_name' => 'BP FC',       'manager_name' => 'Ong Wei Ming',         'contact_email' => 'info@bandarputrafc.com',    'group' => 5],
+            'RINTING GENERATION FC', 'FC BTEAM', 'PG ROVERS FC', 'NEW TEAM', 'NEW TEAM 2',
         ];
 
-        foreach ($divisyenTeamData as $data) {
-            $groupIndex = $data['group'];
-            unset($data['group']);
-            Team::create(array_merge($data, [
-                'competition_id' => $divisyenLeague->id,
-                'group_id'       => $divisyenGroups[$groupIndex]->id,
+        foreach ($divisionTeamNames as $idx => $tName) {
+            $groupIndex = intdiv($idx, 5);
+            Team::create([
+                'competition_id' => $divisionLeague->id,
+                'group_id'       => $divisionGroups[$groupIndex]->id,
+                'name'           => $tName,
+                'short_name'     => $makeShortName($tName),
+                'manager_name'   => $getManager(),
+                'contact_email'  => $makeEmail($tName),
                 'status'         => 'approved',
-            ]));
+            ]);
+        }
+
+        // --- (e) JBFA FA CUP (16 teams, no groups) ---
+        $faCupTeamNames = [
+            'MBIP FC', 'JMF FC', 'PTP FC', 'MBPG FC', 'MASAI UNITED FC', 'ALOYA FC',
+            'SG TIRAM FC', 'MBJB FC', 'HUMA WARRIOR FC', 'KANGKAR PULAI FC',
+            'SAUJANA FC', 'RMPJB FC', 'JMF JUNIOR FC', 'BUKIT MUTIARA FC',
+            'ONE DREAM FC', 'PSJ FC',
+        ];
+
+        foreach ($faCupTeamNames as $tName) {
+            Team::create([
+                'competition_id' => $faCup->id,
+                'group_id'       => null,
+                'name'           => $tName,
+                'short_name'     => $makeShortName($tName),
+                'manager_name'   => $getManager(),
+                'contact_email'  => $makeEmail($tName),
+                'status'         => 'approved',
+            ]);
         }
 
         // ──────────────────────────────────────────────
-        // 5. Assign team managers to teams 1 and 2
+        // 5. Assign team managers
         // ──────────────────────────────────────────────
-        $teamManager1->update(['team_id' => $superLeagueTeams[0]->id]);
-        $teamManager2->update(['team_id' => $superLeagueTeams[1]->id]);
+        $teamManager1->update(['team_id' => $superLeagueTeams[0]->id]); // Ahmad Razak -> MBIP FC
+        $teamManager2->update(['team_id' => $superLeagueTeams[1]->id]); // Lim Wei Keat -> JMF FC
 
         // ──────────────────────────────────────────────
         // 6. Players (15 per Super League team = 150 total)
@@ -302,7 +376,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // ──────────────────────────────────────────────
-        // 7. Officials (3 per Super League team)
+        // 7. Officials (3 per Super League team = 30 total)
         // ──────────────────────────────────────────────
         $officialNames = [
             ['Mohd Tarmizi Ali',   'Lee Hock Seng',     'Saraswathi Devi'],
@@ -335,14 +409,9 @@ class DatabaseSeeder extends Seeder
         $venues = [
             'Stadium Sultan Ibrahim, Iskandar Puteri',
             'Stadium Pasir Gudang',
-            'Kompleks Sukan Skudai',
-            'Stadium Kulai',
-            'Stadium Kota Tinggi',
-            'Stadium Pontian',
-            'Stadium Segamat',
-            'Stadium Mersing',
-            'Stadium Kluang',
-            'Stadium Muar',
+            'Kompleks Sukan Majlis Bandaraya JB',
+            'Stadium Larkin',
+            'Stadium Tan Sri Dato Haji Hassan Yunos',
         ];
 
         $referees = [
@@ -353,20 +422,20 @@ class DatabaseSeeder extends Seeder
             'Sivakumar Kandasamy',
         ];
 
-        // 5 completed matches with specified scores
+        // 5 completed matches: [homeIdx, awayIdx, homeScore, awayScore, matchday, venueIdx, datetime]
         $completedMatches = [
-            [0, 1, 1, 0, 1, 0, '2026-02-01 20:00:00'],  // JB FC 1-0 PG United
-            [2, 3, 2, 1, 1, 2, '2026-02-01 16:00:00'],  // Skudai City 2-1 Kulai Rangers
-            [4, 5, 0, 0, 1, 4, '2026-02-02 20:00:00'],  // KT Warriors 0-0 Pontian FC
-            [6, 7, 3, 2, 2, 6, '2026-02-15 20:00:00'],  // Segamat United 3-2 Mersing Strikers
-            [8, 9, 1, 1, 2, 8, '2026-02-15 16:00:00'],  // Kluang City 1-1 Muar United
+            [0, 1, 1, 0, 1, 0, '2026-02-01 20:00:00'],  // MBIP FC 1-0 JMF FC
+            [2, 3, 2, 1, 1, 1, '2026-02-01 16:00:00'],  // PTP FC 2-1 MBPG FC
+            [4, 5, 0, 0, 1, 2, '2026-02-02 20:00:00'],  // MASAI UNITED FC 0-0 ALOYA FC
+            [6, 7, 3, 2, 2, 3, '2026-02-15 20:00:00'],  // SG TIRAM FC 3-2 MBJB FC
+            [8, 9, 1, 1, 2, 4, '2026-02-15 16:00:00'],  // HUMA WARRIOR FC 1-1 KANGKAR PULAI FC
         ];
 
         // 3 scheduled matches
         $scheduledMatches = [
-            [0, 2, 0, 0, 3, 0, '2026-06-14 20:00:00'],  // JB FC vs Skudai City
-            [1, 4, 0, 0, 3, 1, '2026-06-14 16:00:00'],  // PG United vs KT Warriors
-            [3, 5, 0, 0, 3, 3, '2026-06-15 20:00:00'],  // Kulai Rangers vs Pontian FC
+            [0, 2, 0, 0, 3, 0, '2026-06-14 20:00:00'],  // MBIP FC vs PTP FC
+            [1, 4, 0, 0, 3, 1, '2026-06-14 16:00:00'],  // JMF FC vs MASAI UNITED FC
+            [3, 5, 0, 0, 3, 2, '2026-06-15 20:00:00'],  // MBPG FC vs ALOYA FC
         ];
 
         $matchGames = [];
@@ -436,7 +505,7 @@ class DatabaseSeeder extends Seeder
             // Goals for home team
             $homeGoalMinutes = $this->generateMinutes($homeScore);
             foreach ($homeGoalMinutes as $minute) {
-                $scorerIdx = rand(6, 10);
+                $scorerIdx = rand(6, 10); // midfielders/forwards
                 MatchEvent::create([
                     'match_game_id' => $match->id,
                     'team_id'       => $superLeagueTeams[$homeTeamIdx]->id,
@@ -530,12 +599,6 @@ class DatabaseSeeder extends Seeder
             ];
         }
 
-        // Calculate from completed matches
-        // Match 1: Team 0 (1) vs Team 1 (0) => Team 0 wins
-        // Match 2: Team 2 (2) vs Team 3 (1) => Team 2 wins
-        // Match 3: Team 4 (0) vs Team 5 (0) => Draw
-        // Match 4: Team 6 (3) vs Team 7 (2) => Team 6 wins
-        // Match 5: Team 8 (1) vs Team 9 (1) => Draw
         foreach ($completedMatches as $m) {
             $h = $m[0];
             $a = $m[1];
