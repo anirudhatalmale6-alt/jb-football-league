@@ -13,6 +13,8 @@ class Official extends Model
         'role',
         'ic_number',
         'contact_phone',
+        'photo',
+        'certificate',
     ];
 
     public function team(): BelongsTo

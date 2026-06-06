@@ -114,8 +114,10 @@
                 <table class="table table-striped table-hover mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th style="width: 60px;" class="text-center">Photo</th>
                             <th style="width: 80px;" class="text-center">{{ __('app.jersey_number') }}</th>
                             <th>{{ __('app.name') }}</th>
+                            <th>IC Number</th>
                             <th>{{ __('app.position') }}</th>
                             <th>{{ __('app.status') }}</th>
                             <th class="text-center">{{ __('app.actions') }}</th>
@@ -124,8 +126,18 @@
                     <tbody>
                         @foreach($team->players->sortBy('jersey_number') as $player)
                             <tr>
+                                <td class="text-center">
+                                    @if($player->photo)
+                                        <img src="{{ asset('storage/' . $player->photo) }}" alt="{{ $player->name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                    @else
+                                        <span class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-user text-muted"></i>
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="text-center fw-bold">{{ $player->jersey_number ?? '-' }}</td>
                                 <td class="fw-semibold">{{ $player->name }}</td>
+                                <td>{{ $player->ic_number ?? '-' }}</td>
                                 <td>{{ ucfirst($player->position ?? '-') }}</td>
                                 <td>
                                     @if($player->status === 'active')
@@ -168,7 +180,7 @@
         </h5>
         @auth
             @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin() || (auth()->user()->isTeamManager() && auth()->user()->team_id == $team->id))
-                <a href="{{ route('officials.create', ['team_id' => $team->id]) }}" class="btn btn-sm btn-success">
+                <a href="{{ route('officials.create', $team) }}" class="btn btn-sm btn-success">
                     <i class="fas fa-plus me-1"></i> {{ __('app.add_official') }}
                 </a>
             @endif
@@ -185,18 +197,40 @@
                 <table class="table table-striped table-hover mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th style="width: 60px;" class="text-center">Photo</th>
                             <th>{{ __('app.name') }}</th>
+                            <th>IC Number</th>
                             <th>{{ __('app.role') }}</th>
                             <th>{{ __('app.contact_phone') }}</th>
+                            <th class="text-center">Certificate</th>
                             <th class="text-center">{{ __('app.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($team->officials as $official)
                             <tr>
+                                <td class="text-center">
+                                    @if($official->photo)
+                                        <img src="{{ asset('storage/' . $official->photo) }}" alt="{{ $official->name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                    @else
+                                        <span class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-user-tie text-muted"></i>
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="fw-semibold">{{ $official->name }}</td>
+                                <td>{{ $official->ic_number ?? '-' }}</td>
                                 <td>{{ ucfirst($official->role ?? '-') }}</td>
                                 <td>{{ $official->contact_phone ?? '-' }}</td>
+                                <td class="text-center">
+                                    @if($official->certificate)
+                                        <a href="{{ asset('storage/' . $official->certificate) }}" target="_blank" title="View Certificate">
+                                            <i class="fas fa-check-circle text-success fa-lg"></i>
+                                        </a>
+                                    @else
+                                        <i class="fas fa-times-circle text-danger fa-lg" title="No certificate uploaded"></i>
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     @auth
                                         @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin() || (auth()->user()->isTeamManager() && auth()->user()->team_id == $team->id))

@@ -10,6 +10,7 @@ use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\StandingController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\OfficialController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,4 +79,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/matches/{match}/complete', [MatchController::class, 'complete'])->name('matches.complete');
 
     Route::post('/standings/recalculate/{competition}', [StandingController::class, 'recalculate'])->name('standings.recalculate');
+
+    Route::get('/officials/create/{team}', [OfficialController::class, 'create'])->name('officials.create');
+    Route::post('/officials', [OfficialController::class, 'store'])->name('officials.store');
+    Route::get('/officials/{official}/edit', [OfficialController::class, 'edit'])->name('officials.edit');
+    Route::put('/officials/{official}', [OfficialController::class, 'update'])->name('officials.update');
+    Route::delete('/officials/{official}', [OfficialController::class, 'destroy'])->name('officials.destroy');
 });

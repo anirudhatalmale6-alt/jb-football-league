@@ -1,0 +1,96 @@
+@extends('layouts.app')
+
+@section('title', 'Add Official')
+
+@section('content')
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">
+        <i class="fas fa-plus-circle text-success me-2"></i>Add Official to {{ $team->name }}
+    </h2>
+    <a href="{{ route('teams.show', $team) }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Team
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form action="{{ route('officials.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="team_id" value="{{ $team->id }}">
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label fw-semibold">Official Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
+                           value="{{ old('name') }}" required>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="role" class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
+                    <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
+                        <option value="">-- Select Role --</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role }}" {{ old('role') === $role ? 'selected' : '' }}>{{ $role }}</option>
+                        @endforeach
+                    </select>
+                    @error('role')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="ic_number" class="form-label fw-semibold">IC Number</label>
+                    <input type="text" class="form-control @error('ic_number') is-invalid @enderror" id="ic_number" name="ic_number"
+                           value="{{ old('ic_number') }}" placeholder="e.g. 900101-01-1234">
+                    @error('ic_number')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="contact_phone" class="form-label fw-semibold">Contact Phone</label>
+                    <input type="text" class="form-control @error('contact_phone') is-invalid @enderror" id="contact_phone" name="contact_phone"
+                           value="{{ old('contact_phone') }}" placeholder="e.g. 012-3456789">
+                    @error('contact_phone')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="photo" class="form-label fw-semibold">Photo</label>
+                    <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo" name="photo"
+                           accept="image/*">
+                    <div class="form-text">Max 2MB. Accepted formats: JPG, PNG, GIF.</div>
+                    @error('photo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="certificate" class="form-label fw-semibold">Coaching Certificate</label>
+                    <input type="file" class="form-control @error('certificate') is-invalid @enderror" id="certificate" name="certificate"
+                           accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="form-text">Upload coaching certificate - PDF or image, max 5MB.</div>
+                    @error('certificate')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save me-1"></i> Add Official
+                </button>
+                <a href="{{ route('teams.show', $team) }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
