@@ -11,12 +11,12 @@
         @auth
             @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
                 <a href="{{ route('teams.edit', $team) }}" class="btn btn-outline-warning">
-                    <i class="fas fa-edit me-1"></i> Edit
+                    <i class="fas fa-edit me-1"></i> {{ __('app.edit') }}
                 </a>
             @endif
         @endauth
         <a href="{{ route('teams.index') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-1"></i> Back
+            <i class="fas fa-arrow-left me-1"></i> {{ __('app.back') }}
         </a>
     </div>
 </div>
@@ -33,15 +33,15 @@
             <div class="{{ $team->logo ? 'col-md-5' : 'col-md-6' }}">
                 <table class="table table-borderless mb-0">
                     <tr>
-                        <th class="text-muted" style="width: 150px;">Team Name</th>
+                        <th class="text-muted" style="width: 150px;">{{ __('app.team_name') }}</th>
                         <td class="fw-semibold">{{ $team->name }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Short Name</th>
+                        <th class="text-muted">{{ __('app.short_name') }}</th>
                         <td>{{ $team->short_name ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Competition</th>
+                        <th class="text-muted">{{ __('app.competition') }}</th>
                         <td>
                             @if($team->competition)
                                 <a href="{{ route('competitions.show', $team->competition) }}">
@@ -57,29 +57,29 @@
             <div class="{{ $team->logo ? 'col-md-5' : 'col-md-6' }}">
                 <table class="table table-borderless mb-0">
                     <tr>
-                        <th class="text-muted" style="width: 150px;">Status</th>
+                        <th class="text-muted" style="width: 150px;">{{ __('app.status') }}</th>
                         <td>
                             @if($team->status === 'approved')
-                                <span class="badge bg-success">Approved</span>
+                                <span class="badge bg-success">{{ __('app.approved') }}</span>
                             @elseif($team->status === 'pending')
-                                <span class="badge bg-warning text-dark">Pending</span>
+                                <span class="badge bg-warning text-dark">{{ __('app.pending') }}</span>
                             @elseif($team->status === 'rejected')
-                                <span class="badge bg-danger">Rejected</span>
+                                <span class="badge bg-danger">{{ __('app.rejected') }}</span>
                             @else
                                 <span class="badge bg-secondary">{{ ucfirst($team->status) }}</span>
                             @endif
                         </td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Manager</th>
+                        <th class="text-muted">{{ __('app.manager') }}</th>
                         <td>{{ $team->manager_name ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Contact Email</th>
+                        <th class="text-muted">{{ __('app.contact_email') }}</th>
                         <td>{{ $team->contact_email ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Contact Phone</th>
+                        <th class="text-muted">{{ __('app.contact_phone') }}</th>
                         <td>{{ $team->contact_phone ?? '-' }}</td>
                     </tr>
                 </table>
@@ -92,13 +92,13 @@
 <div class="card mb-4">
     <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
-            <i class="fas fa-users me-2"></i>Players
+            <i class="fas fa-users me-2"></i>{{ __('app.players') }}
             <span class="badge bg-secondary ms-1">{{ $team->players->count() }}</span>
         </h5>
         @auth
             @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin() || (auth()->user()->isTeamManager() && auth()->user()->team_id == $team->id))
                 <a href="{{ route('players.create', ['team_id' => $team->id]) }}" class="btn btn-sm btn-success">
-                    <i class="fas fa-plus me-1"></i> Add Player
+                    <i class="fas fa-plus me-1"></i> {{ __('app.add_player') }}
                 </a>
             @endif
         @endauth
@@ -114,11 +114,11 @@
                 <table class="table table-striped table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 80px;" class="text-center">Jersey #</th>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Status</th>
-                            <th class="text-center">Actions</th>
+                            <th style="width: 80px;" class="text-center">{{ __('app.jersey_number') }}</th>
+                            <th>{{ __('app.name') }}</th>
+                            <th>{{ __('app.position') }}</th>
+                            <th>{{ __('app.status') }}</th>
+                            <th class="text-center">{{ __('app.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,22 +129,22 @@
                                 <td>{{ ucfirst($player->position ?? '-') }}</td>
                                 <td>
                                     @if($player->status === 'active')
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-success">{{ __('app.active') }}</span>
                                     @elseif($player->status === 'suspended')
-                                        <span class="badge bg-danger">Suspended</span>
+                                        <span class="badge bg-danger">{{ __('app.suspended') }}</span>
                                     @elseif($player->status === 'injured')
-                                        <span class="badge bg-warning text-dark">Injured</span>
+                                        <span class="badge bg-warning text-dark">{{ __('app.injured') }}</span>
                                     @else
                                         <span class="badge bg-secondary">{{ ucfirst($player->status ?? 'unknown') }}</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ route('players.show', $player) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                    <a href="{{ route('players.show', $player) }}" class="btn btn-sm btn-outline-primary" title="{{ __('app.view') }}">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     @auth
                                         @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin() || (auth()->user()->isTeamManager() && auth()->user()->team_id == $team->id))
-                                            <a href="{{ route('players.edit', $player) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <a href="{{ route('players.edit', $player) }}" class="btn btn-sm btn-outline-warning" title="{{ __('app.edit') }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         @endif
@@ -163,13 +163,13 @@
 <div class="card mb-4">
     <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
-            <i class="fas fa-user-tie me-2"></i>Officials
+            <i class="fas fa-user-tie me-2"></i>{{ __('app.officials') }}
             <span class="badge bg-secondary ms-1">{{ $team->officials->count() }}</span>
         </h5>
         @auth
             @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin() || (auth()->user()->isTeamManager() && auth()->user()->team_id == $team->id))
                 <a href="{{ route('officials.create', ['team_id' => $team->id]) }}" class="btn btn-sm btn-success">
-                    <i class="fas fa-plus me-1"></i> Add Official
+                    <i class="fas fa-plus me-1"></i> {{ __('app.add_official') }}
                 </a>
             @endif
         @endauth
@@ -185,10 +185,10 @@
                 <table class="table table-striped table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Contact Phone</th>
-                            <th class="text-center">Actions</th>
+                            <th>{{ __('app.name') }}</th>
+                            <th>{{ __('app.role') }}</th>
+                            <th>{{ __('app.contact_phone') }}</th>
+                            <th class="text-center">{{ __('app.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -200,14 +200,14 @@
                                 <td class="text-center">
                                     @auth
                                         @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin() || (auth()->user()->isTeamManager() && auth()->user()->team_id == $team->id))
-                                            <a href="{{ route('officials.edit', $official) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <a href="{{ route('officials.edit', $official) }}" class="btn btn-sm btn-outline-warning" title="{{ __('app.edit') }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <form action="{{ route('officials.destroy', $official) }}" method="POST" class="d-inline"
                                                   onsubmit="return confirm('Are you sure you want to remove this official?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ __('app.delete') }}">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>

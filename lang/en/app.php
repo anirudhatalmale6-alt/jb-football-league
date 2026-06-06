@@ -45,6 +45,7 @@ return [
 
     // Competitions
     'competition' => 'Competition',
+    'competition_name' => 'Competition Name',
     'season' => 'Season',
     'type' => 'Type',
     'start_date' => 'Start Date',
@@ -58,9 +59,18 @@ return [
     'completed' => 'Completed',
     'create_competition' => 'Create Competition',
     'edit_competition' => 'Edit Competition',
+    'update_competition' => 'Update Competition',
+    'select_type' => '-- Select Type --',
+    'select_status' => '-- Select Status --',
+    'max_players' => 'Max Players per Team',
+    'max_officials' => 'Max Officials per Team',
+    'back_to_competitions' => 'Back to Competitions',
+    'back_to_competition' => 'Back to Competition',
+    'no_competitions_found' => 'No competitions found',
 
     // Teams
     'team' => 'Team',
+    'team_name' => 'Team Name',
     'register_team' => 'Register Team',
     'short_name' => 'Short Name',
     'manager' => 'Manager',
@@ -73,6 +83,11 @@ return [
     'approve' => 'Approve',
     'players_count' => 'Players Count',
     'officials' => 'Officials',
+    'no_teams_found' => 'No teams found',
+    'all_competitions' => 'All Competitions',
+    'all_statuses' => 'All Statuses',
+    'all_teams' => 'All Teams',
+    'filter_by_team' => 'Filter by Team',
 
     // Players
     'player' => 'Player',
@@ -89,6 +104,8 @@ return [
     'injured' => 'Injured',
     'suspended' => 'Suspended',
     'add_player' => 'Add Player',
+    'no_players_found' => 'No players found',
+    'all_positions' => 'All Positions',
 
     // Officials
     'official' => 'Official',
@@ -124,6 +141,14 @@ return [
     'substitutes' => 'Substitutes',
     'add_event' => 'Add Event',
     'mark_as_completed' => 'Mark as Completed',
+    'home_team' => 'Home Team',
+    'away_team' => 'Away Team',
+    'cancelled' => 'Cancelled',
+    'no_matches_found' => 'No matches found',
+    'lineup' => 'Lineup',
+    'events' => 'Events',
+    'back_to_match' => 'Back to Match',
+    'date_and_time' => 'Date & Time',
 
     // Events
     'goal' => 'Goal',
@@ -137,6 +162,13 @@ return [
     'minute' => 'Minute',
     'extra_time_min' => 'Extra Time Min',
     'related_player' => 'Related Player',
+    'event_type' => 'Event Type',
+    'select_event' => '-- Select Event --',
+    'select_team' => '-- Select Team --',
+    'select_player' => '-- Select Player --',
+    'notes' => 'Notes',
+    'start' => 'Start',
+    'no_events_recorded' => 'No events recorded yet.',
 
     // Standings
     'played' => 'Played',

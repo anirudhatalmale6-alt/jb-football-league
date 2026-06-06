@@ -5,24 +5,24 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">
-        <i class="fas fa-futbol text-success me-2"></i>Match Details
+        <i class="fas fa-futbol text-success me-2"></i>{{ __('app.match_details') }}
     </h2>
     <div class="d-flex gap-2">
         @auth
             @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
                 <a href="{{ route('matches.edit', $match) }}" class="btn btn-outline-warning">
-                    <i class="fas fa-edit me-1"></i> Edit
+                    <i class="fas fa-edit me-1"></i> {{ __('app.edit') }}
                 </a>
                 <a href="{{ route('matches.lineup', $match) }}" class="btn btn-outline-info">
-                    <i class="fas fa-list-ol me-1"></i> Lineup
+                    <i class="fas fa-list-ol me-1"></i> {{ __('app.lineup') }}
                 </a>
                 <a href="{{ route('matches.events', $match) }}" class="btn btn-outline-dark">
-                    <i class="fas fa-futbol me-1"></i> Events
+                    <i class="fas fa-futbol me-1"></i> {{ __('app.events') }}
                 </a>
             @endif
         @endauth
         <a href="{{ route('matches.index') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-1"></i> Back
+            <i class="fas fa-arrow-left me-1"></i> {{ __('app.back') }}
         </a>
     </div>
 </div>
@@ -31,12 +31,12 @@
 <div class="card mb-4">
     <div class="card-body text-center py-4">
         <small class="text-muted d-block mb-2">
-            {{ $match->competition->name ?? 'Competition' }} &mdash; Matchday {{ $match->matchday ?? '-' }}
+            {{ $match->competition->name ?? __('app.competition') }} &mdash; {{ __('app.matchday') }} {{ $match->matchday ?? '-' }}
         </small>
         <div class="row align-items-center justify-content-center">
             <div class="col-md-4 text-md-end">
-                <h3 class="fw-bold mb-0">{{ $match->homeTeam->name ?? 'Home Team' }}</h3>
-                <small class="text-muted">Home</small>
+                <h3 class="fw-bold mb-0">{{ $match->homeTeam->name ?? __('app.home_team') }}</h3>
+                <small class="text-muted">{{ __('app.home') }}</small>
             </div>
             <div class="col-md-2 text-center">
                 @if($match->status === 'completed' || $match->status === 'in_progress')
@@ -50,21 +50,21 @@
                 @endif
                 <div class="mt-1">
                     @if($match->status === 'completed')
-                        <span class="badge bg-secondary">Full Time</span>
+                        <span class="badge bg-secondary">{{ __('app.full_time') }}</span>
                     @elseif($match->status === 'in_progress')
-                        <span class="badge bg-success">In Progress</span>
+                        <span class="badge bg-success">{{ __('app.in_progress') }}</span>
                     @elseif($match->status === 'scheduled')
-                        <span class="badge bg-info">Scheduled</span>
+                        <span class="badge bg-info">{{ __('app.scheduled') }}</span>
                     @elseif($match->status === 'postponed')
-                        <span class="badge bg-warning text-dark">Postponed</span>
+                        <span class="badge bg-warning text-dark">{{ __('app.postponed') }}</span>
                     @elseif($match->status === 'cancelled')
-                        <span class="badge bg-danger">Cancelled</span>
+                        <span class="badge bg-danger">{{ __('app.cancelled') }}</span>
                     @endif
                 </div>
             </div>
             <div class="col-md-4 text-md-start">
-                <h3 class="fw-bold mb-0">{{ $match->awayTeam->name ?? 'Away Team' }}</h3>
-                <small class="text-muted">Away</small>
+                <h3 class="fw-bold mb-0">{{ $match->awayTeam->name ?? __('app.away_team') }}</h3>
+                <small class="text-muted">{{ __('app.away') }}</small>
             </div>
         </div>
     </div>
@@ -73,22 +73,22 @@
 <!-- Match Info -->
 <div class="card mb-4">
     <div class="card-header bg-dark text-white">
-        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Match Information</h5>
+        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>{{ __('app.match_information') }}</h5>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
                 <table class="table table-borderless mb-0">
                     <tr>
-                        <th class="text-muted" style="width: 150px;">Date & Time</th>
+                        <th class="text-muted" style="width: 150px;">{{ __('app.date_and_time') }}</th>
                         <td>{{ $match->match_date ? $match->match_date->format('d M Y, H:i') : '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Venue</th>
+                        <th class="text-muted">{{ __('app.venue') }}</th>
                         <td>{{ $match->venue ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Competition</th>
+                        <th class="text-muted">{{ __('app.competition') }}</th>
                         <td>
                             @if($match->competition)
                                 <a href="{{ route('competitions.show', $match->competition) }}">{{ $match->competition->name }}</a>
@@ -98,7 +98,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Matchday</th>
+                        <th class="text-muted">{{ __('app.matchday') }}</th>
                         <td>{{ $match->matchday ?? '-' }}</td>
                     </tr>
                 </table>
@@ -106,23 +106,23 @@
             <div class="col-md-6">
                 <table class="table table-borderless mb-0">
                     <tr>
-                        <th class="text-muted" style="width: 180px;">Referee</th>
+                        <th class="text-muted" style="width: 180px;">{{ __('app.referee') }}</th>
                         <td>{{ $match->referee ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Assistant Referee 1</th>
+                        <th class="text-muted">{{ __('app.assistant_referee_1') }}</th>
                         <td>{{ $match->assistant_referee_1 ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Assistant Referee 2</th>
+                        <th class="text-muted">{{ __('app.assistant_referee_2') }}</th>
                         <td>{{ $match->assistant_referee_2 ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Fourth Official</th>
+                        <th class="text-muted">{{ __('app.fourth_official') }}</th>
                         <td>{{ $match->fourth_official ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Match Commissioner</th>
+                        <th class="text-muted">{{ __('app.match_commissioner') }}</th>
                         <td>{{ $match->match_commissioner ?? '-' }}</td>
                     </tr>
                 </table>
@@ -148,19 +148,19 @@
             <div class="card h-100">
                 <div class="card-header bg-dark text-white">
                     <h5 class="mb-0">
-                        <i class="fas fa-list-ol me-2"></i>{{ $match->homeTeam->name ?? 'Home' }} Lineup
+                        <i class="fas fa-list-ol me-2"></i>{{ $match->homeTeam->name ?? __('app.home') }} {{ __('app.lineup') }}
                     </h5>
                 </div>
                 <div class="card-body p-0">
                     @if($homeStarters->isNotEmpty())
-                        <h6 class="fw-bold px-3 pt-3 mb-2">Starting XI</h6>
+                        <h6 class="fw-bold px-3 pt-3 mb-2">{{ __('app.starting_xi') }}</h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 60px;">#</th>
-                                        <th>Player</th>
-                                        <th>Position</th>
+                                        <th>{{ __('app.player') }}</th>
+                                        <th>{{ __('app.position') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -176,14 +176,14 @@
                         </div>
                     @endif
                     @if($homeSubs->isNotEmpty())
-                        <h6 class="fw-bold px-3 pt-3 mb-2">Substitutes</h6>
+                        <h6 class="fw-bold px-3 pt-3 mb-2">{{ __('app.substitutes') }}</h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 60px;">#</th>
-                                        <th>Player</th>
-                                        <th>Position</th>
+                                        <th>{{ __('app.player') }}</th>
+                                        <th>{{ __('app.position') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -212,19 +212,19 @@
             <div class="card h-100">
                 <div class="card-header bg-dark text-white">
                     <h5 class="mb-0">
-                        <i class="fas fa-list-ol me-2"></i>{{ $match->awayTeam->name ?? 'Away' }} Lineup
+                        <i class="fas fa-list-ol me-2"></i>{{ $match->awayTeam->name ?? __('app.away') }} {{ __('app.lineup') }}
                     </h5>
                 </div>
                 <div class="card-body p-0">
                     @if($awayStarters->isNotEmpty())
-                        <h6 class="fw-bold px-3 pt-3 mb-2">Starting XI</h6>
+                        <h6 class="fw-bold px-3 pt-3 mb-2">{{ __('app.starting_xi') }}</h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 60px;">#</th>
-                                        <th>Player</th>
-                                        <th>Position</th>
+                                        <th>{{ __('app.player') }}</th>
+                                        <th>{{ __('app.position') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -240,14 +240,14 @@
                         </div>
                     @endif
                     @if($awaySubs->isNotEmpty())
-                        <h6 class="fw-bold px-3 pt-3 mb-2">Substitutes</h6>
+                        <h6 class="fw-bold px-3 pt-3 mb-2">{{ __('app.substitutes') }}</h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 60px;">#</th>
-                                        <th>Player</th>
-                                        <th>Position</th>
+                                        <th>{{ __('app.player') }}</th>
+                                        <th>{{ __('app.position') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -277,7 +277,7 @@
 @if($match->events->isNotEmpty())
     <div class="card mb-4">
         <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Match Events</h5>
+            <h5 class="mb-0"><i class="fas fa-clock me-2"></i>{{ __('app.match_events') }}</h5>
         </div>
         <div class="card-body">
             <div class="list-group list-group-flush">
@@ -323,28 +323,28 @@
                             <small class="text-muted">
                                 @switch($event->event_type)
                                     @case('goal')
-                                        Goal
+                                        {{ __('app.goal') }}
                                         @break
                                     @case('own_goal')
-                                        Own Goal
+                                        {{ __('app.own_goal') }}
                                         @break
                                     @case('yellow_card')
-                                        Yellow Card
+                                        {{ __('app.yellow_card') }}
                                         @break
                                     @case('red_card')
-                                        Red Card
+                                        {{ __('app.red_card') }}
                                         @break
                                     @case('substitution_in')
-                                        Substitution In
+                                        {{ __('app.substitution_in') }}
                                         @break
                                     @case('substitution_out')
-                                        Substitution Out
+                                        {{ __('app.substitution_out') }}
                                         @break
                                     @case('penalty_scored')
-                                        Penalty Scored
+                                        {{ __('app.penalty_scored') }}
                                         @break
                                     @case('penalty_missed')
-                                        Penalty Missed
+                                        {{ __('app.penalty_missed') }}
                                         @break
                                     @default
                                         {{ ucfirst(str_replace('_', ' ', $event->event_type)) }}
@@ -365,10 +365,10 @@
 <div class="card">
     <div class="card-body d-flex gap-3 justify-content-center">
         <a href="{{ route('matches.pdf.summary', $match) }}" class="btn btn-danger">
-            <i class="fas fa-file-pdf me-1"></i> Download Match Summary PDF
+            <i class="fas fa-file-pdf me-1"></i> {{ __('app.download_match_summary_pdf') }}
         </a>
         <a href="{{ route('matches.pdf.teamsheet', $match) }}" class="btn btn-outline-danger">
-            <i class="fas fa-file-pdf me-1"></i> Download Team Sheet PDF
+            <i class="fas fa-file-pdf me-1"></i> {{ __('app.download_team_sheet_pdf') }}
         </a>
     </div>
 </div>

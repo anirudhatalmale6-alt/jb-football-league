@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Manage Lineup')
+@section('title', __('app.manage_lineup'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">
-        <i class="fas fa-list-ol text-success me-2"></i>Manage Lineup
+        <i class="fas fa-list-ol text-success me-2"></i>{{ __('app.manage_lineup') }}
     </h2>
     <a href="{{ route('matches.show', $match) }}" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back to Match
+        <i class="fas fa-arrow-left me-1"></i> {{ __('app.back_to_match') }}
     </a>
 </div>
 
@@ -16,9 +16,9 @@
 <div class="card mb-4">
     <div class="card-body text-center">
         <h5 class="mb-1">
-            <strong>{{ $match->homeTeam->name ?? 'Home' }}</strong>
+            <strong>{{ $match->homeTeam->name ?? __('app.home') }}</strong>
             <span class="text-muted mx-2">vs</span>
-            <strong>{{ $match->awayTeam->name ?? 'Away' }}</strong>
+            <strong>{{ $match->awayTeam->name ?? __('app.away') }}</strong>
         </h5>
         <small class="text-muted">
             {{ $match->competition->name ?? '' }} &mdash;
@@ -34,7 +34,7 @@
         <div class="card h-100">
             <div class="card-header bg-dark text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-shield-halved me-2"></i>{{ $match->homeTeam->name ?? 'Home Team' }}
+                    <i class="fas fa-shield-halved me-2"></i>{{ $match->homeTeam->name ?? __('app.home_team') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -45,7 +45,7 @@
 
                     <div class="row g-2 align-items-end">
                         <div class="col-md-4">
-                            <label for="home_player_id" class="form-label fw-semibold small">Player</label>
+                            <label for="home_player_id" class="form-label fw-semibold small">{{ __('app.player') }}</label>
                             <select class="form-select form-select-sm @error('player_id') is-invalid @enderror" id="home_player_id" name="player_id" required>
                                 <option value="">-- Select --</option>
                                 @foreach($homePlayers as $player)
@@ -56,11 +56,11 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="home_jersey" class="form-label fw-semibold small">Jersey #</label>
+                            <label for="home_jersey" class="form-label fw-semibold small">{{ __('app.jersey_number') }}</label>
                             <input type="number" class="form-select form-select-sm" id="home_jersey" name="jersey_number" min="1" max="99">
                         </div>
                         <div class="col-md-3">
-                            <label for="home_position" class="form-label fw-semibold small">Position</label>
+                            <label for="home_position" class="form-label fw-semibold small">{{ __('app.position') }}</label>
                             <select class="form-select form-select-sm" id="home_position" name="position">
                                 <option value="goalkeeper">GK</option>
                                 <option value="defender">DEF</option>
@@ -71,7 +71,7 @@
                         <div class="col-md-2">
                             <div class="form-check mt-2">
                                 <input class="form-check-input" type="checkbox" id="home_starting" name="is_starting" value="1" checked>
-                                <label class="form-check-label small" for="home_starting">Start</label>
+                                <label class="form-check-label small" for="home_starting">{{ __('app.start') }}</label>
                             </div>
                         </div>
                         <div class="col-md-1">
@@ -89,14 +89,14 @@
                 @endphp
 
                 @if($homeStarters->isNotEmpty())
-                    <h6 class="fw-bold text-success mb-2">Starting XI ({{ $homeStarters->count() }})</h6>
+                    <h6 class="fw-bold text-success mb-2">{{ __('app.starting_xi') }} ({{ $homeStarters->count() }})</h6>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-3">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Player</th>
-                                    <th>Pos</th>
+                                    <th>{{ __('app.player') }}</th>
+                                    <th>{{ __('app.position') }}</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -124,14 +124,14 @@
                 @endif
 
                 @if($homeSubs->isNotEmpty())
-                    <h6 class="fw-bold text-info mb-2">Substitutes ({{ $homeSubs->count() }})</h6>
+                    <h6 class="fw-bold text-info mb-2">{{ __('app.substitutes') }} ({{ $homeSubs->count() }})</h6>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Player</th>
-                                    <th>Pos</th>
+                                    <th>{{ __('app.player') }}</th>
+                                    <th>{{ __('app.position') }}</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -173,7 +173,7 @@
         <div class="card h-100">
             <div class="card-header bg-dark text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-shield-halved me-2"></i>{{ $match->awayTeam->name ?? 'Away Team' }}
+                    <i class="fas fa-shield-halved me-2"></i>{{ $match->awayTeam->name ?? __('app.away_team') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -184,7 +184,7 @@
 
                     <div class="row g-2 align-items-end">
                         <div class="col-md-4">
-                            <label for="away_player_id" class="form-label fw-semibold small">Player</label>
+                            <label for="away_player_id" class="form-label fw-semibold small">{{ __('app.player') }}</label>
                             <select class="form-select form-select-sm" id="away_player_id" name="player_id" required>
                                 <option value="">-- Select --</option>
                                 @foreach($awayPlayers as $player)
@@ -195,11 +195,11 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="away_jersey" class="form-label fw-semibold small">Jersey #</label>
+                            <label for="away_jersey" class="form-label fw-semibold small">{{ __('app.jersey_number') }}</label>
                             <input type="number" class="form-select form-select-sm" id="away_jersey" name="jersey_number" min="1" max="99">
                         </div>
                         <div class="col-md-3">
-                            <label for="away_position" class="form-label fw-semibold small">Position</label>
+                            <label for="away_position" class="form-label fw-semibold small">{{ __('app.position') }}</label>
                             <select class="form-select form-select-sm" id="away_position" name="position">
                                 <option value="goalkeeper">GK</option>
                                 <option value="defender">DEF</option>
@@ -210,7 +210,7 @@
                         <div class="col-md-2">
                             <div class="form-check mt-2">
                                 <input class="form-check-input" type="checkbox" id="away_starting" name="is_starting" value="1" checked>
-                                <label class="form-check-label small" for="away_starting">Start</label>
+                                <label class="form-check-label small" for="away_starting">{{ __('app.start') }}</label>
                             </div>
                         </div>
                         <div class="col-md-1">
@@ -228,14 +228,14 @@
                 @endphp
 
                 @if($awayStarters->isNotEmpty())
-                    <h6 class="fw-bold text-success mb-2">Starting XI ({{ $awayStarters->count() }})</h6>
+                    <h6 class="fw-bold text-success mb-2">{{ __('app.starting_xi') }} ({{ $awayStarters->count() }})</h6>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-3">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Player</th>
-                                    <th>Pos</th>
+                                    <th>{{ __('app.player') }}</th>
+                                    <th>{{ __('app.position') }}</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -263,14 +263,14 @@
                 @endif
 
                 @if($awaySubs->isNotEmpty())
-                    <h6 class="fw-bold text-info mb-2">Substitutes ({{ $awaySubs->count() }})</h6>
+                    <h6 class="fw-bold text-info mb-2">{{ __('app.substitutes') }} ({{ $awaySubs->count() }})</h6>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Player</th>
-                                    <th>Pos</th>
+                                    <th>{{ __('app.player') }}</th>
+                                    <th>{{ __('app.position') }}</th>
                                     <th></th>
                                 </tr>
                             </thead>

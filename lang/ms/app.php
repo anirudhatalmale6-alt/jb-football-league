@@ -45,6 +45,7 @@ return [
 
     // Pertandingan
     'competition' => 'Pertandingan',
+    'competition_name' => 'Nama Pertandingan',
     'season' => 'Musim',
     'type' => 'Jenis',
     'start_date' => 'Tarikh Mula',
@@ -58,9 +59,18 @@ return [
     'completed' => 'Selesai',
     'create_competition' => 'Cipta Pertandingan',
     'edit_competition' => 'Sunting Pertandingan',
+    'update_competition' => 'Kemaskini Pertandingan',
+    'select_type' => '-- Pilih Jenis --',
+    'select_status' => '-- Pilih Status --',
+    'max_players' => 'Pemain Maksimum setiap Pasukan',
+    'max_officials' => 'Pegawai Maksimum setiap Pasukan',
+    'back_to_competitions' => 'Kembali ke Pertandingan',
+    'back_to_competition' => 'Kembali ke Pertandingan',
+    'no_competitions_found' => 'Tiada pertandingan ditemui',
 
     // Pasukan
     'team' => 'Pasukan',
+    'team_name' => 'Nama Pasukan',
     'register_team' => 'Daftar Pasukan',
     'short_name' => 'Nama Pendek',
     'manager' => 'Pengurus',
@@ -73,6 +83,11 @@ return [
     'approve' => 'Luluskan',
     'players_count' => 'Bilangan Pemain',
     'officials' => 'Pegawai',
+    'no_teams_found' => 'Tiada pasukan ditemui',
+    'all_competitions' => 'Semua Pertandingan',
+    'all_statuses' => 'Semua Status',
+    'all_teams' => 'Semua Pasukan',
+    'filter_by_team' => 'Tapis mengikut Pasukan',
 
     // Pemain
     'player' => 'Pemain',
@@ -89,6 +104,8 @@ return [
     'injured' => 'Cedera',
     'suspended' => 'Digantung',
     'add_player' => 'Tambah Pemain',
+    'no_players_found' => 'Tiada pemain ditemui',
+    'all_positions' => 'Semua Posisi',
 
     // Pegawai
     'official' => 'Pegawai',
@@ -124,6 +141,14 @@ return [
     'substitutes' => 'Pemain Gantian',
     'add_event' => 'Tambah Peristiwa',
     'mark_as_completed' => 'Tandakan Selesai',
+    'home_team' => 'Pasukan Tuan Rumah',
+    'away_team' => 'Pasukan Tetamu',
+    'cancelled' => 'Dibatalkan',
+    'no_matches_found' => 'Tiada perlawanan ditemui',
+    'lineup' => 'Barisan',
+    'events' => 'Peristiwa',
+    'back_to_match' => 'Kembali ke Perlawanan',
+    'date_and_time' => 'Tarikh & Masa',
 
     // Peristiwa
     'goal' => 'Gol',
@@ -137,6 +162,13 @@ return [
     'minute' => 'Minit',
     'extra_time_min' => 'Minit Masa Tambahan',
     'related_player' => 'Pemain Berkaitan',
+    'event_type' => 'Jenis Peristiwa',
+    'select_event' => '-- Pilih Peristiwa --',
+    'select_team' => '-- Pilih Pasukan --',
+    'select_player' => '-- Pilih Pemain --',
+    'notes' => 'Nota',
+    'start' => 'Mula',
+    'no_events_recorded' => 'Belum ada peristiwa direkodkan.',
 
     // Kedudukan
     'played' => 'Main',
