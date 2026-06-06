@@ -68,8 +68,8 @@ class DatabaseSeeder extends Seeder
             'season'      => '2026',
             'type'        => 'knockout',
             'status'      => 'upcoming',
-            'start_date'  => '2026-01-01',
-            'end_date'    => '2026-01-15',
+            'start_date'  => '2026-07-24',
+            'end_date'    => '2026-07-24',
             'description' => 'Pre-season knockout cup between the top two clubs.',
             'logo'        => 'logos/competitions/sumbangsih_cup.png',
         ]);
@@ -80,8 +80,8 @@ class DatabaseSeeder extends Seeder
             'season'        => '2026',
             'type'          => 'league',
             'status'        => 'active',
-            'start_date'    => '2026-01-15',
-            'end_date'      => '2026-06-30',
+            'start_date'    => '2026-07-25',
+            'end_date'      => '2026-10-04',
             'description'   => 'Top-tier league of the Johor Bahru Football Association.',
             'logo'          => 'logos/competitions/super_league.png',
             'max_players'   => 25,
@@ -94,8 +94,8 @@ class DatabaseSeeder extends Seeder
             'season'        => '2026',
             'type'          => 'league',
             'status'        => 'active',
-            'start_date'    => '2026-02-01',
-            'end_date'      => '2026-07-15',
+            'start_date'    => '2026-07-25',
+            'end_date'      => '2026-09-26',
             'description'   => 'Second-tier league divided into two groups.',
             'logo'          => 'logos/competitions/premier_league.png',
             'max_players'   => 25,
@@ -108,8 +108,8 @@ class DatabaseSeeder extends Seeder
             'season'        => '2026',
             'type'          => 'league',
             'status'        => 'active',
-            'start_date'    => '2026-03-01',
-            'end_date'      => '2026-08-30',
+            'start_date'    => '2026-07-25',
+            'end_date'      => '2026-10-04',
             'description'   => 'Grassroots divisional league with six regional groups.',
             'logo'          => 'logos/competitions/division_league.png',
             'max_players'   => 25,
@@ -122,8 +122,8 @@ class DatabaseSeeder extends Seeder
             'season'      => '2026',
             'type'        => 'knockout',
             'status'      => 'upcoming',
-            'start_date'  => '2026-04-01',
-            'end_date'    => '2026-06-30',
+            'start_date'  => '2026-08-08',
+            'end_date'    => '2026-09-26',
             'description' => 'Knockout cup competition open to top clubs across divisions.',
             'logo'        => 'logos/competitions/fa_cup.png',
         ]);
@@ -429,18 +429,18 @@ class DatabaseSeeder extends Seeder
 
         // 5 completed matches: [homeIdx, awayIdx, homeScore, awayScore, matchday, venueIdx, datetime]
         $completedMatches = [
-            [0, 1, 1, 0, 1, 0, '2026-02-01 20:00:00'],  // MBIP FC 1-0 JMF FC
-            [2, 3, 2, 1, 1, 1, '2026-02-01 16:00:00'],  // PTP FC 2-1 MBPG FC
-            [4, 5, 0, 0, 1, 2, '2026-02-02 20:00:00'],  // MASAI UNITED FC 0-0 ALOYA FC
-            [6, 7, 3, 2, 2, 3, '2026-02-15 20:00:00'],  // SG TIRAM FC 3-2 MBJB FC
-            [8, 9, 1, 1, 2, 4, '2026-02-15 16:00:00'],  // HUMA WARRIOR FC 1-1 KANGKAR PULAI FC
+            [0, 1, 1, 0, 1, 0, '2026-07-25 20:00:00'],  // MBIP FC 1-0 JMF FC
+            [2, 3, 2, 1, 1, 1, '2026-07-25 16:00:00'],  // PTP FC 2-1 MBPG FC
+            [4, 5, 0, 0, 1, 2, '2026-07-26 20:00:00'],  // MASAI UNITED FC 0-0 ALOYA FC
+            [6, 7, 3, 2, 2, 3, '2026-08-01 20:00:00'],  // SG TIRAM FC 3-2 MBJB FC
+            [8, 9, 1, 1, 2, 4, '2026-08-01 16:00:00'],  // HUMA WARRIOR FC 1-1 KANGKAR PULAI FC
         ];
 
         // 3 scheduled matches
         $scheduledMatches = [
-            [0, 2, 0, 0, 3, 0, '2026-06-14 20:00:00'],  // MBIP FC vs PTP FC
-            [1, 4, 0, 0, 3, 1, '2026-06-14 16:00:00'],  // JMF FC vs MASAI UNITED FC
-            [3, 5, 0, 0, 3, 2, '2026-06-15 20:00:00'],  // MBPG FC vs ALOYA FC
+            [0, 2, 0, 0, 3, 0, '2026-08-08 20:00:00'],  // MBIP FC vs PTP FC
+            [1, 4, 0, 0, 3, 1, '2026-08-08 16:00:00'],  // JMF FC vs MASAI UNITED FC
+            [3, 5, 0, 0, 3, 2, '2026-08-09 20:00:00'],  // MBPG FC vs ALOYA FC
         ];
 
         $matchGames = [];
