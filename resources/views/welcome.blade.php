@@ -18,7 +18,7 @@
         }
 
         .hero-section {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3d0f 100%);
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 40%, #1e3a5f 100%);
             min-height: 70vh;
             display: flex;
             align-items: center;
@@ -33,7 +33,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23198754' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8a415' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             pointer-events: none;
         }
 
@@ -175,7 +175,7 @@
                         <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:120px;" class="mb-3">
                     </div>
                     <h1 class="hero-title mb-2">Persatuan Bola Sepak<br>Johor Bahru</h1>
-                    <h3 class="text-success fw-bold mb-3">JBFA</h3>
+                    <h3 class="fw-bold mb-3" style="color: #c8a415;">JBFA</h3>
                     <p class="hero-subtitle mb-4">
                         The premier football competition in Johor Bahru.
                         Follow your favourite teams, track fixtures, and stay updated with live standings.
