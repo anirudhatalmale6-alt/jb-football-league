@@ -42,7 +42,12 @@
                 <tbody>
                     @foreach($competitions as $competition)
                         <tr>
-                            <td class="fw-semibold">{{ $competition->name }}</td>
+                            <td class="fw-semibold d-flex align-items-center">
+                                @if($competition->logo)
+                                    <img src="{{ asset('storage/'.$competition->logo) }}" alt="" class="me-2" style="height:40px;width:40px;object-fit:contain;">
+                                @endif
+                                {{ $competition->name }}
+                            </td>
                             <td>{{ $competition->season }}</td>
                             <td>
                                 @if($competition->type === 'league')

@@ -14,7 +14,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="{{ route('competitions.store') }}" method="POST">
+        <form action="{{ route('competitions.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="row">
@@ -103,6 +103,15 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="logo" class="form-label fw-semibold">Competition Logo</label>
+                <input type="file" class="form-control @error('logo') is-invalid @enderror" id="logo" name="logo" accept="image/*">
+                @error('logo')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <div class="form-text">Optional. Max 2MB. Recommended: PNG with transparent background.</div>
             </div>
 
             <div class="mb-3">

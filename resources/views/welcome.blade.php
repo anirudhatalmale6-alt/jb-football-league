@@ -118,8 +118,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url('/') }}">
-                <i class="fas fa-futbol me-2 text-success"></i>JB Football League
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url('/') }}">
+                <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:30px;" class="me-2">JBFA
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarWelcome"
@@ -172,9 +172,10 @@
             <div class="row align-items-center">
                 <div class="col-lg-8 mx-auto text-center">
                     <div class="mb-3">
-                        <i class="fas fa-futbol fa-3x text-success mb-3"></i>
+                        <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:120px;" class="mb-3">
                     </div>
-                    <h1 class="hero-title mb-3">Johor Bahru<br>Football League</h1>
+                    <h1 class="hero-title mb-2">Persatuan Bola Sepak<br>Johor Bahru</h1>
+                    <h3 class="text-success fw-bold mb-3">JBFA</h3>
                     <p class="hero-subtitle mb-4">
                         The premier football competition in Johor Bahru.
                         Follow your favourite teams, track fixtures, and stay updated with live standings.
@@ -393,8 +394,8 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <p class="mb-0">
-                        <i class="fas fa-futbol me-1 text-success"></i>
-                        &copy; {{ date('Y') }} JB Football League. All rights reserved.
+                        <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:20px;" class="me-1">
+                        &copy; {{ date('Y') }} JBFA. All rights reserved.
                     </p>
                 </div>
                 <div class="col-md-6 text-md-end">

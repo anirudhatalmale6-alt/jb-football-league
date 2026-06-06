@@ -4,8 +4,13 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0">
-        <i class="fas fa-trophy text-success me-2"></i>{{ $competition->name }}
+    <h2 class="fw-bold mb-0 d-flex align-items-center">
+        @if($competition->logo)
+            <img src="{{ asset('storage/'.$competition->logo) }}" alt="" class="me-2" style="height:64px;width:64px;object-fit:contain;">
+        @else
+            <i class="fas fa-trophy text-success me-2"></i>
+        @endif
+        {{ $competition->name }}
     </h2>
     <div class="d-flex gap-2">
         @auth

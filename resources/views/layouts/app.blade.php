@@ -93,8 +93,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <i class="fas fa-futbol me-2"></i>JB Football League
+            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+                <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:30px;" class="me-2">JBFA
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -241,8 +241,8 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <p class="mb-0">
-                        <i class="fas fa-futbol me-1 text-success"></i>
-                        &copy; {{ date('Y') }} JB Football League. {{ __('app.all_rights_reserved') }}.
+                        <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:20px;" class="me-1">
+                        &copy; {{ date('Y') }} JBFA. {{ __('app.all_rights_reserved') }}.
                     </p>
                 </div>
                 <div class="col-md-6 text-md-end">

@@ -14,7 +14,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="{{ route('competitions.update', $competition) }}" method="POST">
+        <form action="{{ route('competitions.update', $competition) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -104,6 +104,20 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="logo" class="form-label fw-semibold">Competition Logo</label>
+                @if($competition->logo)
+                    <div class="mb-2">
+                        <img src="{{ asset('storage/'.$competition->logo) }}" alt="Current logo" style="height:64px;width:64px;object-fit:contain;" class="border rounded p-1">
+                    </div>
+                @endif
+                <input type="file" class="form-control @error('logo') is-invalid @enderror" id="logo" name="logo" accept="image/*">
+                @error('logo')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <div class="form-text">Optional. Max 2MB. Leave empty to keep the current logo.</div>
             </div>
 
             <div class="mb-3">

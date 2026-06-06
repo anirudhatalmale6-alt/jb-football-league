@@ -42,9 +42,14 @@ class CompetitionController extends Controller
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'description' => ['nullable', 'string'],
+            'logo' => ['nullable', 'image', 'max:2048'],
             'max_players' => ['nullable', 'integer', 'min:1'],
             'max_officials' => ['nullable', 'integer', 'min:1'],
         ]);
+
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('logos/competitions', 'public');
+        }
 
         Competition::create($validated);
 
@@ -91,9 +96,14 @@ class CompetitionController extends Controller
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'description' => ['nullable', 'string'],
+            'logo' => ['nullable', 'image', 'max:2048'],
             'max_players' => ['nullable', 'integer', 'min:1'],
             'max_officials' => ['nullable', 'integer', 'min:1'],
         ]);
+
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('logos/competitions', 'public');
+        }
 
         $competition->update($validated);
 

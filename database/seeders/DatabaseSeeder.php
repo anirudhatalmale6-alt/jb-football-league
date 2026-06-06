@@ -71,6 +71,7 @@ class DatabaseSeeder extends Seeder
             'start_date'  => '2026-01-01',
             'end_date'    => '2026-01-15',
             'description' => 'Pre-season knockout cup between the top two clubs.',
+            'logo'        => 'logos/competitions/sumbangsih_cup.png',
         ]);
 
         // (b) JBFA SUPER LEAGUE
@@ -82,6 +83,7 @@ class DatabaseSeeder extends Seeder
             'start_date'    => '2026-01-15',
             'end_date'      => '2026-06-30',
             'description'   => 'Top-tier league of the Johor Bahru Football Association.',
+            'logo'          => 'logos/competitions/super_league.png',
             'max_players'   => 25,
             'max_officials' => 7,
         ]);
@@ -95,6 +97,7 @@ class DatabaseSeeder extends Seeder
             'start_date'    => '2026-02-01',
             'end_date'      => '2026-07-15',
             'description'   => 'Second-tier league divided into two groups.',
+            'logo'          => 'logos/competitions/premier_league.png',
             'max_players'   => 25,
             'max_officials' => 7,
         ]);
@@ -108,6 +111,7 @@ class DatabaseSeeder extends Seeder
             'start_date'    => '2026-03-01',
             'end_date'      => '2026-08-30',
             'description'   => 'Grassroots divisional league with six regional groups.',
+            'logo'          => 'logos/competitions/division_league.png',
             'max_players'   => 25,
             'max_officials' => 7,
         ]);
@@ -121,6 +125,7 @@ class DatabaseSeeder extends Seeder
             'start_date'  => '2026-04-01',
             'end_date'    => '2026-06-30',
             'description' => 'Knockout cup competition open to top clubs across divisions.',
+            'logo'        => 'logos/competitions/fa_cup.png',
         ]);
 
         // ──────────────────────────────────────────────
