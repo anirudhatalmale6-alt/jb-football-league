@@ -91,6 +91,13 @@
         </button>
     </li>
     <li class="nav-item" role="presentation">
+        <button class="nav-link" id="groups-tab" data-bs-toggle="tab" data-bs-target="#groups-pane"
+                type="button" role="tab" aria-controls="groups-pane" aria-selected="false">
+            <i class="fas fa-layer-group me-1"></i> Groups
+            <span class="badge bg-secondary ms-1">{{ $competition->groups->count() }}</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
         <button class="nav-link" id="fixtures-tab" data-bs-toggle="tab" data-bs-target="#fixtures-pane"
                 type="button" role="tab" aria-controls="fixtures-pane" aria-selected="false">
             <i class="fas fa-calendar-days me-1"></i> Fixtures
@@ -113,6 +120,107 @@
                 <i class="fas fa-shield-halved fa-3x mb-3 d-block"></i>
                 <p>No teams registered for this competition yet.</p>
             </div>
+        @elseif($competition->groups->isNotEmpty())
+            {{-- Teams organized by group --}}
+            @foreach($competition->groups->sortBy('order') as $group)
+                <h5 class="fw-bold mt-3 mb-2">
+                    <i class="fas fa-layer-group me-1 text-primary"></i> {{ $group->name }}
+                    <span class="badge bg-secondary ms-1">{{ $group->teams->count() }}</span>
+                </h5>
+                @if($group->teams->isEmpty())
+                    <p class="text-muted ms-3">No teams in this group yet.</p>
+                @else
+                    <div class="table-responsive mb-3">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Team Name</th>
+                                    <th>Short Name</th>
+                                    <th>Manager</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($group->teams as $index => $team)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td class="fw-semibold">{{ $team->name }}</td>
+                                        <td>{{ $team->short_name ?? '-' }}</td>
+                                        <td>{{ $team->manager_name ?? '-' }}</td>
+                                        <td>
+                                            @if($team->status === 'approved')
+                                                <span class="badge bg-success">Approved</span>
+                                            @elseif($team->status === 'pending')
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            @elseif($team->status === 'rejected')
+                                                <span class="badge bg-danger">Rejected</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ ucfirst($team->status) }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            @endforeach
+
+            {{-- Teams without a group --}}
+            @php $ungroupedTeams = $competition->teams->whereNull('group_id'); @endphp
+            @if($ungroupedTeams->isNotEmpty())
+                <h5 class="fw-bold mt-3 mb-2">
+                    <i class="fas fa-question-circle me-1 text-muted"></i> Ungrouped
+                    <span class="badge bg-secondary ms-1">{{ $ungroupedTeams->count() }}</span>
+                </h5>
+                <div class="table-responsive mb-3">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Team Name</th>
+                                <th>Short Name</th>
+                                <th>Manager</th>
+                                <th>Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($ungroupedTeams as $index => $team)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td class="fw-semibold">{{ $team->name }}</td>
+                                    <td>{{ $team->short_name ?? '-' }}</td>
+                                    <td>{{ $team->manager_name ?? '-' }}</td>
+                                    <td>
+                                        @if($team->status === 'approved')
+                                            <span class="badge bg-success">Approved</span>
+                                        @elseif($team->status === 'pending')
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        @elseif($team->status === 'rejected')
+                                            <span class="badge bg-danger">Rejected</span>
+                                        @else
+                                            <span class="badge bg-secondary">{{ ucfirst($team->status) }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         @else
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
@@ -149,6 +257,81 @@
                                         <i class="fas fa-eye"></i> View
                                     </a>
                                 </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
+
+    <!-- Groups Tab -->
+    <div class="tab-pane fade" id="groups-pane" role="tabpanel" aria-labelledby="groups-tab">
+        @auth
+            @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-2">Add Group</h6>
+                        <form action="{{ route('competitions.groups.store', $competition) }}" method="POST" class="d-flex gap-2 align-items-end">
+                            @csrf
+                            <div class="flex-grow-1">
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
+                                       placeholder="Group name (e.g. Group A)" required maxlength="100">
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus me-1"></i> Add Group
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @endif
+        @endauth
+
+        @if($competition->groups->isEmpty())
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-layer-group fa-3x mb-3 d-block"></i>
+                <p>No groups created for this competition yet.</p>
+            </div>
+        @else
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 60px;" class="text-center">#</th>
+                            <th>Group Name</th>
+                            <th class="text-center">Teams</th>
+                            @auth
+                                @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
+                                    <th class="text-center">Actions</th>
+                                @endif
+                            @endauth
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($competition->groups->sortBy('order') as $group)
+                            <tr>
+                                <td class="text-center">{{ $group->order }}</td>
+                                <td class="fw-semibold">{{ $group->name }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary">{{ $group->teams->count() }}</span>
+                                </td>
+                                @auth
+                                    @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
+                                        <td class="text-center">
+                                            <form action="{{ route('competitions.groups.destroy', [$competition, $group]) }}" method="POST" class="d-inline"
+                                                  onsubmit="return confirm('Are you sure you want to delete this group? Teams in this group will become ungrouped.');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Group">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    @endif
+                                @endauth
                             </tr>
                         @endforeach
                     </tbody>

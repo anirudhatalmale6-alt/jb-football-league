@@ -10,6 +10,7 @@ class Standing extends Model
     protected $fillable = [
         'competition_id',
         'team_id',
+        'group_id',
         'played',
         'won',
         'drawn',
@@ -29,5 +30,10 @@ class Standing extends Model
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Group::class);
     }
 }

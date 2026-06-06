@@ -15,6 +15,8 @@ class Competition extends Model
         'start_date',
         'end_date',
         'description',
+        'max_players',
+        'max_officials',
     ];
 
     protected function casts(): array
@@ -38,5 +40,10 @@ class Competition extends Model
     public function standings(): HasMany
     {
         return $this->hasMany(Standing::class);
+    }
+
+    public function groups(): HasMany
+    {
+        return $this->hasMany(Group::class);
     }
 }

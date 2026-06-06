@@ -14,7 +14,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="{{ route('teams.update', $team) }}" method="POST">
+        <form action="{{ route('teams.update', $team) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -79,6 +79,38 @@
                     <input type="text" class="form-control @error('contact_phone') is-invalid @enderror" id="contact_phone" name="contact_phone"
                            value="{{ old('contact_phone', $team->contact_phone) }}">
                     @error('contact_phone')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="group_id" class="form-label fw-semibold">Group</label>
+                    <select class="form-select @error('group_id') is-invalid @enderror" id="group_id" name="group_id">
+                        <option value="">-- No Group --</option>
+                        @foreach($groups as $group)
+                            <option value="{{ $group->id }}" {{ old('group_id', $team->group_id) == $group->id ? 'selected' : '' }}>
+                                {{ $group->competition->name ?? '' }} - {{ $group->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('group_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="logo" class="form-label fw-semibold">Team Logo</label>
+                    @if($team->logo)
+                        <div class="mb-2">
+                            <img src="{{ asset('storage/' . $team->logo) }}" alt="Current logo" class="img-thumbnail" style="max-height: 80px;">
+                        </div>
+                    @endif
+                    <input type="file" class="form-control @error('logo') is-invalid @enderror" id="logo" name="logo"
+                           accept="image/*">
+                    <div class="form-text">Max 2MB. Leave empty to keep current logo.</div>
+                    @error('logo')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

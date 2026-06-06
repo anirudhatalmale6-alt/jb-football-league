@@ -86,6 +86,26 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="max_players" class="form-label fw-semibold">Max Players per Team</label>
+                    <input type="number" class="form-control @error('max_players') is-invalid @enderror" id="max_players" name="max_players"
+                           value="{{ old('max_players', $competition->max_players ?? 25) }}" min="1">
+                    @error('max_players')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="max_officials" class="form-label fw-semibold">Max Officials per Team</label>
+                    <input type="number" class="form-control @error('max_officials') is-invalid @enderror" id="max_officials" name="max_officials"
+                           value="{{ old('max_officials', $competition->max_officials ?? 7) }}" min="1">
+                    @error('max_officials')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
             <div class="mb-3">
                 <label for="description" class="form-label fw-semibold">Description</label>
                 <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"

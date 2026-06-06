@@ -25,7 +25,12 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="row">
-            <div class="col-md-6">
+            @if($team->logo)
+                <div class="col-md-2 text-center mb-3">
+                    <img src="{{ asset('storage/' . $team->logo) }}" alt="{{ $team->name }} logo" class="img-fluid rounded" style="max-height: 150px;">
+                </div>
+            @endif
+            <div class="{{ $team->logo ? 'col-md-5' : 'col-md-6' }}">
                 <table class="table table-borderless mb-0">
                     <tr>
                         <th class="text-muted" style="width: 150px;">Team Name</th>
@@ -49,7 +54,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-md-6">
+            <div class="{{ $team->logo ? 'col-md-5' : 'col-md-6' }}">
                 <table class="table table-borderless mb-0">
                     <tr>
                         <th class="text-muted" style="width: 150px;">Status</th>

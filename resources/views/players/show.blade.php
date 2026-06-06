@@ -24,7 +24,12 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-md-6">
+            @if($player->photo)
+                <div class="col-md-2 text-center mb-3">
+                    <img src="{{ asset('storage/' . $player->photo) }}" alt="{{ $player->name }}" class="img-fluid rounded" style="max-height: 150px;">
+                </div>
+            @endif
+            <div class="{{ $player->photo ? 'col-md-5' : 'col-md-6' }}">
                 <table class="table table-borderless mb-0">
                     <tr>
                         <th class="text-muted" style="width: 150px;">Full Name</th>
@@ -56,7 +61,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-md-6">
+            <div class="{{ $player->photo ? 'col-md-5' : 'col-md-6' }}">
                 <table class="table table-borderless mb-0">
                     <tr>
                         <th class="text-muted" style="width: 150px;">Date of Birth</th>

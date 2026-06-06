@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Register')
+@section('title', __('app.register'))
 
 @section('content')
 <div class="row justify-content-center">
@@ -9,7 +9,7 @@
             <div class="card-body p-4">
                 <div class="text-center mb-4">
                     <i class="fas fa-futbol fa-2x text-success"></i>
-                    <h4 class="mt-2 fw-bold">Create Account</h4>
+                    <h4 class="mt-2 fw-bold">{{ __('app.register') }}</h4>
                     <p class="text-muted">Join the JB Football League</p>
                 </div>
 
@@ -19,7 +19,7 @@
                     <!-- Name -->
                     <div class="mb-3">
                         <label for="name" class="form-label fw-semibold">
-                            <i class="fas fa-user me-1 text-muted"></i> Full Name
+                            <i class="fas fa-user me-1 text-muted"></i> {{ __('app.name') }}
                         </label>
                         <input id="name" type="text"
                                class="form-control @error('name') is-invalid @enderror"
@@ -34,7 +34,7 @@
                     <!-- Email -->
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold">
-                            <i class="fas fa-envelope me-1 text-muted"></i> Email Address
+                            <i class="fas fa-envelope me-1 text-muted"></i> {{ __('app.email') }}
                         </label>
                         <input id="email" type="email"
                                class="form-control @error('email') is-invalid @enderror"
@@ -49,7 +49,7 @@
                     <!-- Password -->
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">
-                            <i class="fas fa-lock me-1 text-muted"></i> Password
+                            <i class="fas fa-lock me-1 text-muted"></i> {{ __('app.password') }}
                         </label>
                         <input id="password" type="password"
                                class="form-control @error('password') is-invalid @enderror"
@@ -63,7 +63,7 @@
                     <!-- Confirm Password -->
                     <div class="mb-3">
                         <label for="password-confirm" class="form-label fw-semibold">
-                            <i class="fas fa-lock me-1 text-muted"></i> Confirm Password
+                            <i class="fas fa-lock me-1 text-muted"></i> {{ __('app.confirm_password') }}
                         </label>
                         <input id="password-confirm" type="password"
                                class="form-control"
@@ -74,7 +74,7 @@
                     <!-- Role Selector -->
                     <div class="mb-4">
                         <label for="role" class="form-label fw-semibold">
-                            <i class="fas fa-user-tag me-1 text-muted"></i> Role
+                            <i class="fas fa-user-tag me-1 text-muted"></i> {{ __('app.role') }}
                         </label>
                         <select id="role" name="role"
                                 class="form-select @error('role') is-invalid @enderror">
@@ -93,7 +93,7 @@
                     <!-- Submit -->
                     <div class="d-grid">
                         <button type="submit" class="btn btn-success btn-lg">
-                            <i class="fas fa-user-plus me-1"></i> Register
+                            <i class="fas fa-user-plus me-1"></i> {{ __('app.register') }}
                         </button>
                     </div>
                 </form>
@@ -101,9 +101,9 @@
                 <hr>
 
                 <div class="text-center">
-                    <span class="text-muted">Already have an account?</span>
+                    <span class="text-muted">{{ __('app.already_have_account') }}?</span>
                     <a href="{{ route('login') }}" class="text-success text-decoration-none fw-semibold ms-1">
-                        Sign in
+                        {{ __('app.login') }}
                     </a>
                 </div>
             </div>

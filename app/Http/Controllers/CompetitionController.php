@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Competition;
+use App\Models\Group;
 use App\Models\Standing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,8 @@ class CompetitionController extends Controller
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'description' => ['nullable', 'string'],
+            'max_players' => ['nullable', 'integer', 'min:1'],
+            'max_officials' => ['nullable', 'integer', 'min:1'],
         ]);
 
         Competition::create($validated);
@@ -51,7 +54,7 @@ class CompetitionController extends Controller
 
     public function show($id)
     {
-        $competition = Competition::with(['teams', 'matchGames.homeTeam', 'matchGames.awayTeam'])->findOrFail($id);
+        $competition = Competition::with(['teams.group', 'matchGames.homeTeam', 'matchGames.awayTeam', 'groups.teams'])->findOrFail($id);
 
         $standings = Standing::with('team')
             ->where('competition_id', $competition->id)
@@ -88,6 +91,8 @@ class CompetitionController extends Controller
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'description' => ['nullable', 'string'],
+            'max_players' => ['nullable', 'integer', 'min:1'],
+            'max_officials' => ['nullable', 'integer', 'min:1'],
         ]);
 
         $competition->update($validated);
@@ -107,5 +112,42 @@ class CompetitionController extends Controller
 
         return redirect()->route('competitions.index')
             ->with('success', 'Competition deleted successfully.');
+    }
+
+    public function storeGroup($competitionId, Request $request)
+    {
+        if (!Auth::user()->isSuper() && !Auth::user()->isLeagueAdmin()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+        ]);
+
+        $competition = Competition::findOrFail($competitionId);
+
+        $maxOrder = $competition->groups()->max('order') ?? 0;
+
+        $competition->groups()->create([
+            'name' => $validated['name'],
+            'order' => $maxOrder + 1,
+        ]);
+
+        return redirect()->route('competitions.show', $competition->id)
+            ->with('success', 'Group created successfully.');
+    }
+
+    public function deleteGroup($competitionId, $groupId)
+    {
+        if (!Auth::user()->isSuper() && !Auth::user()->isLeagueAdmin()) {
+            abort(403);
+        }
+
+        $competition = Competition::findOrFail($competitionId);
+        $group = $competition->groups()->findOrFail($groupId);
+        $group->delete();
+
+        return redirect()->route('competitions.show', $competition->id)
+            ->with('success', 'Group deleted successfully.');
     }
 }

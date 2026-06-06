@@ -109,54 +109,77 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                                href="{{ route('dashboard') }}">
-                                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                                <i class="fas fa-tachometer-alt me-1"></i> {{ __('app.dashboard') }}
                             </a>
                         </li>
                     @endauth
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('competitions.*') ? 'active' : '' }}"
                            href="{{ route('competitions.index') }}">
-                            <i class="fas fa-trophy me-1"></i> Competitions
+                            <i class="fas fa-trophy me-1"></i> {{ __('app.competitions') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('teams.*') ? 'active' : '' }}"
                            href="{{ route('teams.index') }}">
-                            <i class="fas fa-shield-halved me-1"></i> Teams
+                            <i class="fas fa-shield-halved me-1"></i> {{ __('app.teams') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('players.*') ? 'active' : '' }}"
                            href="{{ route('players.index') }}">
-                            <i class="fas fa-users me-1"></i> Players
+                            <i class="fas fa-users me-1"></i> {{ __('app.players') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('matches.*') ? 'active' : '' }}"
                            href="{{ route('matches.index') }}">
-                            <i class="fas fa-calendar-days me-1"></i> Matches
+                            <i class="fas fa-calendar-days me-1"></i> {{ __('app.matches') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('standings.*') ? 'active' : '' }}"
                            href="{{ route('standings.index') }}">
-                            <i class="fas fa-ranking-star me-1"></i> Standings
+                            <i class="fas fa-ranking-star me-1"></i> {{ __('app.standings') }}
                         </a>
                     </li>
                 </ul>
 
                 <!-- Right Nav -->
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <!-- Language Switcher -->
+                    <li class="nav-item dropdown me-2">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe me-1"></i>
+                            {{ app()->getLocale() === 'ms' ? 'BM' : 'EN' }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item {{ app()->getLocale() === 'en' ? 'active' : '' }}"
+                                   href="{{ route('language.switch', 'en') }}">
+                                    English (EN)
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {{ app()->getLocale() === 'ms' ? 'active' : '' }}"
+                                   href="{{ route('language.switch', 'ms') }}">
+                                    Bahasa Malaysia (BM)
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     @guest
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i> Login
+                                <i class="fas fa-sign-in-alt me-1"></i> {{ __('app.login') }}
                             </a>
                         </li>
                         @if (Route::has('register'))
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('register') }}">
-                                    <i class="fas fa-user-plus me-1"></i> Register
+                                    <i class="fas fa-user-plus me-1"></i> {{ __('app.register') }}
                                 </a>
                             </li>
                         @endif
@@ -164,7 +187,7 @@
                         @if(auth()->user()->role === 'team_manager' && auth()->user()->team_id)
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('teams.show', auth()->user()->team_id) }}">
-                                    <i class="fas fa-shield me-1"></i> My Team
+                                    <i class="fas fa-shield me-1"></i> {{ __('app.my_team') }}
                                 </a>
                             </li>
                         @endif
@@ -178,7 +201,7 @@
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                                            <i class="fas fa-sign-out-alt me-1"></i> {{ __('app.logout') }}
                                         </button>
                                     </form>
                                 </li>
@@ -219,11 +242,11 @@
                 <div class="col-md-6">
                     <p class="mb-0">
                         <i class="fas fa-futbol me-1 text-success"></i>
-                        &copy; {{ date('Y') }} JB Football League. All rights reserved.
+                        &copy; {{ date('Y') }} JB Football League. {{ __('app.all_rights_reserved') }}.
                     </p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <small>Johor Bahru Football League Management System</small>
+                    <small>Johor Bahru Football League {{ __('app.management_system') }}</small>
                 </div>
             </div>
         </div>

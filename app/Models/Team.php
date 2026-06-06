@@ -10,6 +10,7 @@ class Team extends Model
 {
     protected $fillable = [
         'competition_id',
+        'group_id',
         'name',
         'short_name',
         'logo',
@@ -22,6 +23,11 @@ class Team extends Model
     public function competition(): BelongsTo
     {
         return $this->belongsTo(Competition::class);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Group::class);
     }
 
     public function players(): HasMany

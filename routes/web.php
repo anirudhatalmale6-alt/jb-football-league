@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PlayerController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\StandingController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -48,6 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/competitions/{competition}/edit', [CompetitionController::class, 'edit'])->name('competitions.edit');
     Route::put('/competitions/{competition}', [CompetitionController::class, 'update'])->name('competitions.update');
     Route::delete('/competitions/{competition}', [CompetitionController::class, 'destroy'])->name('competitions.destroy');
+    Route::post('/competitions/{competition}/groups', [CompetitionController::class, 'storeGroup'])->name('competitions.groups.store');
+    Route::delete('/competitions/{competition}/groups/{group}', [CompetitionController::class, 'deleteGroup'])->name('competitions.groups.destroy');
 
     Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
     Route::get('/teams/{team}/edit', [TeamController::class, 'edit'])->name('teams.edit');

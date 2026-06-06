@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', __('app.dashboard'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">
-        <i class="fas fa-tachometer-alt text-success me-2"></i>Dashboard
+        <i class="fas fa-tachometer-alt text-success me-2"></i>{{ __('app.dashboard') }}
     </h2>
-    <span class="text-muted">Welcome back, {{ Auth::user()->name }}</span>
+    <span class="text-muted">{{ __('app.welcome_back') }}, {{ Auth::user()->name }}</span>
 </div>
 
 <!-- Stats Cards -->
@@ -19,7 +19,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.75rem;">
-                            Competitions
+                            {{ __('app.competitions') }}
                         </h6>
                         <h2 class="fw-bold mb-0">{{ $competitionCount }}</h2>
                     </div>
@@ -38,7 +38,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.75rem;">
-                            Teams
+                            {{ __('app.teams') }}
                         </h6>
                         <h2 class="fw-bold mb-0">{{ $teamCount }}</h2>
                     </div>
@@ -57,7 +57,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.75rem;">
-                            Players
+                            {{ __('app.players') }}
                         </h6>
                         <h2 class="fw-bold mb-0">{{ $playerCount }}</h2>
                     </div>
@@ -76,7 +76,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.75rem;">
-                            Upcoming Matches
+                            {{ __('app.upcoming_matches') }}
                         </h6>
                         <h2 class="fw-bold mb-0">{{ $upcomingMatchCount }}</h2>
                     </div>
@@ -96,10 +96,10 @@
         <div class="card h-100">
             <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    <i class="fas fa-clock-rotate-left me-2"></i>Recent Matches
+                    <i class="fas fa-clock-rotate-left me-2"></i>{{ __('app.recent_matches') }}
                 </h5>
                 <a href="{{ route('matches.index') }}" class="btn btn-sm btn-outline-light">
-                    View All
+                    {{ __('app.view_all') }}
                 </a>
             </div>
             <div class="card-body p-0">
@@ -113,11 +113,11 @@
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Home</th>
-                                    <th class="text-center">Score</th>
-                                    <th>Away</th>
-                                    <th>Competition</th>
+                                    <th>{{ __('app.date') }}</th>
+                                    <th>{{ __('app.home') }}</th>
+                                    <th class="text-center">{{ __('app.score') }}</th>
+                                    <th>{{ __('app.away') }}</th>
+                                    <th>{{ __('app.competition') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -155,10 +155,10 @@
         <div class="card h-100">
             <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    <i class="fas fa-ranking-star me-2"></i>League Standings
+                    <i class="fas fa-ranking-star me-2"></i>{{ __('app.league_standings') }}
                 </h5>
                 <a href="{{ route('standings.index') }}" class="btn btn-sm btn-outline-light">
-                    Full Table
+                    {{ __('app.full_table') }}
                 </a>
             </div>
             <div class="card-body p-0">
@@ -173,12 +173,12 @@
                             <thead class="table-light">
                                 <tr>
                                     <th style="width: 40px;">#</th>
-                                    <th>Team</th>
-                                    <th class="text-center">P</th>
-                                    <th class="text-center">W</th>
-                                    <th class="text-center">D</th>
-                                    <th class="text-center">L</th>
-                                    <th class="text-center fw-bold">Pts</th>
+                                    <th>{{ __('app.team') }}</th>
+                                    <th class="text-center">{{ __('app.played') }}</th>
+                                    <th class="text-center">{{ __('app.won') }}</th>
+                                    <th class="text-center">{{ __('app.drawn') }}</th>
+                                    <th class="text-center">{{ __('app.lost') }}</th>
+                                    <th class="text-center fw-bold">{{ __('app.points') }}</th>
                                 </tr>
                             </thead>
                             <tbody>

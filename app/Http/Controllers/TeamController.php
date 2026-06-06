@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Competition;
+use App\Models\Group;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,14 +35,16 @@ class TeamController extends Controller
     public function create()
     {
         $competitions = Competition::orderBy('name')->get();
+        $groups = Group::orderBy('name')->get();
 
-        return view('teams.create', compact('competitions'));
+        return view('teams.create', compact('competitions', 'groups'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'competition_id' => ['required', 'exists:competitions,id'],
+            'group_id' => ['nullable', 'exists:groups,id'],
             'name' => ['required', 'string', 'max:255'],
             'short_name' => ['required', 'string', 'max:10'],
             'logo' => ['nullable', 'image', 'max:2048'],
@@ -79,8 +82,9 @@ class TeamController extends Controller
         }
 
         $competitions = Competition::orderBy('name')->get();
+        $groups = Group::orderBy('name')->get();
 
-        return view('teams.edit', compact('team', 'competitions'));
+        return view('teams.edit', compact('team', 'competitions', 'groups'));
     }
 
     public function update(Request $request, $id)
@@ -94,6 +98,7 @@ class TeamController extends Controller
 
         $validated = $request->validate([
             'competition_id' => ['required', 'exists:competitions,id'],
+            'group_id' => ['nullable', 'exists:groups,id'],
             'name' => ['required', 'string', 'max:255'],
             'short_name' => ['required', 'string', 'max:10'],
             'logo' => ['nullable', 'image', 'max:2048'],

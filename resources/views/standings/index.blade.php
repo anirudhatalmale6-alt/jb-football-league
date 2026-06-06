@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'Standings')
+@section('title', __('app.standings'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">
-        <i class="fas fa-ranking-star text-success me-2"></i>League Standings
+        <i class="fas fa-ranking-star text-success me-2"></i>{{ __('app.league_standings') }}
     </h2>
     @auth
         @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
             @if(isset($selectedCompetition))
-                <form action="{{ route('standings.recalculate') }}" method="POST" class="d-inline"
+                <form action="{{ route('standings.recalculate', $selectedCompetition) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('Recalculate standings for this competition?');">
                     @csrf
                     <input type="hidden" name="competition_id" value="{{ $selectedCompetition->id }}">
                     <button type="submit" class="btn btn-warning">
-                        <i class="fas fa-calculator me-1"></i> Recalculate
+                        <i class="fas fa-calculator me-1"></i> {{ __('app.recalculate') }}
                     </button>
                 </form>
             @endif
@@ -28,9 +28,9 @@
     <div class="card-body">
         <form action="{{ route('standings.index') }}" method="GET" class="row g-3 align-items-end">
             <div class="col-md-8">
-                <label for="competition_id" class="form-label fw-semibold">Select Competition</label>
+                <label for="competition_id" class="form-label fw-semibold">{{ __('app.select_competition') }}</label>
                 <select class="form-select" id="competition_id" name="competition_id" onchange="this.form.submit()">
-                    <option value="">-- Select Competition --</option>
+                    <option value="">-- {{ __('app.select_competition') }} --</option>
                     @foreach($competitions as $competition)
                         <option value="{{ $competition->id }}"
                             {{ (isset($selectedCompetition) && $selectedCompetition->id == $competition->id) ? 'selected' : '' }}>
@@ -41,7 +41,7 @@
             </div>
             <div class="col-md-4">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> View Standings
+                    <i class="fas fa-search me-1"></i> {{ __('app.view_standings') }}
                 </button>
             </div>
         </form>
@@ -66,16 +66,16 @@
                 <table class="table table-striped table-hover mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th style="width: 60px;" class="text-center">Pos</th>
-                            <th>Team</th>
-                            <th class="text-center">P</th>
-                            <th class="text-center">W</th>
-                            <th class="text-center">D</th>
-                            <th class="text-center">L</th>
-                            <th class="text-center">GF</th>
-                            <th class="text-center">GA</th>
-                            <th class="text-center">GD</th>
-                            <th class="text-center fw-bold">Pts</th>
+                            <th style="width: 60px;" class="text-center">{{ __('app.position') }}</th>
+                            <th>{{ __('app.team') }}</th>
+                            <th class="text-center">{{ __('app.played') }}</th>
+                            <th class="text-center">{{ __('app.won') }}</th>
+                            <th class="text-center">{{ __('app.drawn') }}</th>
+                            <th class="text-center">{{ __('app.lost') }}</th>
+                            <th class="text-center">{{ __('app.goals_for') }}</th>
+                            <th class="text-center">{{ __('app.goals_against') }}</th>
+                            <th class="text-center">{{ __('app.goal_difference') }}</th>
+                            <th class="text-center fw-bold">{{ __('app.points') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,12 +128,12 @@
                 <div class="d-flex gap-4">
                     <div>
                         <span class="badge bg-success">&nbsp;</span>
-                        <small class="text-muted ms-1">Champion Zone</small>
+                        <small class="text-muted ms-1">{{ __('app.champion_zone') }}</small>
                     </div>
                     @if($standings->count() > 4)
                         <div>
                             <span class="badge bg-danger">&nbsp;</span>
-                            <small class="text-muted ms-1">Relegation Zone</small>
+                            <small class="text-muted ms-1">{{ __('app.relegation_zone') }}</small>
                         </div>
                     @endif
                 </div>
