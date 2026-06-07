@@ -51,6 +51,22 @@ class PdfController extends Controller
             }
         }
 
+        $homeLogoBase64 = null;
+        if ($match->homeTeam && $match->homeTeam->logo) {
+            $path = storage_path('app/public/' . $match->homeTeam->logo);
+            if (file_exists($path)) {
+                $homeLogoBase64 = 'data:' . mime_content_type($path) . ';base64,' . base64_encode(file_get_contents($path));
+            }
+        }
+
+        $awayLogoBase64 = null;
+        if ($match->awayTeam && $match->awayTeam->logo) {
+            $path = storage_path('app/public/' . $match->awayTeam->logo);
+            if (file_exists($path)) {
+                $awayLogoBase64 = 'data:' . mime_content_type($path) . ';base64,' . base64_encode(file_get_contents($path));
+            }
+        }
+
         $pdf = Pdf::loadView('pdf.match-summary', compact(
             'match',
             'homeStarters',
@@ -61,6 +77,8 @@ class PdfController extends Controller
             'homeOfficials',
             'awayOfficials',
             'competitionLogoBase64',
+            'homeLogoBase64',
+            'awayLogoBase64',
         ));
 
         $pdf->setPaper('a4', 'portrait');
@@ -100,6 +118,22 @@ class PdfController extends Controller
             }
         }
 
+        $homeLogoBase64 = null;
+        if ($match->homeTeam && $match->homeTeam->logo) {
+            $path = storage_path('app/public/' . $match->homeTeam->logo);
+            if (file_exists($path)) {
+                $homeLogoBase64 = 'data:' . mime_content_type($path) . ';base64,' . base64_encode(file_get_contents($path));
+            }
+        }
+
+        $awayLogoBase64 = null;
+        if ($match->awayTeam && $match->awayTeam->logo) {
+            $path = storage_path('app/public/' . $match->awayTeam->logo);
+            if (file_exists($path)) {
+                $awayLogoBase64 = 'data:' . mime_content_type($path) . ';base64,' . base64_encode(file_get_contents($path));
+            }
+        }
+
         $pdf = Pdf::loadView('pdf.team-sheet', compact(
             'match',
             'homeStarters',
@@ -109,6 +143,8 @@ class PdfController extends Controller
             'homeOfficials',
             'awayOfficials',
             'competitionLogoBase64',
+            'homeLogoBase64',
+            'awayLogoBase64',
         ));
 
         $pdf->setPaper('a4', 'portrait');

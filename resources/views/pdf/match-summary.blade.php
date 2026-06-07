@@ -250,7 +250,10 @@
 {{-- ===== SCORE SECTION ===== --}}
 <table style="width: 100%; border: 2px solid #003366; margin-bottom: 5px;">
     <tr>
-        <td style="width: 38%; text-align: right; padding: 8px 12px; vertical-align: middle;">
+        <td style="width: 35%; text-align: right; padding: 8px 8px; vertical-align: middle;">
+            @if(isset($homeLogoBase64))
+                <img src="{{ $homeLogoBase64 }}" style="height: 35px; width: 35px; object-fit: contain; vertical-align: middle; margin-right: 6px;">
+            @endif
             <span style="font-size: 13px; font-weight: bold; color: #003366;">{{ $homeTeamName }}</span>
         </td>
         <td style="width: 7%; text-align: center; padding: 8px 4px; vertical-align: middle;">
@@ -262,8 +265,11 @@
         <td style="width: 7%; text-align: center; padding: 8px 4px; vertical-align: middle;">
             <span style="font-size: 22px; font-weight: bold; color: #003366;">{{ $match->away_score ?? 0 }}</span>
         </td>
-        <td style="width: 38%; text-align: left; padding: 8px 12px; vertical-align: middle;">
+        <td style="width: 35%; text-align: left; padding: 8px 8px; vertical-align: middle;">
             <span style="font-size: 13px; font-weight: bold; color: #003366;">{{ $awayTeamName }}</span>
+            @if(isset($awayLogoBase64))
+                <img src="{{ $awayLogoBase64 }}" style="height: 35px; width: 35px; object-fit: contain; vertical-align: middle; margin-left: 6px;">
+            @endif
         </td>
     </tr>
 </table>

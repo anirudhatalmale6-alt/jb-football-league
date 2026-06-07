@@ -177,14 +177,20 @@
 {{-- Teams vs bar --}}
 <table style="width: 100%; border: 2px solid #003366; margin-bottom: 8px; margin-top: 0;">
     <tr>
-        <td style="width: 45%; text-align: right; padding: 8px 15px; vertical-align: middle;">
+        <td style="width: 42%; text-align: right; padding: 8px 10px; vertical-align: middle;">
+            @if(isset($homeLogoBase64))
+                <img src="{{ $homeLogoBase64 }}" style="height: 35px; width: 35px; object-fit: contain; vertical-align: middle; margin-right: 6px;">
+            @endif
             <span style="font-size: 13px; font-weight: bold; color: #003366;">{{ $homeTeamName }}</span>
         </td>
         <td style="width: 10%; text-align: center; padding: 8px 4px; vertical-align: middle;">
             <span style="font-size: 11px; font-weight: bold; color: #ffffff; background-color: #003366; padding: 3px 10px;">VS</span>
         </td>
-        <td style="width: 45%; text-align: left; padding: 8px 15px; vertical-align: middle;">
+        <td style="width: 42%; text-align: left; padding: 8px 10px; vertical-align: middle;">
             <span style="font-size: 13px; font-weight: bold; color: #003366;">{{ $awayTeamName }}</span>
+            @if(isset($awayLogoBase64))
+                <img src="{{ $awayLogoBase64 }}" style="height: 35px; width: 35px; object-fit: contain; vertical-align: middle; margin-left: 6px;">
+            @endif
         </td>
     </tr>
 </table>
