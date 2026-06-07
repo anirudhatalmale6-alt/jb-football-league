@@ -138,11 +138,12 @@ class DatabaseSeeder extends Seeder
 
         // Division League — 6 groups
         $divisionGroups = [];
-        for ($g = 1; $g <= 6; $g++) {
+        $groupLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        foreach ($groupLetters as $i => $letter) {
             $divisionGroups[] = Group::create([
                 'competition_id' => $divisionLeague->id,
-                'name'           => 'Kumpulan ' . $g,
-                'order'          => $g,
+                'name'           => 'Kumpulan ' . $letter,
+                'order'          => $i + 1,
             ]);
         }
 
