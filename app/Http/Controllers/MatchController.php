@@ -19,8 +19,8 @@ class MatchController extends Controller
     {
         $query = MatchGame::with(['homeTeam', 'awayTeam', 'competition']);
 
-        if ($request->filled('competition_id')) {
-            $query->where('competition_id', $request->competition_id);
+        if ($request->filled('competition_id') || $request->filled('competition')) {
+            $query->where('competition_id', $request->input('competition_id', $request->input('competition')));
         }
 
         if ($request->filled('status')) {
