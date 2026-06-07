@@ -42,11 +42,13 @@
                 <tbody>
                     @foreach($competitions as $competition)
                         <tr>
-                            <td class="fw-semibold d-flex align-items-center">
-                                @if($competition->logo)
-                                    <img src="{{ asset('storage/'.$competition->logo) }}" alt="" class="me-2" style="height:40px;width:40px;object-fit:contain;">
-                                @endif
-                                {{ $competition->name }}
+                            <td class="fw-semibold">
+                                <a href="{{ route('competitions.show', $competition) }}" class="text-decoration-none text-dark d-flex align-items-center">
+                                    @if($competition->logo)
+                                        <img src="{{ asset('storage/'.$competition->logo) }}" alt="" class="me-2" style="height:40px;width:40px;object-fit:contain;">
+                                    @endif
+                                    {{ $competition->name }}
+                                </a>
                             </td>
                             <td>{{ $competition->season }}</td>
                             <td>
