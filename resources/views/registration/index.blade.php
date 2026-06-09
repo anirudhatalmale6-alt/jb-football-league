@@ -25,6 +25,9 @@
 @else
     <div class="row g-4">
         @foreach($competitions as $competition)
+            @if($competition->name === 'SUMBANGSIH CUP')
+                @continue
+            @endif
             <div class="col-md-6 col-lg-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">

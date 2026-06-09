@@ -144,7 +144,7 @@
                             <input class="form-check-input @error('terms_agreed') is-invalid @enderror" type="checkbox"
                                    id="terms_agreed" name="terms_agreed" value="1" {{ old('terms_agreed') ? 'checked' : '' }}>
                             <label class="form-check-label" for="terms_agreed">
-                                I agree to the <strong>JBFA League Rules and Regulations</strong> and confirm that all information provided is accurate.
+                                I, on behalf of the club, agree to participate in this league and will comply with all the terms and conditions of the competition made by the <strong>JBFA 2026 League Competition Committee</strong>.
                                 <span class="text-danger">*</span>
                             </label>
                             @error('terms_agreed')
