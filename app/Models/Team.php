@@ -17,6 +17,8 @@ class Team extends Model
         'manager_name',
         'contact_email',
         'contact_phone',
+        'applicant_name',
+        'applicant_position',
         'status',
         'terms_agreed',
         'terms_agreed_at',

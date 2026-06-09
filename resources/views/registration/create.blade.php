@@ -27,40 +27,22 @@
                 <form action="{{ route('registration.store', $competition->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
+                    <h6 class="fw-bold text-muted mb-3"><i class="fas fa-shield-halved me-1"></i> Club Information</h6>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="name" class="form-label fw-semibold">Team Name <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label fw-semibold">Club Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
-                                   value="{{ old('name') }}" required>
+                                   value="{{ old('name') }}" required placeholder="e.g. MBIP FC">
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="short_name" class="form-label fw-semibold">Short Name</label>
-                            <input type="text" class="form-control @error('short_name') is-invalid @enderror" id="short_name" name="short_name"
-                                   value="{{ old('short_name') }}" placeholder="e.g. JDT" maxlength="10">
-                            @error('short_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="manager_name" class="form-label fw-semibold">Manager Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('manager_name') is-invalid @enderror" id="manager_name" name="manager_name"
-                                   value="{{ old('manager_name', Auth::user()->name) }}" required>
-                            @error('manager_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="contact_email" class="form-label fw-semibold">Contact Email <span class="text-danger">*</span></label>
+                            <label for="contact_email" class="form-label fw-semibold">Club Email <span class="text-danger">*</span></label>
                             <input type="email" class="form-control @error('contact_email') is-invalid @enderror" id="contact_email" name="contact_email"
-                                   value="{{ old('contact_email', Auth::user()->email) }}" required>
+                                   value="{{ old('contact_email') }}" required placeholder="e.g. info@mbipfc.com">
                             @error('contact_email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -69,20 +51,70 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="contact_phone" class="form-label fw-semibold">Contact Phone</label>
+                            <label for="short_name" class="form-label fw-semibold">Short Name</label>
+                            <input type="text" class="form-control @error('short_name') is-invalid @enderror" id="short_name" name="short_name"
+                                   value="{{ old('short_name') }}" placeholder="e.g. MBIP" maxlength="10">
+                            @error('short_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="logo" class="form-label fw-semibold">Club Logo</label>
+                            <input type="file" class="form-control @error('logo') is-invalid @enderror" id="logo" name="logo"
+                                   accept="image/*">
+                            <div class="form-text">Max 2MB. Accepted formats: JPG, PNG, GIF, SVG.</div>
+                            @error('logo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <hr class="my-3">
+                    <h6 class="fw-bold text-muted mb-3"><i class="fas fa-user me-1"></i> Applicant Information</h6>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="applicant_name" class="form-label fw-semibold">Applicant's Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('applicant_name') is-invalid @enderror" id="applicant_name" name="applicant_name"
+                                   value="{{ old('applicant_name', Auth::user()->name) }}" required>
+                            @error('applicant_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="applicant_position" class="form-label fw-semibold">Applicant's Position <span class="text-danger">*</span></label>
+                            <select class="form-select @error('applicant_position') is-invalid @enderror" id="applicant_position" name="applicant_position" required>
+                                <option value="">-- Select Position --</option>
+                                <option value="President" {{ old('applicant_position') === 'President' ? 'selected' : '' }}>President</option>
+                                <option value="Secretary" {{ old('applicant_position') === 'Secretary' ? 'selected' : '' }}>Secretary</option>
+                                <option value="Treasurer" {{ old('applicant_position') === 'Treasurer' ? 'selected' : '' }}>Treasurer</option>
+                                <option value="Team Manager" {{ old('applicant_position') === 'Team Manager' ? 'selected' : '' }}>Team Manager</option>
+                                <option value="Head Coach" {{ old('applicant_position') === 'Head Coach' ? 'selected' : '' }}>Head Coach</option>
+                                <option value="Other" {{ old('applicant_position') === 'Other' ? 'selected' : '' }}>Other</option>
+                            </select>
+                            @error('applicant_position')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_phone" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('contact_phone') is-invalid @enderror" id="contact_phone" name="contact_phone"
-                                   value="{{ old('contact_phone') }}" placeholder="e.g. 012-3456789">
+                                   value="{{ old('contact_phone') }}" required placeholder="e.g. 012-3456789">
                             @error('contact_phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="logo" class="form-label fw-semibold">Team Logo</label>
-                            <input type="file" class="form-control @error('logo') is-invalid @enderror" id="logo" name="logo"
-                                   accept="image/*">
-                            <div class="form-text">Max 2MB. Accepted formats: JPG, PNG, GIF, SVG.</div>
-                            @error('logo')
+                            <label for="manager_name" class="form-label fw-semibold">Club Manager Name</label>
+                            <input type="text" class="form-control @error('manager_name') is-invalid @enderror" id="manager_name" name="manager_name"
+                                   value="{{ old('manager_name') }}" placeholder="Team manager name">
+                            @error('manager_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
