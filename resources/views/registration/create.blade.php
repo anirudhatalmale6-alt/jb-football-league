@@ -31,9 +31,9 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="name" class="form-label fw-semibold">Club Name <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label fw-semibold">Club Full Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
-                                   value="{{ old('name') }}" required placeholder="e.g. MBIP FC">
+                                   value="{{ old('name') }}" required placeholder="e.g. Kelab Bola Sepak MBIP">
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -207,16 +207,36 @@
 
                 <hr>
 
-                <div class="text-center">
-                    <p class="text-muted small mb-1">Registration Fee</p>
+                <h6 class="fw-bold text-center mb-3">Yuran Pertandingan</h6>
+                <table class="table table-sm table-borderless mb-0">
                     @if($competition->registration_fee > 0)
-                        <span class="fs-3 fw-bold text-success">RM {{ number_format($competition->registration_fee, 2) }}</span>
-                        <p class="text-muted small mt-1">Payment via FPX (Toyyibpay)</p>
-                    @else
-                        <span class="fs-3 fw-bold text-success">FREE</span>
-                        <p class="text-muted small mt-1">No payment required</p>
+                        <tr>
+                            <td class="small">Yuran Penyertaan</td>
+                            <td class="fw-bold text-end text-success">RM {{ number_format($competition->registration_fee, 2) }}</td>
+                        </tr>
                     @endif
-                </div>
+                    @if($competition->security_deposit > 0)
+                        <tr>
+                            <td class="small">Deposit Keselamatan</td>
+                            <td class="fw-bold text-end text-success">RM {{ number_format($competition->security_deposit, 2) }}</td>
+                        </tr>
+                    @endif
+                    @if($competition->matchday_fee > 0)
+                        <tr>
+                            <td class="small">Bayaran Hari Perlawanan</td>
+                            <td class="fw-bold text-end text-success">RM {{ number_format($competition->matchday_fee, 2) }}</td>
+                        </tr>
+                    @endif
+                    @if($competition->registration_fee == 0 && $competition->security_deposit == 0 && $competition->matchday_fee == 0)
+                        <tr>
+                            <td colspan="2" class="text-center fw-bold text-success fs-4">FREE</td>
+                        </tr>
+                    @endif
+                </table>
+
+                @if($competition->registration_fee > 0 || $competition->security_deposit > 0 || $competition->matchday_fee > 0)
+                    <p class="text-muted small text-center mt-2 mb-0">Payment via FPX (Toyyibpay)</p>
+                @endif
             </div>
         </div>
     </div>
