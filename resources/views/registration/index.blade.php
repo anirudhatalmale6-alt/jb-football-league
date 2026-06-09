@@ -73,14 +73,39 @@
                         </ul>
 
                         <div class="mt-auto">
-                            <div class="text-center mb-3">
-                                @if($competition->registration_fee > 0)
-                                    <span class="fs-4 fw-bold text-success">RM {{ number_format($competition->registration_fee, 2) }}</span>
-                                    <br><small class="text-muted">Registration Fee</small>
-                                @else
-                                    <span class="fs-5 fw-bold text-success">FREE</span>
-                                    <br><small class="text-muted">By Invitation</small>
-                                @endif
+                            <div class="mb-3">
+                                <table class="table table-sm table-borderless mb-0">
+                                    <tr>
+                                        <td class="text-muted small">Yuran Penyertaan</td>
+                                        <td class="text-end fw-bold">
+                                            @if($competition->registration_fee > 0)
+                                                RM {{ number_format($competition->registration_fee, 2) }}
+                                            @else
+                                                <span class="text-success">FREE</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted small">Deposit Keselamatan</td>
+                                        <td class="text-end fw-bold">
+                                            @if($competition->security_deposit > 0)
+                                                RM {{ number_format($competition->security_deposit, 2) }}
+                                            @else
+                                                <span class="text-muted">TIADA</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted small">Bayaran Hari Perlawanan</td>
+                                        <td class="text-end fw-bold">
+                                            @if($competition->matchday_fee > 0)
+                                                RM {{ number_format($competition->matchday_fee, 2) }}
+                                            @else
+                                                <span class="text-muted">TIADA</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
 
                             <a href="{{ route('registration.create', $competition->id) }}" class="btn btn-success w-100">

@@ -16,6 +16,8 @@ class Competition extends Model
         'end_date',
         'description',
         'registration_fee',
+        'security_deposit',
+        'matchday_fee',
         'logo',
         'max_players',
         'max_officials',
