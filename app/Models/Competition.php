@@ -15,6 +15,7 @@ class Competition extends Model
         'start_date',
         'end_date',
         'description',
+        'registration_fee',
         'logo',
         'max_players',
         'max_officials',

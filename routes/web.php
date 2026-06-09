@@ -8,6 +8,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\StandingController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\OfficialController;
@@ -44,6 +45,14 @@ Route::get('/standings', [StandingController::class, 'index'])->name('standings.
 
 Route::get('/matches/{match}/pdf/summary', [PdfController::class, 'matchSummary'])->name('matches.pdf.summary');
 Route::get('/matches/{match}/pdf/teamsheet', [PdfController::class, 'teamSheet'])->name('matches.pdf.teamsheet');
+
+// Team Registration (public browsing, auth required to register)
+Route::get('/register-team', [RegistrationController::class, 'index'])->name('registration.index');
+Route::get('/register-team/{competition}', [RegistrationController::class, 'create'])->name('registration.create')->middleware('auth');
+Route::post('/register-team/{competition}', [RegistrationController::class, 'store'])->name('registration.store')->middleware('auth');
+Route::get('/registration/success', [RegistrationController::class, 'success'])->name('registration.success');
+Route::get('/payment/return', [RegistrationController::class, 'paymentReturn'])->name('payment.return');
+Route::post('/payment/callback', [RegistrationController::class, 'paymentCallback'])->name('payment.callback');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -85,4 +94,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/officials/{official}/edit', [OfficialController::class, 'edit'])->name('officials.edit');
     Route::put('/officials/{official}', [OfficialController::class, 'update'])->name('officials.update');
     Route::delete('/officials/{official}', [OfficialController::class, 'destroy'])->name('officials.destroy');
+
+    Route::get('/admin/payments', [RegistrationController::class, 'adminPayments'])->name('admin.payments');
 });

@@ -143,6 +143,22 @@
                             <i class="fas fa-ranking-star me-1"></i> {{ __('app.standings') }}
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('registration.*') ? 'active' : '' }}"
+                           href="{{ route('registration.index') }}">
+                            <i class="fas fa-clipboard-list me-1"></i> Register Team
+                        </a>
+                    </li>
+                    @auth
+                        @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.payments') ? 'active' : '' }}"
+                                   href="{{ route('admin.payments') }}">
+                                    <i class="fas fa-credit-card me-1"></i> Payments
+                                </a>
+                            </li>
+                        @endif
+                    @endauth
                 </ul>
 
                 <!-- Right Nav -->

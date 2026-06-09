@@ -18,7 +18,18 @@ class Team extends Model
         'contact_email',
         'contact_phone',
         'status',
+        'terms_agreed',
+        'terms_agreed_at',
+        'terms_agreed_by',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'terms_agreed' => 'boolean',
+            'terms_agreed_at' => 'datetime',
+        ];
+    }
 
     public function competition(): BelongsTo
     {
@@ -53,5 +64,10 @@ class Team extends Model
     public function standings(): HasMany
     {
         return $this->hasMany(Standing::class);
+    }
+
+    public function registrationPayments(): HasMany
+    {
+        return $this->hasMany(RegistrationPayment::class);
     }
 }
