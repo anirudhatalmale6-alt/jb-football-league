@@ -107,17 +107,17 @@
         @if($team->players->isEmpty())
             <div class="text-center text-muted py-4">
                 <i class="fas fa-users fa-2x mb-2 d-block"></i>
-                <p class="mb-0">No players registered for this team yet.</p>
+                <p class="mb-0">{{ __('app.no_players_registered') }}</p>
             </div>
         @else
             <div class="table-responsive">
                 <table class="table table-striped table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 60px;" class="text-center">Photo</th>
+                            <th style="width: 60px;" class="text-center">{{ __('app.photo') }}</th>
                             <th style="width: 80px;" class="text-center">{{ __('app.jersey_number') }}</th>
                             <th>{{ __('app.name') }}</th>
-                            <th>IC Number</th>
+                            <th>{{ __('app.ic_number') }}</th>
                             <th>{{ __('app.position') }}</th>
                             <th>{{ __('app.status') }}</th>
                             <th class="text-center">{{ __('app.actions') }}</th>
@@ -190,19 +190,19 @@
         @if($team->officials->isEmpty())
             <div class="text-center text-muted py-4">
                 <i class="fas fa-user-tie fa-2x mb-2 d-block"></i>
-                <p class="mb-0">No officials registered for this team yet.</p>
+                <p class="mb-0">{{ __('app.no_officials_registered') }}</p>
             </div>
         @else
             <div class="table-responsive">
                 <table class="table table-striped table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 60px;" class="text-center">Photo</th>
+                            <th style="width: 60px;" class="text-center">{{ __('app.photo') }}</th>
                             <th>{{ __('app.name') }}</th>
-                            <th>IC Number</th>
+                            <th>{{ __('app.ic_number') }}</th>
                             <th>{{ __('app.role') }}</th>
                             <th>{{ __('app.contact_phone') }}</th>
-                            <th class="text-center">Certificate</th>
+                            <th class="text-center">{{ __('app.certificate') }}</th>
                             <th class="text-center">{{ __('app.actions') }}</th>
                         </tr>
                     </thead>
@@ -238,7 +238,7 @@
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <form action="{{ route('officials.destroy', $official) }}" method="POST" class="d-inline"
-                                                  onsubmit="return confirm('Are you sure you want to remove this official?');">
+                                                  onsubmit="return confirm('{{ __('app.confirm_remove_official') }}');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ __('app.delete') }}">

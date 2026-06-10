@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Registration Payments')
+@section('title', __('app.registration_payments'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">
-        <i class="fas fa-credit-card text-success me-2"></i>Registration Payments
+        <i class="fas fa-credit-card text-success me-2"></i>{{ __('app.registration_payments') }}
     </h2>
     <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+        <i class="fas fa-arrow-left me-1"></i> {{ __('app.back_to_dashboard') }}
     </a>
 </div>
 
@@ -16,8 +16,8 @@
     <div class="card">
         <div class="card-body text-center py-5">
             <i class="fas fa-credit-card fa-3x text-muted mb-3 d-block"></i>
-            <h5 class="text-muted">No payment records found</h5>
-            <p class="text-muted">Registration payments will appear here once teams register.</p>
+            <h5 class="text-muted">{{ __('app.no_payment_records') }}</h5>
+            <p class="text-muted">{{ __('app.payments_will_appear') }}</p>
         </div>
     </div>
 @else
@@ -27,13 +27,13 @@
                 <thead class="table-dark">
                     <tr>
                         <th>#</th>
-                        <th>Team</th>
-                        <th>Competition</th>
-                        <th>Registered By</th>
-                        <th class="text-end">Amount</th>
-                        <th class="text-center">Status</th>
-                        <th>Transaction ID</th>
-                        <th>Date</th>
+                        <th>{{ __('app.team') }}</th>
+                        <th>{{ __('app.competition') }}</th>
+                        <th>{{ __('app.registered_by') }}</th>
+                        <th class="text-end">{{ __('app.amount') }}</th>
+                        <th class="text-center">{{ __('app.status') }}</th>
+                        <th>{{ __('app.transaction_id') }}</th>
+                        <th>{{ __('app.date') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,13 +48,13 @@
                             </td>
                             <td class="text-center">
                                 @if($payment->status === 'paid')
-                                    <span class="badge bg-success">Paid</span>
+                                    <span class="badge bg-success">{{ __('app.paid') }}</span>
                                 @elseif($payment->status === 'pending')
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    <span class="badge bg-warning text-dark">{{ __('app.pending') }}</span>
                                 @elseif($payment->status === 'failed')
-                                    <span class="badge bg-danger">Failed</span>
+                                    <span class="badge bg-danger">{{ __('app.failed') }}</span>
                                 @elseif($payment->status === 'refunded')
-                                    <span class="badge bg-secondary">Refunded</span>
+                                    <span class="badge bg-secondary">{{ __('app.refunded') }}</span>
                                 @endif
                             </td>
                             <td>

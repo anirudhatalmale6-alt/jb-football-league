@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Registration Submitted')
+@section('title', __('app.registration_submitted'))
 
 @section('content')
 <div class="row justify-content-center">
@@ -9,13 +9,13 @@
             <div class="card-body text-center py-5">
                 @if(session('payment_status') === 'paid')
                     <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
-                    <h3 class="fw-bold text-success">Registration Successful!</h3>
+                    <h3 class="fw-bold text-success">{{ __('app.registration_successful') }}</h3>
                 @elseif(session('payment_status') === 'failed')
                     <i class="fas fa-times-circle fa-4x text-danger mb-3"></i>
-                    <h3 class="fw-bold text-danger">Payment Failed</h3>
+                    <h3 class="fw-bold text-danger">{{ __('app.payment_failed') }}</h3>
                 @else
                     <i class="fas fa-clock fa-4x text-warning mb-3"></i>
-                    <h3 class="fw-bold text-warning">Registration Recorded</h3>
+                    <h3 class="fw-bold text-warning">{{ __('app.registration_recorded') }}</h3>
                 @endif
 
                 @if(session('team_name'))
@@ -26,7 +26,7 @@
 
                 @if(session('competition_name'))
                     <p class="text-muted mb-3">
-                        Registered for <strong>{{ session('competition_name') }}</strong>
+                        {{ __('app.registered_for') }} <strong>{{ session('competition_name') }}</strong>
                     </p>
                 @endif
 
@@ -34,34 +34,32 @@
                     @if(session('fee') !== null && session('fee') == 0)
                         <div class="alert alert-success">
                             <i class="fas fa-check me-1"></i>
-                            No payment required for this competition. Your registration is complete.
+                            {{ __('app.no_payment_required') }}
                         </div>
                     @else
                         <div class="alert alert-success">
                             <i class="fas fa-check me-1"></i>
-                            Payment received successfully. Your registration is complete.
+                            {{ __('app.payment_received') }}
                         </div>
                     @endif
                 @elseif(session('payment_status') === 'failed')
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle me-1"></i>
-                        Your payment was not successful. Please contact the JBFA admin to arrange payment or try again.
+                        {{ __('app.payment_not_successful') }}
                     </div>
                 @elseif(session('payment_status') === 'pending')
                     <div class="alert alert-warning">
                         <i class="fas fa-info-circle me-1"></i>
-                        Your registration has been recorded.
+                        {{ __('app.registration_recorded_msg') }}
                         @if(session('fee') && session('fee') > 0)
-                            Payment of <strong>RM {{ number_format(session('fee'), 2) }}</strong> is pending.
-                            The payment gateway is being configured — JBFA admin will contact you for payment arrangements.
+                            {!! __('app.payment_pending_msg', ['amount' => number_format(session('fee'), 2)]) !!}
                         @endif
                     </div>
                 @endif
 
                 <div class="alert alert-info">
                     <i class="fas fa-hourglass-half me-1"></i>
-                    Your team registration is <strong>pending approval</strong> by the JBFA league administration.
-                    You will be notified once your team has been reviewed and approved.
+                    {!! __('app.pending_approval') !!}
                 </div>
 
                 @if(session('warning'))
@@ -73,14 +71,14 @@
 
                 <div class="d-flex justify-content-center gap-3 mt-4">
                     <a href="{{ route('registration.index') }}" class="btn btn-success">
-                        <i class="fas fa-clipboard-list me-1"></i> Register Another Team
+                        <i class="fas fa-clipboard-list me-1"></i> {{ __('app.register_another_team') }}
                     </a>
                     <a href="{{ route('competitions.index') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-trophy me-1"></i> View Competitions
+                        <i class="fas fa-trophy me-1"></i> {{ __('app.view_competitions') }}
                     </a>
                     @auth
                         <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                            <i class="fas fa-tachometer-alt me-1"></i> {{ __('app.dashboard') }}
                         </a>
                     @endauth
                 </div>

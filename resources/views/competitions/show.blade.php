@@ -16,12 +16,12 @@
         @auth
             @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
                 <a href="{{ route('competitions.edit', $competition) }}" class="btn btn-outline-warning">
-                    <i class="fas fa-edit me-1"></i> Edit
+                    <i class="fas fa-edit me-1"></i> {{ __('app.edit') }}
                 </a>
             @endif
         @endauth
         <a href="{{ route('competitions.index') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-1"></i> Back
+            <i class="fas fa-arrow-left me-1"></i> {{ __('app.back') }}
         </a>
     </div>
 </div>
@@ -33,32 +33,32 @@
             <div class="col-md-6">
                 <table class="table table-borderless mb-0">
                     <tr>
-                        <th class="text-muted" style="width: 140px;">Season</th>
+                        <th class="text-muted" style="width: 140px;">{{ __('app.season') }}</th>
                         <td class="fw-semibold">{{ $competition->season }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Type</th>
+                        <th class="text-muted">{{ __('app.type') }}</th>
                         <td>
                             @if($competition->type === 'league')
-                                <span class="badge bg-primary">League</span>
+                                <span class="badge bg-primary">{{ __('app.league') }}</span>
                             @elseif($competition->type === 'knockout' || $competition->type === 'cup')
-                                <span class="badge bg-warning text-dark">Knockout</span>
+                                <span class="badge bg-warning text-dark">{{ __('app.knockout') }}</span>
                             @elseif($competition->type === 'futsal')
-                                <span class="badge bg-info">Futsal</span>
+                                <span class="badge bg-info">{{ __('app.futsal') }}</span>
                             @else
                                 <span class="badge bg-secondary">{{ ucfirst($competition->type) }}</span>
                             @endif
                         </td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Status</th>
+                        <th class="text-muted">{{ __('app.status') }}</th>
                         <td>
                             @if($competition->status === 'active')
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success">{{ __('app.active') }}</span>
                             @elseif($competition->status === 'upcoming')
-                                <span class="badge bg-info">Upcoming</span>
+                                <span class="badge bg-info">{{ __('app.upcoming') }}</span>
                             @elseif($competition->status === 'completed')
-                                <span class="badge bg-secondary">Completed</span>
+                                <span class="badge bg-secondary">{{ __('app.completed') }}</span>
                             @else
                                 <span class="badge bg-dark">{{ ucfirst($competition->status) }}</span>
                             @endif
@@ -69,16 +69,16 @@
             <div class="col-md-6">
                 <table class="table table-borderless mb-0">
                     <tr>
-                        <th class="text-muted" style="width: 140px;">Start Date</th>
+                        <th class="text-muted" style="width: 140px;">{{ __('app.start_date') }}</th>
                         <td>{{ $competition->start_date ? $competition->start_date->format('d M Y') : '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">End Date</th>
+                        <th class="text-muted">{{ __('app.end_date') }}</th>
                         <td>{{ $competition->end_date ? $competition->end_date->format('d M Y') : '-' }}</td>
                     </tr>
                     <tr>
-                        <th class="text-muted">Description</th>
-                        <td>{{ $competition->description ?: 'No description provided.' }}</td>
+                        <th class="text-muted">{{ __('app.description') }}</th>
+                        <td>{{ $competition->description ?: __('app.no_description') }}</td>
                     </tr>
                 </table>
             </div>
@@ -91,28 +91,28 @@
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="teams-tab" data-bs-toggle="tab" data-bs-target="#teams-pane"
                 type="button" role="tab" aria-controls="teams-pane" aria-selected="true">
-            <i class="fas fa-shield-halved me-1"></i> Teams
+            <i class="fas fa-shield-halved me-1"></i> {{ __('app.teams') }}
             <span class="badge bg-secondary ms-1">{{ $competition->teams->count() }}</span>
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="groups-tab" data-bs-toggle="tab" data-bs-target="#groups-pane"
                 type="button" role="tab" aria-controls="groups-pane" aria-selected="false">
-            <i class="fas fa-layer-group me-1"></i> Groups
+            <i class="fas fa-layer-group me-1"></i> {{ __('app.groups') }}
             <span class="badge bg-secondary ms-1">{{ $competition->groups->count() }}</span>
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="fixtures-tab" data-bs-toggle="tab" data-bs-target="#fixtures-pane"
                 type="button" role="tab" aria-controls="fixtures-pane" aria-selected="false">
-            <i class="fas fa-calendar-days me-1"></i> Fixtures
+            <i class="fas fa-calendar-days me-1"></i> {{ __('app.fixtures') }}
             <span class="badge bg-secondary ms-1">{{ $competition->matchGames->count() }}</span>
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="standings-tab" data-bs-toggle="tab" data-bs-target="#standings-pane"
                 type="button" role="tab" aria-controls="standings-pane" aria-selected="false">
-            <i class="fas fa-ranking-star me-1"></i> Standings
+            <i class="fas fa-ranking-star me-1"></i> {{ __('app.standings') }}
         </button>
     </li>
 </ul>
@@ -123,7 +123,7 @@
         @if($competition->teams->isEmpty())
             <div class="text-center text-muted py-5">
                 <i class="fas fa-shield-halved fa-3x mb-3 d-block"></i>
-                <p>No teams registered for this competition yet.</p>
+                <p>{{ __('app.no_teams_registered') }}</p>
             </div>
         @elseif($competition->groups->isNotEmpty())
             {{-- Teams organized by group --}}
@@ -133,18 +133,18 @@
                     <span class="badge bg-secondary ms-1">{{ $group->teams->count() }}</span>
                 </h5>
                 @if($group->teams->isEmpty())
-                    <p class="text-muted ms-3">No teams in this group yet.</p>
+                    <p class="text-muted ms-3">{{ __('app.no_teams_in_group') }}</p>
                 @else
                     <div class="table-responsive mb-3">
                         <table class="table table-striped table-hover">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Team Name</th>
-                                    <th>Short Name</th>
-                                    <th>Manager</th>
-                                    <th>Status</th>
-                                    <th class="text-center">Actions</th>
+                                    <th>{{ __('app.team_name') }}</th>
+                                    <th>{{ __('app.short_name') }}</th>
+                                    <th>{{ __('app.manager') }}</th>
+                                    <th>{{ __('app.status') }}</th>
+                                    <th class="text-center">{{ __('app.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -156,18 +156,18 @@
                                         <td>{{ $team->manager_name ?? '-' }}</td>
                                         <td>
                                             @if($team->status === 'approved')
-                                                <span class="badge bg-success">Approved</span>
+                                                <span class="badge bg-success">{{ __('app.approved') }}</span>
                                             @elseif($team->status === 'pending')
-                                                <span class="badge bg-warning text-dark">Pending</span>
+                                                <span class="badge bg-warning text-dark">{{ __('app.pending') }}</span>
                                             @elseif($team->status === 'rejected')
-                                                <span class="badge bg-danger">Rejected</span>
+                                                <span class="badge bg-danger">{{ __('app.rejected') }}</span>
                                             @else
                                                 <span class="badge bg-secondary">{{ ucfirst($team->status) }}</span>
                                             @endif
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-eye"></i> View
+                                                <i class="fas fa-eye"></i> {{ __('app.view') }}
                                             </a>
                                         </td>
                                     </tr>
@@ -182,7 +182,7 @@
             @php $ungroupedTeams = $competition->teams->whereNull('group_id'); @endphp
             @if($ungroupedTeams->isNotEmpty())
                 <h5 class="fw-bold mt-3 mb-2">
-                    <i class="fas fa-question-circle me-1 text-muted"></i> Ungrouped
+                    <i class="fas fa-question-circle me-1 text-muted"></i> {{ __('app.ungrouped') }}
                     <span class="badge bg-secondary ms-1">{{ $ungroupedTeams->count() }}</span>
                 </h5>
                 <div class="table-responsive mb-3">
@@ -232,11 +232,11 @@
                     <thead class="table-dark">
                         <tr>
                             <th>#</th>
-                            <th>Team Name</th>
-                            <th>Short Name</th>
-                            <th>Manager</th>
-                            <th>Status</th>
-                            <th class="text-center">Actions</th>
+                            <th>{{ __('app.team_name') }}</th>
+                            <th>{{ __('app.short_name') }}</th>
+                            <th>{{ __('app.manager') }}</th>
+                            <th>{{ __('app.status') }}</th>
+                            <th class="text-center">{{ __('app.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -248,18 +248,18 @@
                                 <td>{{ $team->manager_name ?? '-' }}</td>
                                 <td>
                                     @if($team->status === 'approved')
-                                        <span class="badge bg-success">Approved</span>
+                                        <span class="badge bg-success">{{ __('app.approved') }}</span>
                                     @elseif($team->status === 'pending')
-                                        <span class="badge bg-warning text-dark">Pending</span>
+                                        <span class="badge bg-warning text-dark">{{ __('app.pending') }}</span>
                                     @elseif($team->status === 'rejected')
-                                        <span class="badge bg-danger">Rejected</span>
+                                        <span class="badge bg-danger">{{ __('app.rejected') }}</span>
                                     @else
                                         <span class="badge bg-secondary">{{ ucfirst($team->status) }}</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-eye"></i> View
+                                        <i class="fas fa-eye"></i> {{ __('app.view') }}
                                     </a>
                                 </td>
                             </tr>
@@ -276,18 +276,18 @@
             @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h6 class="fw-bold mb-2">Add Group</h6>
+                        <h6 class="fw-bold mb-2">{{ __('app.add_group') }}</h6>
                         <form action="{{ route('competitions.groups.store', $competition) }}" method="POST" class="d-flex gap-2 align-items-end">
                             @csrf
                             <div class="flex-grow-1">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
-                                       placeholder="Group name (e.g. Group A)" required maxlength="100">
+                                       placeholder="{{ __('app.group_name_placeholder') }}" required maxlength="100">
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <button type="submit" class="btn btn-success">
-                                <i class="fas fa-plus me-1"></i> Add Group
+                                <i class="fas fa-plus me-1"></i> {{ __('app.add_group') }}
                             </button>
                         </form>
                     </div>
@@ -298,7 +298,7 @@
         @if($competition->groups->isEmpty())
             <div class="text-center text-muted py-5">
                 <i class="fas fa-layer-group fa-3x mb-3 d-block"></i>
-                <p>No groups created for this competition yet.</p>
+                <p>{{ __('app.no_groups_created') }}</p>
             </div>
         @else
             <div class="table-responsive">
@@ -306,11 +306,11 @@
                     <thead class="table-dark">
                         <tr>
                             <th style="width: 60px;" class="text-center">#</th>
-                            <th>Group Name</th>
-                            <th class="text-center">Teams</th>
+                            <th>{{ __('app.group_name') }}</th>
+                            <th class="text-center">{{ __('app.teams') }}</th>
                             @auth
                                 @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
-                                    <th class="text-center">Actions</th>
+                                    <th class="text-center">{{ __('app.actions') }}</th>
                                 @endif
                             @endauth
                         </tr>
@@ -327,11 +327,11 @@
                                     @if(auth()->user()->isSuper() || auth()->user()->isLeagueAdmin())
                                         <td class="text-center">
                                             <form action="{{ route('competitions.groups.destroy', [$competition, $group]) }}" method="POST" class="d-inline"
-                                                  onsubmit="return confirm('Are you sure you want to delete this group? Teams in this group will become ungrouped.');">
+                                                  onsubmit="return confirm('{{ __('app.confirm_delete_group') }}');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Group">
-                                                    <i class="fas fa-trash"></i> Delete
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ __('app.delete_group') }}">
+                                                    <i class="fas fa-trash"></i> {{ __('app.delete') }}
                                                 </button>
                                             </form>
                                         </td>
@@ -350,20 +350,20 @@
         @if($competition->matchGames->isEmpty())
             <div class="text-center text-muted py-5">
                 <i class="fas fa-calendar-xmark fa-3x mb-3 d-block"></i>
-                <p>No fixtures scheduled for this competition yet.</p>
+                <p>{{ __('app.no_fixtures_scheduled') }}</p>
             </div>
         @else
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
                     <thead class="table-dark">
                         <tr>
-                            <th>Matchday</th>
-                            <th>Date</th>
-                            <th>Home Team</th>
-                            <th class="text-center">Score</th>
-                            <th>Away Team</th>
-                            <th>Status</th>
-                            <th class="text-center">Actions</th>
+                            <th>{{ __('app.matchday') }}</th>
+                            <th>{{ __('app.date') }}</th>
+                            <th>{{ __('app.home_team') }}</th>
+                            <th class="text-center">{{ __('app.score') }}</th>
+                            <th>{{ __('app.away_team') }}</th>
+                            <th>{{ __('app.status') }}</th>
+                            <th class="text-center">{{ __('app.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -382,15 +382,15 @@
                                 <td class="fw-semibold">{{ $match->awayTeam->name ?? '-' }}</td>
                                 <td>
                                     @if($match->status === 'completed')
-                                        <span class="badge bg-secondary">Completed</span>
+                                        <span class="badge bg-secondary">{{ __('app.completed') }}</span>
                                     @elseif($match->status === 'scheduled')
-                                        <span class="badge bg-info">Scheduled</span>
+                                        <span class="badge bg-info">{{ __('app.scheduled') }}</span>
                                     @elseif($match->status === 'in_progress')
-                                        <span class="badge bg-success">In Progress</span>
+                                        <span class="badge bg-success">{{ __('app.in_progress') }}</span>
                                     @elseif($match->status === 'postponed')
-                                        <span class="badge bg-warning text-dark">Postponed</span>
+                                        <span class="badge bg-warning text-dark">{{ __('app.postponed') }}</span>
                                     @elseif($match->status === 'cancelled')
-                                        <span class="badge bg-danger">Cancelled</span>
+                                        <span class="badge bg-danger">{{ __('app.cancelled') }}</span>
                                     @else
                                         <span class="badge bg-dark">{{ ucfirst($match->status ?? 'unknown') }}</span>
                                     @endif
@@ -413,7 +413,7 @@
         @if($standings->isEmpty())
             <div class="text-center text-muted py-5">
                 <i class="fas fa-table fa-3x mb-3 d-block"></i>
-                <p>No standings data available yet.</p>
+                <p>{{ __('app.no_standings_data') }}</p>
             </div>
         @else
             <div class="table-responsive">
@@ -421,7 +421,7 @@
                     <thead class="table-dark">
                         <tr>
                             <th style="width: 60px;" class="text-center">Pos</th>
-                            <th>Team</th>
+                            <th>{{ __('app.team') }}</th>
                             <th class="text-center">P</th>
                             <th class="text-center">W</th>
                             <th class="text-center">D</th>
