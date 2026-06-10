@@ -114,18 +114,6 @@
                     @enderror
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label for="status" class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
-                    <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" required>
-                        <option value="active" {{ old('status', $player->status) === 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="injured" {{ old('status', $player->status) === 'injured' ? 'selected' : '' }}>Injured</option>
-                        <option value="suspended" {{ old('status', $player->status) === 'suspended' ? 'selected' : '' }}>Suspended</option>
-                        <option value="inactive" {{ old('status', $player->status) === 'inactive' ? 'selected' : '' }}>Inactive</option>
-                    </select>
-                    @error('status')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
             </div>
 
             <div class="d-flex gap-2">
