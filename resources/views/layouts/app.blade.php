@@ -146,7 +146,7 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('registration.*') ? 'active' : '' }}"
                            href="{{ route('registration.index') }}">
-                            <i class="fas fa-clipboard-list me-1"></i> Register Team
+                            <i class="fas fa-clipboard-list me-1"></i> Pra Registration
                         </a>
                     </li>
                     @auth

@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Register Team - ' . $competition->name)
+@section('title', 'Pra Registration - ' . $competition->name)
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">
-        <i class="fas fa-pen-to-square text-success me-2"></i>Register Team
+        <i class="fas fa-pen-to-square text-success me-2"></i>Pra Registration
     </h2>
     <a href="{{ route('registration.index') }}" class="btn btn-outline-secondary">
         <i class="fas fa-arrow-left me-1"></i> Back to Competitions
@@ -120,22 +120,7 @@
                         </div>
                     </div>
 
-                    @if($groups->isNotEmpty())
-                        <div class="mb-3">
-                            <label for="group_id" class="form-label fw-semibold">Group</label>
-                            <select class="form-select @error('group_id') is-invalid @enderror" id="group_id" name="group_id">
-                                <option value="">-- Select Group --</option>
-                                @foreach($groups as $group)
-                                    <option value="{{ $group->id }}" {{ old('group_id') == $group->id ? 'selected' : '' }}>
-                                        {{ $group->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('group_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    @endif
+                    {{-- Group assignment is done by admin after registration --}}
 
                     @if(in_array($competition->name, ['JBFA SUPER LEAGUE', 'JBFA PREMIER LEAGUE']))
                     <hr class="my-3">
@@ -222,7 +207,7 @@
             <div class="card-body">
                 <table class="table table-borderless table-sm mb-0">
                     <tr>
-                        <td class="text-muted">Competition</td>
+                        <td class="text-muted">Category</td>
                         <td class="fw-semibold text-end">{{ $competition->name }}</td>
                     </tr>
                     <tr>
