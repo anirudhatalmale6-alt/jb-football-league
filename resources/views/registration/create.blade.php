@@ -102,19 +102,19 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="contact_phone" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('contact_phone') is-invalid @enderror" id="contact_phone" name="contact_phone"
-                                   value="{{ old('contact_phone') }}" required placeholder="e.g. 012-3456789">
-                            @error('contact_phone')
+                            <label for="manager_name" class="form-label fw-semibold">Club Manager Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('manager_name') is-invalid @enderror" id="manager_name" name="manager_name"
+                                   value="{{ old('manager_name') }}" required placeholder="Club manager name">
+                            @error('manager_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="manager_name" class="form-label fw-semibold">Club Manager Name</label>
-                            <input type="text" class="form-control @error('manager_name') is-invalid @enderror" id="manager_name" name="manager_name"
-                                   value="{{ old('manager_name') }}" placeholder="Team manager name">
-                            @error('manager_name')
+                            <label for="contact_phone" class="form-label fw-semibold">Manager Phone Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('contact_phone') is-invalid @enderror" id="contact_phone" name="contact_phone"
+                                   value="{{ old('contact_phone') }}" required placeholder="e.g. 012-3456789">
+                            @error('contact_phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
