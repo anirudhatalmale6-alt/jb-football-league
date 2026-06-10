@@ -53,7 +53,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="short_name" class="form-label fw-semibold">Short Name</label>
                             <input type="text" class="form-control @error('short_name') is-invalid @enderror" id="short_name" name="short_name"
-                                   value="{{ old('short_name') }}" placeholder="e.g. MBIP" maxlength="10">
+                                   value="{{ old('short_name') }}" placeholder="e.g. MBIP FC" maxlength="10">
                             @error('short_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
