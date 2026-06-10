@@ -137,6 +137,7 @@
                         </div>
                     @endif
 
+                    @if(in_array($competition->name, ['JBFA SUPER LEAGUE', 'JBFA PREMIER LEAGUE']))
                     <hr class="my-3">
                     <h6 class="fw-bold text-muted mb-3"><i class="fas fa-map-marker-alt me-1"></i> Venue / Field Information</h6>
 
@@ -179,6 +180,7 @@
                             @enderror
                         </div>
                     </div>
+                    @endif
 
                     <hr class="my-4">
 
