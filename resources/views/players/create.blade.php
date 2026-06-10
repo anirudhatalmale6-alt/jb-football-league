@@ -79,15 +79,6 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="nationality" class="form-label fw-semibold">Nationality</label>
-                    <input type="text" class="form-control @error('nationality') is-invalid @enderror" id="nationality" name="nationality"
-                           value="{{ old('nationality') }}" placeholder="e.g. Malaysian">
-                    @error('nationality')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="col-md-6 mb-3">
                     <label for="ic_number" class="form-label fw-semibold">IC Number</label>
                     <input type="text" class="form-control @error('ic_number') is-invalid @enderror" id="ic_number" name="ic_number"
                            value="{{ old('ic_number') }}" placeholder="e.g. 900101-01-1234">

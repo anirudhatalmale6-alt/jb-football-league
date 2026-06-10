@@ -31,6 +31,7 @@ class OfficialController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'team_id' => ['required', 'exists:teams,id'],
             'role' => ['required', 'string', 'max:255'],
+            'nationality' => ['nullable', 'string', 'max:50'],
             'ic_number' => ['nullable', 'string', 'max:20'],
             'contact_phone' => ['nullable', 'string', 'max:20'],
             'photo' => ['nullable', 'image', 'max:2048'],
@@ -83,6 +84,7 @@ class OfficialController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', 'max:255'],
+            'nationality' => ['nullable', 'string', 'max:50'],
             'ic_number' => ['nullable', 'string', 'max:20'],
             'contact_phone' => ['nullable', 'string', 'max:20'],
             'photo' => ['nullable', 'image', 'max:2048'],

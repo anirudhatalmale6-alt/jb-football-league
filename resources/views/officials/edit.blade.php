@@ -44,7 +44,18 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="ic_number" class="form-label fw-semibold">IC Number</label>
+                    <label for="nationality" class="form-label fw-semibold">Citizenship / Nationality</label>
+                    <select class="form-select @error('nationality') is-invalid @enderror" id="nationality" name="nationality">
+                        <option value="Malaysian" {{ old('nationality', $official->nationality) === 'Malaysian' ? 'selected' : '' }}>Malaysian</option>
+                        <option value="Non-Malaysian" {{ old('nationality', $official->nationality) === 'Non-Malaysian' ? 'selected' : '' }}>Non-Malaysian</option>
+                    </select>
+                    @error('nationality')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="ic_number" class="form-label fw-semibold">IC / Passport Number</label>
                     <input type="text" class="form-control @error('ic_number') is-invalid @enderror" id="ic_number" name="ic_number"
                            value="{{ old('ic_number', $official->ic_number) }}" placeholder="e.g. 900101-01-1234">
                     @error('ic_number')

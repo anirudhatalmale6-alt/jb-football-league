@@ -11,6 +11,7 @@ class Official extends Model
         'team_id',
         'name',
         'role',
+        'nationality',
         'ic_number',
         'contact_phone',
         'photo',
