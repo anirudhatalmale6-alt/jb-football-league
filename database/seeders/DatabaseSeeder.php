@@ -65,6 +65,7 @@ class DatabaseSeeder extends Seeder
         // (a) SUMBANGSIH CUP
         $sumbangsihCup = Competition::create([
             'name'             => 'SUMBANGSIH CUP',
+            'code_prefix'      => 'SC',
             'season'           => '2026',
             'type'             => 'knockout',
             'status'           => 'upcoming',
@@ -80,6 +81,7 @@ class DatabaseSeeder extends Seeder
         // (b) JBFA SUPER LEAGUE
         $superLeague = Competition::create([
             'name'             => 'JBFA SUPER LEAGUE',
+            'code_prefix'      => 'LS',
             'season'           => '2026',
             'type'             => 'league',
             'status'           => 'active',
@@ -98,6 +100,7 @@ class DatabaseSeeder extends Seeder
         // (c) JBFA PREMIER LEAGUE
         $premierLeague = Competition::create([
             'name'             => 'JBFA PREMIER LEAGUE',
+            'code_prefix'      => 'LP',
             'season'           => '2026',
             'type'             => 'league',
             'status'           => 'active',
@@ -116,6 +119,7 @@ class DatabaseSeeder extends Seeder
         // (d) JBFA DIVISION LEAGUE
         $divisionLeague = Competition::create([
             'name'             => 'JBFA DIVISION LEAGUE',
+            'code_prefix'      => 'LD',
             'season'           => '2026',
             'type'             => 'league',
             'status'           => 'active',
@@ -134,6 +138,7 @@ class DatabaseSeeder extends Seeder
         // (e) JBFA FA CUP
         $faCup = Competition::create([
             'name'             => 'JBFA FA CUP',
+            'code_prefix'      => 'FC',
             'season'           => '2026',
             'type'             => 'knockout',
             'status'           => 'upcoming',

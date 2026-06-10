@@ -128,7 +128,7 @@
     $competitionName = $match->competition->name ?? 'Football League';
     $homeTeamName = $match->homeTeam->name ?? 'Home Team';
     $awayTeamName = $match->awayTeam->name ?? 'Away Team';
-    $matchNo = $match->matchday ?? '-';
+    $matchNo = $match->match_code ?? $match->matchday ?? '-';
     $matchDate = $match->match_date ? $match->match_date->format('d/m/Y') : '-';
     $matchTime = $match->match_date ? $match->match_date->format('H:i') : '-';
     $venue = $match->venue ?? '-';
