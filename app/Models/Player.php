@@ -15,6 +15,7 @@ class Player extends Model
         'date_of_birth',
         'nationality',
         'ic_number',
+        'ic_photo',
         'photo',
         'status',
     ];

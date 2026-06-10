@@ -13,6 +13,7 @@ class Official extends Model
         'role',
         'nationality',
         'ic_number',
+        'ic_photo',
         'contact_phone',
         'photo',
         'certificate',

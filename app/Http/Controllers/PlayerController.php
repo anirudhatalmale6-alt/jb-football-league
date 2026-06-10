@@ -45,12 +45,17 @@ class PlayerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'jersey_number' => ['required', 'integer', 'min:1', 'max:99'],
             'position' => ['required', 'in:goalkeeper,defender,midfielder,forward'],
-            'date_of_birth' => ['required', 'date', 'before:today'],
-            'nationality' => ['required', 'string', 'max:100'],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
             'ic_number' => ['nullable', 'string', 'max:20'],
+            'ic_photo' => ['nullable', 'image', 'max:2048'],
             'photo' => ['nullable', 'image', 'max:2048'],
-            'status' => ['required', 'in:active,injured,suspended,inactive'],
         ]);
+
+        $validated['status'] = 'active';
+
+        if ($request->hasFile('ic_photo')) {
+            $validated['ic_photo'] = $request->file('ic_photo')->store('players/ic', 'public');
+        }
 
         if ($request->hasFile('photo')) {
             $validated['photo'] = $request->file('photo')->store('players', 'public');
@@ -97,12 +102,15 @@ class PlayerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'jersey_number' => ['required', 'integer', 'min:1', 'max:99'],
             'position' => ['required', 'in:goalkeeper,defender,midfielder,forward'],
-            'date_of_birth' => ['required', 'date', 'before:today'],
-            'nationality' => ['required', 'string', 'max:100'],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
             'ic_number' => ['nullable', 'string', 'max:20'],
+            'ic_photo' => ['nullable', 'image', 'max:2048'],
             'photo' => ['nullable', 'image', 'max:2048'],
-            'status' => ['required', 'in:active,injured,suspended,inactive'],
         ]);
+
+        if ($request->hasFile('ic_photo')) {
+            $validated['ic_photo'] = $request->file('ic_photo')->store('players/ic', 'public');
+        }
 
         if ($request->hasFile('photo')) {
             $validated['photo'] = $request->file('photo')->store('players', 'public');

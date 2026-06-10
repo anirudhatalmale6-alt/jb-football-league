@@ -75,6 +75,23 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    <label for="ic_photo" class="form-label fw-semibold">IC / Passport Photo</label>
+                    @if($official->ic_photo)
+                        <div class="mb-2">
+                            <img src="{{ asset('storage/' . $official->ic_photo) }}" alt="Current IC" class="img-thumbnail" style="max-height: 80px;">
+                        </div>
+                    @endif
+                    <input type="file" class="form-control @error('ic_photo') is-invalid @enderror" id="ic_photo" name="ic_photo"
+                           accept="image/*">
+                    <div class="form-text">Upload a photo/scan of IC or Passport. Max 2MB.</div>
+                    @error('ic_photo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
                     <label for="photo" class="form-label fw-semibold">Photo</label>
                     @if($official->photo)
                         <div class="mb-2">

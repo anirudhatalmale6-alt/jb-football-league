@@ -75,6 +75,18 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    <label for="ic_photo" class="form-label fw-semibold">IC / Passport Photo</label>
+                    <input type="file" class="form-control @error('ic_photo') is-invalid @enderror" id="ic_photo" name="ic_photo"
+                           accept="image/*">
+                    <div class="form-text">Upload a photo/scan of IC or Passport. Max 2MB.</div>
+                    @error('ic_photo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
                     <label for="photo" class="form-label fw-semibold">Photo</label>
                     <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo" name="photo"
                            accept="image/*">

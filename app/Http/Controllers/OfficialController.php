@@ -33,6 +33,7 @@ class OfficialController extends Controller
             'role' => ['required', 'string', 'max:255'],
             'nationality' => ['nullable', 'string', 'max:50'],
             'ic_number' => ['nullable', 'string', 'max:20'],
+            'ic_photo' => ['nullable', 'image', 'max:2048'],
             'contact_phone' => ['nullable', 'string', 'max:20'],
             'photo' => ['nullable', 'image', 'max:2048'],
             'certificate' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
@@ -42,6 +43,10 @@ class OfficialController extends Controller
 
         if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->team_id == $team->id)) {
             abort(403);
+        }
+
+        if ($request->hasFile('ic_photo')) {
+            $validated['ic_photo'] = $request->file('ic_photo')->store('officials/ic', 'public');
         }
 
         if ($request->hasFile('photo')) {
@@ -86,10 +91,15 @@ class OfficialController extends Controller
             'role' => ['required', 'string', 'max:255'],
             'nationality' => ['nullable', 'string', 'max:50'],
             'ic_number' => ['nullable', 'string', 'max:20'],
+            'ic_photo' => ['nullable', 'image', 'max:2048'],
             'contact_phone' => ['nullable', 'string', 'max:20'],
             'photo' => ['nullable', 'image', 'max:2048'],
             'certificate' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ]);
+
+        if ($request->hasFile('ic_photo')) {
+            $validated['ic_photo'] = $request->file('ic_photo')->store('officials/ic', 'public');
+        }
 
         if ($request->hasFile('photo')) {
             $validated['photo'] = $request->file('photo')->store('officials/photos', 'public');
