@@ -89,6 +89,7 @@ class DatabaseSeeder extends Seeder
             'registration_fee' => 3500.00,
             'security_deposit' => 500.00,
             'matchday_fee'     => 0,
+            'payment_url'      => 'https://toyyibpay.com/YURAN-LIGA-SUPER-JBFA-2026-1',
             'logo'             => 'logos/competitions/super_league.png',
             'max_players'      => 25,
             'max_officials'    => 7,
@@ -106,6 +107,7 @@ class DatabaseSeeder extends Seeder
             'registration_fee' => 2500.00,
             'security_deposit' => 500.00,
             'matchday_fee'     => 0,
+            'payment_url'      => 'https://toyyibpay.com/YURAN-LIGA-PERDANA-JBFA-2026-2',
             'logo'             => 'logos/competitions/premier_league.png',
             'max_players'      => 25,
             'max_officials'    => 7,
@@ -123,6 +125,7 @@ class DatabaseSeeder extends Seeder
             'registration_fee' => 2000.00,
             'security_deposit' => 500.00,
             'matchday_fee'     => 0,
+            'payment_url'      => 'https://toyyibpay.com/YURAN-LIGA-DIVISYEN-2026-3',
             'logo'             => 'logos/competitions/division_league.png',
             'max_players'      => 25,
             'max_officials'    => 7,
@@ -140,6 +143,7 @@ class DatabaseSeeder extends Seeder
             'registration_fee' => 400.00,
             'security_deposit' => 0,
             'matchday_fee'     => 300.00,
+            'payment_url'      => 'https://toyyibpay.com/YURAN-PIALA-FA-2026',
             'logo'             => 'logos/competitions/fa_cup.png',
         ]);
 

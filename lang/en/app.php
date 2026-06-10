@@ -379,4 +379,6 @@ return [
     'malaysian' => 'Malaysian',
     'non_malaysian' => 'Non-Malaysian',
 
+    'proceed_to_payment' => 'Proceed to Payment',
+    'redirect_toyyibpay' => 'You will be redirected to Toyyibpay FPX payment page',
 ];

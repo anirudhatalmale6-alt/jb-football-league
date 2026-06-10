@@ -18,6 +18,7 @@ class Competition extends Model
         'registration_fee',
         'security_deposit',
         'matchday_fee',
+        'payment_url',
         'logo',
         'max_players',
         'max_officials',

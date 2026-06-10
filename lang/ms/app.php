@@ -379,4 +379,6 @@ return [
     'malaysian' => 'Warganegara Malaysia',
     'non_malaysian' => 'Bukan Warganegara',
 
+    'proceed_to_payment' => 'Teruskan ke Pembayaran',
+    'redirect_toyyibpay' => 'Anda akan dialihkan ke halaman pembayaran FPX Toyyibpay',
 ];

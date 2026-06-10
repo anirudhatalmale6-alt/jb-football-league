@@ -89,36 +89,16 @@ class RegistrationController extends Controller
             'paid_at' => $fee > 0 ? null : now(),
         ]);
 
+        if ($fee > 0 && !empty($competition->payment_url)) {
+            return redirect()->route('registration.success')
+                ->with('team_name', $team->name)
+                ->with('competition_name', $competition->name)
+                ->with('payment_status', 'pending')
+                ->with('fee', $fee)
+                ->with('payment_url', $competition->payment_url);
+        }
+
         if ($fee > 0) {
-            $toyyibpay = new ToyyibpayService();
-            $secretKey = config('services.toyyibpay.secret_key');
-
-            if (!empty($secretKey)) {
-                $result = $toyyibpay->createBill([
-                    'name' => 'Registration: ' . $competition->name,
-                    'description' => 'Team registration fee for ' . $team->name . ' in ' . $competition->name,
-                    'amount' => $fee,
-                    'return_url' => route('payment.return'),
-                    'callback_url' => route('payment.callback'),
-                    'reference' => 'REG-' . $payment->id,
-                    'payer_name' => $validated['manager_name'],
-                    'payer_email' => $validated['contact_email'],
-                    'payer_phone' => $validated['contact_phone'] ?? '',
-                ]);
-
-                if ($result['success']) {
-                    $payment->update(['billcode' => $result['billcode']]);
-                    return redirect($result['url']);
-                }
-
-                return redirect()->route('registration.success')
-                    ->with('warning', 'Registration recorded but payment gateway encountered an error. Please contact admin.')
-                    ->with('team_name', $team->name)
-                    ->with('competition_name', $competition->name)
-                    ->with('payment_status', 'pending');
-            }
-
-            // No API keys configured yet
             return redirect()->route('registration.success')
                 ->with('team_name', $team->name)
                 ->with('competition_name', $competition->name)
