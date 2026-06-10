@@ -137,6 +137,49 @@
                         </div>
                     @endif
 
+                    <hr class="my-3">
+                    <h6 class="fw-bold text-muted mb-3"><i class="fas fa-map-marker-alt me-1"></i> Venue / Field Information</h6>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="venue_name" class="form-label fw-semibold">Field Name (Nama Padang) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('venue_name') is-invalid @enderror" id="venue_name" name="venue_name"
+                                   value="{{ old('venue_name') }}" required placeholder="e.g. Padang MBIP">
+                            @error('venue_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="venue_location" class="form-label fw-semibold">Field Location (Lokasi Padang) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('venue_location') is-invalid @enderror" id="venue_location" name="venue_location"
+                                   value="{{ old('venue_location') }}" required placeholder="e.g. Jalan Danga, Johor Bahru">
+                            @error('venue_location')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="venue_coordinator_name" class="form-label fw-semibold">Venue Coordinator Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('venue_coordinator_name') is-invalid @enderror" id="venue_coordinator_name" name="venue_coordinator_name"
+                                   value="{{ old('venue_coordinator_name') }}" required>
+                            @error('venue_coordinator_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="venue_coordinator_phone" class="form-label fw-semibold">Coordinator Phone Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('venue_coordinator_phone') is-invalid @enderror" id="venue_coordinator_phone" name="venue_coordinator_phone"
+                                   value="{{ old('venue_coordinator_phone') }}" required placeholder="e.g. 012-3456789">
+                            @error('venue_coordinator_phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
                     <hr class="my-4">
 
                     <div class="mb-3">
