@@ -76,7 +76,11 @@ class RegistrationController extends Controller
             'terms_agreed_by' => Auth::user()->name,
         ]);
 
-        $fee = $competition->registration_fee ?? 0;
+        $registrationFee = $competition->registration_fee ?? 0;
+        $securityDeposit = $competition->security_deposit ?? 0;
+        $matchdayFee = $competition->matchday_fee ?? 0;
+        $annualFee = 50.00;
+        $fee = $registrationFee + $securityDeposit + $matchdayFee + $annualFee;
 
         $payment = RegistrationPayment::create([
             'team_id' => $team->id,

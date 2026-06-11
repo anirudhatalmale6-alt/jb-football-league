@@ -700,7 +700,7 @@ class DatabaseSeeder extends Seeder
                 'team_id'        => $team->id,
                 'competition_id' => $superLeague->id,
                 'user_id'        => $superAdmin->id,
-                'amount'         => 3500.00,
+                'amount'         => 4050.00,
                 'currency'       => 'MYR',
                 'status'         => $paymentStatuses[$idx],
                 'payment_method' => 'fpx',

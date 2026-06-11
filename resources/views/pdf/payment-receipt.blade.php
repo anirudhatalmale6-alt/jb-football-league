@@ -233,7 +233,7 @@
 <table class="info-table" style="margin-bottom: 10px;">
     <tr>
         <td class="label-cell">{{ __('app.receipt_amount') }}</td>
-        <td><strong style="font-size: 12px;">RM {{ number_format($payment->amount, 2) }}</strong></td>
+        <td><strong style="font-size: 12px;">RM {{ number_format($totalFee, 2) }}</strong></td>
     </tr>
     <tr>
         <td class="label-cell">{{ __('app.receipt_method') }}</td>
