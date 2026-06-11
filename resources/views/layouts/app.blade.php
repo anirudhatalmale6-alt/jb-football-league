@@ -154,7 +154,14 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('admin.payments') ? 'active' : '' }}"
                                    href="{{ route('admin.payments') }}">
-                                    <i class="fas fa-credit-card me-1"></i> Payments
+                                    <i class="fas fa-credit-card me-1"></i> {{ __('app.payments') }}
+                                </a>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('my.payments') ? 'active' : '' }}"
+                                   href="{{ route('my.payments') }}">
+                                    <i class="fas fa-receipt me-1"></i> {{ __('app.my_payments') }}
                                 </a>
                             </li>
                         @endif

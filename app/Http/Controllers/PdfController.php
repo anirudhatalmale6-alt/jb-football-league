@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MatchGame;
 use App\Models\RegistrationPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class PdfController extends Controller
 {
@@ -156,6 +157,13 @@ class PdfController extends Controller
     public function paymentReceipt($paymentId)
     {
         $payment = RegistrationPayment::with(['team', 'competition', 'user'])->findOrFail($paymentId);
+
+        $user = Auth::user();
+        $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
+        $isOwner = $payment->user_id === $user->id || $payment->team_id === $user->team_id;
+        if (!$isAdmin && !$isOwner) {
+            abort(403);
+        }
 
         $jbfaLogoBase64 = null;
         $jbfaLogoPath = public_path('images/jbfa_logo.png');

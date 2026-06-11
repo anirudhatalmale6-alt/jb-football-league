@@ -406,6 +406,10 @@ return [
     'receipt_official' => 'Official Payment Receipt',
     'download_receipt' => 'Download Receipt',
     'receipt_not_available' => 'Receipt is only available for paid payments.',
+    'my_payments' => 'My Payments',
+    'my_payments_empty' => 'You have no payment records yet. Register a team to get started.',
+    'payments' => 'Payments',
+    'receipt' => 'Receipt',
     'mark_as_paid' => 'Mark as Paid',
     'confirm_mark_paid' => 'Are you sure you want to mark this payment as paid?',
 ];

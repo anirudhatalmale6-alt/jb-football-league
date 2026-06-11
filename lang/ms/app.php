@@ -406,6 +406,10 @@ return [
     'receipt_official' => 'Resit Pembayaran Rasmi',
     'download_receipt' => 'Muat Turun Resit',
     'receipt_not_available' => 'Resit hanya tersedia untuk pembayaran yang telah dibayar.',
+    'my_payments' => 'Pembayaran Saya',
+    'my_payments_empty' => 'Anda belum mempunyai rekod pembayaran. Daftarkan pasukan untuk bermula.',
+    'payments' => 'Pembayaran',
+    'receipt' => 'Resit',
     'mark_as_paid' => 'Tandakan Telah Dibayar',
     'confirm_mark_paid' => 'Adakah anda pasti mahu menandakan pembayaran ini sebagai telah dibayar?',
 ];

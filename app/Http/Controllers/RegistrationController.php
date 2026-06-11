@@ -193,6 +193,23 @@ class RegistrationController extends Controller
         return view('registration.payments', compact('payments'));
     }
 
+    public function myPayments()
+    {
+        $user = Auth::user();
+
+        $payments = RegistrationPayment::with(['team', 'competition', 'user'])
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+                if ($user->team_id) {
+                    $query->orWhere('team_id', $user->team_id);
+                }
+            })
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        return view('registration.my-payments', compact('payments'));
+    }
+
     public function markAsPaid($paymentId)
     {
         $user = Auth::user();
