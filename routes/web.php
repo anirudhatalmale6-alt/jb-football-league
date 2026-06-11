@@ -96,4 +96,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/officials/{official}', [OfficialController::class, 'destroy'])->name('officials.destroy');
 
     Route::get('/admin/payments', [RegistrationController::class, 'adminPayments'])->name('admin.payments');
+    Route::post('/admin/payments/{payment}/mark-paid', [RegistrationController::class, 'markAsPaid'])->name('admin.payments.mark-paid');
+    Route::get('/payments/{payment}/receipt', [PdfController::class, 'paymentReceipt'])->name('payments.receipt');
 });

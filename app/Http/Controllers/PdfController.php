@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MatchGame;
+use App\Models\RegistrationPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PdfController extends Controller
@@ -150,5 +151,36 @@ class PdfController extends Controller
         $pdf->setPaper('a4', 'portrait');
 
         return $pdf->download('team-sheet-' . $match->id . '.pdf');
+    }
+
+    public function paymentReceipt($paymentId)
+    {
+        $payment = RegistrationPayment::with(['team', 'competition', 'user'])->findOrFail($paymentId);
+
+        $jbfaLogoBase64 = null;
+        $jbfaLogoPath = public_path('images/jbfa_logo.png');
+        if (file_exists($jbfaLogoPath)) {
+            $jbfaLogoBase64 = 'data:' . mime_content_type($jbfaLogoPath) . ';base64,' . base64_encode(file_get_contents($jbfaLogoPath));
+        }
+
+        $competitionLogoBase64 = null;
+        if ($payment->competition && $payment->competition->logo) {
+            $logoPath = storage_path('app/public/' . $payment->competition->logo);
+            if (file_exists($logoPath)) {
+                $competitionLogoBase64 = 'data:' . mime_content_type($logoPath) . ';base64,' . base64_encode(file_get_contents($logoPath));
+            }
+        }
+
+        $pdf = Pdf::loadView('pdf.payment-receipt', compact(
+            'payment',
+            'jbfaLogoBase64',
+            'competitionLogoBase64',
+        ));
+
+        $pdf->setPaper('a4', 'portrait');
+
+        $receiptNo = 'JBFA-' . str_pad($payment->id, 6, '0', STR_PAD_LEFT);
+
+        return $pdf->download('receipt-' . $receiptNo . '.pdf');
     }
 }

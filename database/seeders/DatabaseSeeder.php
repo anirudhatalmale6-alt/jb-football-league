@@ -9,6 +9,7 @@ use App\Models\MatchGame;
 use App\Models\MatchLineup;
 use App\Models\Official;
 use App\Models\Player;
+use App\Models\RegistrationPayment;
 use App\Models\Standing;
 use App\Models\Team;
 use App\Models\User;
@@ -65,7 +66,7 @@ class DatabaseSeeder extends Seeder
         // (a) SUMBANGSIH CUP
         $sumbangsihCup = Competition::create([
             'name'             => 'SUMBANGSIH CUP',
-            'code_prefix'      => 'SC',
+            'code_prefix'      => 'LS',
             'season'           => '2026',
             'type'             => 'knockout',
             'status'           => 'upcoming',
@@ -686,6 +687,25 @@ class DatabaseSeeder extends Seeder
                 'goal_difference' => $s['goal_difference'],
                 'points'          => $s['points'],
                 'position'        => $pos + 1,
+            ]);
+        }
+
+        // ──────────────────────────────────────────────
+        // 11. Registration Payments (sample records)
+        // ──────────────────────────────────────────────
+        $paymentStatuses = ['paid', 'paid', 'paid', 'pending', 'pending'];
+        foreach ($superLeagueTeams as $idx => $team) {
+            if ($idx >= 5) break;
+            RegistrationPayment::create([
+                'team_id'        => $team->id,
+                'competition_id' => $superLeague->id,
+                'user_id'        => $superAdmin->id,
+                'amount'         => 3500.00,
+                'currency'       => 'MYR',
+                'status'         => $paymentStatuses[$idx],
+                'payment_method' => 'fpx',
+                'transaction_id' => $paymentStatuses[$idx] === 'paid' ? 'TXN' . str_pad($idx + 1, 8, '0', STR_PAD_LEFT) : null,
+                'paid_at'        => $paymentStatuses[$idx] === 'paid' ? now()->subDays(rand(1, 10)) : null,
             ]);
         }
     }

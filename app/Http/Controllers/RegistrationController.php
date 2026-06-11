@@ -192,4 +192,21 @@ class RegistrationController extends Controller
 
         return view('registration.payments', compact('payments'));
     }
+
+    public function markAsPaid($paymentId)
+    {
+        $user = Auth::user();
+        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+            abort(403);
+        }
+
+        $payment = RegistrationPayment::findOrFail($paymentId);
+        $payment->update([
+            'status' => 'paid',
+            'paid_at' => now(),
+            'notes' => 'Marked as paid by ' . $user->name . ' on ' . now()->format('d/m/Y H:i'),
+        ]);
+
+        return redirect()->route('admin.payments')->with('success', __('app.paid'));
+    }
 }

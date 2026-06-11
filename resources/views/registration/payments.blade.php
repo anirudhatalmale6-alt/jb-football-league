@@ -12,6 +12,13 @@
     </a>
 </div>
 
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
 @if($payments->isEmpty())
     <div class="card">
         <div class="card-body text-center py-5">
@@ -34,6 +41,7 @@
                         <th class="text-center">{{ __('app.status') }}</th>
                         <th>{{ __('app.transaction_id') }}</th>
                         <th>{{ __('app.date') }}</th>
+                        <th class="text-center">{{ __('app.actions') ?? 'Actions' }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,6 +70,23 @@
                             </td>
                             <td>
                                 <small>{{ $payment->created_at->format('d M Y H:i') }}</small>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    @if($payment->status === 'paid')
+                                        <a href="{{ route('payments.receipt', $payment->id) }}" class="btn btn-outline-primary" title="{{ __('app.download_receipt') }}">
+                                            <i class="fas fa-file-pdf"></i> {{ __('app.download_receipt') }}
+                                        </a>
+                                    @endif
+                                    @if($payment->status === 'pending' || $payment->status === 'failed')
+                                        <form action="{{ route('admin.payments.mark-paid', $payment->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('app.confirm_mark_paid') }}')">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-success" title="{{ __('app.mark_as_paid') }}">
+                                                <i class="fas fa-check"></i> {{ __('app.mark_as_paid') }}
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach
