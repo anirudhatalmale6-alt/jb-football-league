@@ -100,7 +100,8 @@
     $registrationFee = $payment->competition->registration_fee ?? 0;
     $securityDeposit = $payment->competition->security_deposit ?? 0;
     $matchdayFee = $payment->competition->matchday_fee ?? 0;
-    $totalFee = $registrationFee + $securityDeposit + $matchdayFee;
+    $annualFee = 50.00;
+    $totalFee = $registrationFee + $securityDeposit + $matchdayFee + $annualFee;
 @endphp
 
 {{-- ===== HEADER ===== --}}
@@ -207,12 +208,19 @@
         </tr>
         @endif
         @if($matchdayFee > 0)
+        @php $rowNum = ($registrationFee > 0 ? 1 : 0) + ($securityDeposit > 0 ? 1 : 0) + 1; @endphp
         <tr>
-            <td>{{ ($registrationFee > 0 ? 1 : 0) + ($securityDeposit > 0 ? 1 : 0) + 1 }}</td>
+            <td>{{ $rowNum }}</td>
             <td>{{ __('app.receipt_matchday_fee') }}</td>
             <td style="text-align: right;">{{ number_format($matchdayFee, 2) }}</td>
         </tr>
         @endif
+        @php $annualRow = ($registrationFee > 0 ? 1 : 0) + ($securityDeposit > 0 ? 1 : 0) + ($matchdayFee > 0 ? 1 : 0) + 1; @endphp
+        <tr>
+            <td>{{ $annualRow }}</td>
+            <td>{{ __('app.receipt_annual_fee') }}</td>
+            <td style="text-align: right;">{{ number_format($annualFee, 2) }}</td>
+        </tr>
         <tr class="total-row">
             <td colspan="2" style="text-align: right;">{{ __('app.receipt_total') }} / TOTAL</td>
             <td style="text-align: right;">RM {{ number_format($totalFee, 2) }}</td>
@@ -264,28 +272,16 @@
 </table>
 
 {{-- ===== FOOTER ===== --}}
-<table style="width: 100%; margin-top: 25px; border-top: 2px solid #003366; padding-top: 8px;">
+<table style="width: 100%; margin-top: 30px; border-top: 2px solid #003366;">
     <tr>
-        <td style="width: 50%; vertical-align: top;">
-            <div style="font-size: 9px; color: #003366; font-weight: bold; margin-bottom: 30px;">Tandatangan Pentadbir / Admin Signature:</div>
-            <div style="border-top: 1px solid #333; width: 200px; padding-top: 3px; font-size: 8px; color: #555;">
-                JBFA League Administration
+        <td style="text-align: center; padding-top: 15px;">
+            <div style="font-size: 11px; font-weight: bold; color: #003366; letter-spacing: 1px; margin-bottom: 8px;">
+                COMPUTER GENERATED RECEIPT DOES NOT REQUIRE A SIGNATURE
             </div>
-        </td>
-        <td style="width: 50%; text-align: right; vertical-align: top;">
-            <div style="font-size: 9px; color: #003366; font-weight: bold; margin-bottom: 30px;">Cap Rasmi / Official Stamp:</div>
-            <div style="border: 1px dashed #999; width: 120px; height: 50px; display: inline-block;"></div>
-        </td>
-    </tr>
-</table>
-
-<table style="width: 100%; margin-top: 15px;">
-    <tr>
-        <td style="text-align: center;">
-            <div style="font-size: 8px; color: #666; margin-bottom: 2px;">
-                {{ __('app.receipt_footer') }}
+            <div style="font-size: 9px; color: #003366; margin-bottom: 4px;">
+                RESIT DIJANA KOMPUTER TIDAK MEMERLUKAN TANDATANGAN
             </div>
-            <div style="font-size: 8px; color: #666;">
+            <div style="font-size: 8px; color: #666; margin-top: 10px;">
                 Dijana pada / Generated: {{ now()->format('d/m/Y H:i:s') }}
             </div>
             <div style="font-size: 7px; color: #999; margin-top: 3px;">
