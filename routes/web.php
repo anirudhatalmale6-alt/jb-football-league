@@ -107,6 +107,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/disciplinary', [DisciplinaryController::class, 'store'])->name('disciplinary.store');
     Route::post('/disciplinary/{fine}/mark-paid', [DisciplinaryController::class, 'markAsPaid'])->name('disciplinary.mark-paid');
     Route::post('/disciplinary/{fine}/waive', [DisciplinaryController::class, 'waive'])->name('disciplinary.waive');
+    Route::post('/disciplinary/{fine}/lift-suspension', [DisciplinaryController::class, 'liftSuspension'])->name('disciplinary.lift-suspension');
+    Route::post('/disciplinary/{fine}/matches-served', [DisciplinaryController::class, 'updateMatchesServed'])->name('disciplinary.matches-served');
+    Route::post('/disciplinary/{fine}/upload-proof', [DisciplinaryController::class, 'uploadProof'])->name('disciplinary.upload-proof');
+    Route::get('/disciplinary/{fine}/proof', [DisciplinaryController::class, 'viewProof'])->name('disciplinary.view-proof');
     Route::delete('/disciplinary/{fine}', [DisciplinaryController::class, 'destroy'])->name('disciplinary.destroy');
     Route::get('/my-fines', [DisciplinaryController::class, 'myFines'])->name('my.fines');
     Route::get('/disciplinary/{fine}/receipt', [PdfController::class, 'fineReceipt'])->name('disciplinary.receipt');

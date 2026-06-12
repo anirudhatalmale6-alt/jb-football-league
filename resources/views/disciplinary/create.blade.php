@@ -106,15 +106,38 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label for="payment_url" class="form-label fw-bold">{{ __('app.payment_link') }} <small class="text-muted">({{ __('app.optional') }})</small></label>
-                        <input type="url" name="payment_url" id="payment_url"
-                               class="form-control @error('payment_url') is-invalid @enderror"
-                               value="{{ old('payment_url') }}" placeholder="https://toyyibpay.com/...">
-                        <small class="text-muted">{{ __('app.payment_link_help') }}</small>
-                        @error('payment_url')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                    {{-- Suspension Section --}}
+                    <div class="card border-danger mb-3">
+                        <div class="card-header bg-danger text-white py-2">
+                            <i class="fas fa-ban me-1"></i> {{ __('app.suspension') }}
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check mb-3">
+                                <input type="checkbox" name="is_suspended" id="is_suspended" value="1"
+                                       class="form-check-input" {{ old('is_suspended') ? 'checked' : '' }}>
+                                <label class="form-check-label fw-bold" for="is_suspended">
+                                    {{ __('app.suspend_player') }}
+                                </label>
+                                <div class="text-muted small">{{ __('app.suspend_player_help') }}</div>
+                            </div>
+
+                            <div id="suspension_options" style="{{ old('is_suspended') ? '' : 'display:none;' }}">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="suspension_type" class="form-label fw-bold">{{ __('app.suspension_type') }}</label>
+                                        <select name="suspension_type" id="suspension_type" class="form-select">
+                                            <option value="until_paid" {{ old('suspension_type') === 'until_paid' ? 'selected' : '' }}>{{ __('app.until_fine_paid') }}</option>
+                                            <option value="match_ban" {{ old('suspension_type') === 'match_ban' ? 'selected' : '' }}>{{ __('app.match_ban') }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6" id="match_ban_count" style="{{ old('suspension_type') === 'match_ban' ? '' : 'display:none;' }}">
+                                        <label for="suspension_matches" class="form-label fw-bold">{{ __('app.number_of_matches') }}</label>
+                                        <input type="number" name="suspension_matches" id="suspension_matches"
+                                               class="form-control" min="1" value="{{ old('suspension_matches', 1) }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -184,6 +207,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     matchSelect.appendChild(opt);
                 });
             });
+    });
+
+    // Suspension toggle
+    const suspendCheck = document.getElementById('is_suspended');
+    const suspendOpts = document.getElementById('suspension_options');
+    const suspendType = document.getElementById('suspension_type');
+    const matchBanCount = document.getElementById('match_ban_count');
+
+    suspendCheck.addEventListener('change', function() {
+        suspendOpts.style.display = this.checked ? '' : 'none';
+    });
+
+    suspendType.addEventListener('change', function() {
+        matchBanCount.style.display = this.value === 'match_ban' ? '' : 'none';
     });
 });
 </script>

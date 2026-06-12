@@ -465,4 +465,32 @@ return [
     'status' => 'Status',
     'download_receipt' => 'Download Receipt',
     'delete' => 'Delete',
+
+    // Suspension
+    'suspension' => 'Suspension',
+    'suspend_player' => 'Suspend this player',
+    'suspend_player_help' => 'Check this to suspend the player until the fine is paid or matches are served',
+    'suspension_type' => 'Suspension Type',
+    'until_fine_paid' => 'Until Fine is Paid',
+    'match_ban' => 'Match Ban (Number of Matches)',
+    'number_of_matches' => 'Number of Matches',
+    'active_suspensions' => 'Active Suspensions',
+    'lift_suspension' => 'Lift Suspension',
+    'confirm_lift_suspension' => 'Are you sure you want to lift this suspension?',
+    'suspension_lifted' => 'Suspension has been lifted',
+    'suspension_already_lifted' => 'This suspension has already been lifted',
+    'matches_served_updated' => 'Matches served count updated',
+
+    // Proof of Payment
+    'proof' => 'Proof',
+    'upload_proof' => 'Upload Payment Proof',
+    'upload_proof_help' => 'Upload your bank transfer receipt or payment proof so admin can verify your payment.',
+    'proof_file' => 'Payment Proof File',
+    'proof_file_types' => 'Accepted: JPG, PNG, PDF. Max 5MB.',
+    'proof_info' => 'After uploading, the admin will verify your payment and mark the fine as paid.',
+    'proof_submitted' => 'Proof Submitted',
+    'proof_uploaded' => 'Payment proof uploaded successfully',
+    'view_proof' => 'View Proof',
+    'upload' => 'Upload',
+    'cancel' => 'Cancel',
 ];

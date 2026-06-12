@@ -12,7 +12,7 @@
 
 {{-- Summary Cards --}}
 <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card border-start border-warning border-4">
             <div class="card-body">
                 <div class="text-muted small">{{ __('app.total_pending_fines') }}</div>
@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card border-start border-success border-4">
             <div class="card-body">
                 <div class="text-muted small">{{ __('app.total_paid_fines') }}</div>
@@ -28,11 +28,19 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card border-start border-primary border-4">
             <div class="card-body">
                 <div class="text-muted small">{{ __('app.total_fines_count') }}</div>
                 <div class="h4 fw-bold text-primary">{{ $fines->total() }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-start border-danger border-4">
+            <div class="card-body">
+                <div class="text-muted small">{{ __('app.active_suspensions') }}</div>
+                <div class="h4 fw-bold text-danger">{{ $activeSuspensions }}</div>
             </div>
         </div>
     </div>
@@ -49,10 +57,10 @@
                         <th>{{ __('app.player') }}</th>
                         <th>{{ __('app.fine_type_label') }}</th>
                         <th>{{ __('app.competition') }}</th>
-                        <th>{{ __('app.match') }}</th>
                         <th class="text-end">{{ __('app.amount') }} (RM)</th>
                         <th>{{ __('app.status') }}</th>
-                        <th>{{ __('app.date') }}</th>
+                        <th>{{ __('app.suspension') }}</th>
+                        <th>{{ __('app.proof') }}</th>
                         <th>{{ __('app.actions') }}</th>
                     </tr>
                 </thead>
@@ -60,9 +68,7 @@
                     @forelse($fines as $fine)
                         <tr>
                             <td>{{ $fine->id }}</td>
-                            <td>
-                                <strong>{{ $fine->team->name ?? '-' }}</strong>
-                            </td>
+                            <td><strong>{{ $fine->team->name ?? '-' }}</strong></td>
                             <td>
                                 @if($fine->player)
                                     <i class="fas fa-user me-1 text-muted"></i>
@@ -87,17 +93,29 @@
                                 @endif
                             </td>
                             <td>{{ $fine->competition->name ?? '-' }}</td>
-                            <td>
-                                @if($fine->matchGame)
-                                    {{ $fine->matchGame->match_code ?? '' }}
-                                    <br><small class="text-muted">{{ $fine->matchGame->homeTeam->name ?? '' }} vs {{ $fine->matchGame->awayTeam->name ?? '' }}</small>
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
-                            </td>
                             <td class="text-end fw-bold">{{ number_format($fine->amount, 2) }}</td>
                             <td>{!! $fine->statusBadge() !!}</td>
-                            <td>{{ $fine->created_at->format('d/m/Y') }}</td>
+                            <td>
+                                {!! $fine->suspensionBadge() !!}
+                                @if($fine->is_suspended && $fine->suspension_type === 'match_ban' && !$fine->suspension_lifted_at)
+                                    <form action="{{ route('disciplinary.matches-served', $fine->id) }}" method="POST" class="d-inline mt-1">
+                                        @csrf
+                                        <div class="input-group input-group-sm" style="width: 120px;">
+                                            <input type="number" name="matches_served" value="{{ $fine->matches_served }}" min="0" max="{{ $fine->suspension_matches }}" class="form-control form-control-sm">
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm" title="{{ __('app.update') }}"><i class="fas fa-save"></i></button>
+                                        </div>
+                                    </form>
+                                @endif
+                            </td>
+                            <td>
+                                @if($fine->proof_file)
+                                    <a href="{{ route('disciplinary.view-proof', $fine->id) }}" target="_blank" class="btn btn-outline-info btn-sm" title="{{ __('app.view_proof') }}">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                @else
+                                    <span class="text-muted small">-</span>
+                                @endif
+                            </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     @if($fine->status === 'pending')
@@ -111,6 +129,14 @@
                                             @csrf
                                             <button type="submit" class="btn btn-secondary btn-sm" title="{{ __('app.waive_fine') }}">
                                                 <i class="fas fa-ban"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    @if($fine->is_suspended && !$fine->suspension_lifted_at)
+                                        <form action="{{ route('disciplinary.lift-suspension', $fine->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning btn-sm" title="{{ __('app.lift_suspension') }}" onclick="return confirm('{{ __('app.confirm_lift_suspension') }}')">
+                                                <i class="fas fa-unlock"></i>
                                             </button>
                                         </form>
                                     @endif

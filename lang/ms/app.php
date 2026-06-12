@@ -448,4 +448,31 @@ return [
     'pay_now' => 'Bayar Sekarang',
     'contact_admin_to_pay' => 'Hubungi pentadbir untuk bayar',
     'optional' => 'Pilihan',
+
+    // Penggantungan
+    'suspension' => 'Penggantungan',
+    'suspend_player' => 'Gantung pemain ini',
+    'suspend_player_help' => 'Tandakan untuk menggantung pemain sehingga denda dibayar atau perlawanan diselesaikan',
+    'suspension_type' => 'Jenis Penggantungan',
+    'until_fine_paid' => 'Sehingga Denda Dibayar',
+    'match_ban' => 'Larangan Perlawanan (Bilangan Perlawanan)',
+    'number_of_matches' => 'Bilangan Perlawanan',
+    'active_suspensions' => 'Penggantungan Aktif',
+    'lift_suspension' => 'Tarik Balik Penggantungan',
+    'confirm_lift_suspension' => 'Adakah anda pasti mahu menarik balik penggantungan ini?',
+    'suspension_lifted' => 'Penggantungan telah ditarik balik',
+    'suspension_already_lifted' => 'Penggantungan ini telah ditarik balik',
+    'matches_served_updated' => 'Bilangan perlawanan dikemaskini',
+
+    // Bukti Pembayaran
+    'proof' => 'Bukti',
+    'upload_proof' => 'Muat Naik Bukti Pembayaran',
+    'upload_proof_help' => 'Muat naik resit pindahan bank atau bukti pembayaran supaya pentadbir boleh mengesahkan pembayaran anda.',
+    'proof_file' => 'Fail Bukti Pembayaran',
+    'proof_file_types' => 'Diterima: JPG, PNG, PDF. Maks 5MB.',
+    'proof_info' => 'Selepas muat naik, pentadbir akan mengesahkan pembayaran dan menandakan denda sebagai dibayar.',
+    'proof_submitted' => 'Bukti Dihantar',
+    'proof_uploaded' => 'Bukti pembayaran berjaya dimuat naik',
+    'view_proof' => 'Lihat Bukti',
+    'upload' => 'Muat Naik',
 ];

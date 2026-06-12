@@ -714,11 +714,11 @@ class DatabaseSeeder extends Seeder
         // Section 12: Disciplinary Fines (Sample Data)
         // ───────────────────────────────────────────────
         $sampleFines = [
-            ['fine_type' => 'red_card', 'amount' => 200.00, 'description' => 'Violent conduct - straight red card', 'status' => 'paid'],
-            ['fine_type' => 'yellow_accumulation', 'amount' => 100.00, 'description' => '5th yellow card accumulation', 'status' => 'pending'],
-            ['fine_type' => 'misconduct', 'amount' => 500.00, 'description' => 'Offensive language towards match official', 'status' => 'pending'],
-            ['fine_type' => 'late_arrival', 'amount' => 150.00, 'description' => 'Team arrived 30 minutes late', 'status' => 'paid'],
-            ['fine_type' => 'walkover', 'amount' => 1000.00, 'description' => 'Walkover - failed to appear for scheduled match', 'status' => 'pending'],
+            ['fine_type' => 'red_card', 'amount' => 200.00, 'description' => 'Violent conduct - straight red card', 'status' => 'paid', 'is_suspended' => true, 'suspension_type' => 'until_paid', 'lifted' => true],
+            ['fine_type' => 'yellow_accumulation', 'amount' => 100.00, 'description' => '5th yellow card accumulation', 'status' => 'pending', 'is_suspended' => true, 'suspension_type' => 'match_ban', 'suspension_matches' => 3, 'matches_served' => 1],
+            ['fine_type' => 'misconduct', 'amount' => 500.00, 'description' => 'Offensive language towards match official', 'status' => 'pending', 'is_suspended' => true, 'suspension_type' => 'until_paid'],
+            ['fine_type' => 'late_arrival', 'amount' => 150.00, 'description' => 'Team arrived 30 minutes late', 'status' => 'paid', 'is_suspended' => false],
+            ['fine_type' => 'walkover', 'amount' => 1000.00, 'description' => 'Walkover - failed to appear for scheduled match', 'status' => 'pending', 'is_suspended' => false],
         ];
 
         $allPlayers = Player::all();
@@ -728,10 +728,12 @@ class DatabaseSeeder extends Seeder
             $team = $superLeagueTeams[$idx % count($superLeagueTeams)];
             $player = $allPlayers->where('team_id', $team->id)->first();
             $match = $allMatches->isNotEmpty() ? $allMatches->random() : null;
+            $isPlayerFine = $fineData['fine_type'] !== 'late_arrival' && $fineData['fine_type'] !== 'walkover';
+            $playerId = $isPlayerFine && $player ? $player->id : null;
 
-            DisciplinaryFine::create([
+            $fine = DisciplinaryFine::create([
                 'team_id' => $team->id,
-                'player_id' => $fineData['fine_type'] === 'late_arrival' || $fineData['fine_type'] === 'walkover' ? null : ($player ? $player->id : null),
+                'player_id' => $playerId,
                 'competition_id' => $superLeague->id,
                 'match_game_id' => $match ? $match->id : null,
                 'issued_by' => $superAdmin->id,
@@ -739,9 +741,19 @@ class DatabaseSeeder extends Seeder
                 'description' => $fineData['description'],
                 'amount' => $fineData['amount'],
                 'status' => $fineData['status'],
-                'payment_method' => $fineData['status'] === 'paid' ? 'manual' : null,
+                'payment_method' => $fineData['status'] === 'paid' ? 'bank_transfer' : null,
                 'paid_at' => $fineData['status'] === 'paid' ? now()->subDays(rand(1, 5)) : null,
+                'is_suspended' => $fineData['is_suspended'],
+                'suspension_type' => $fineData['is_suspended'] ? ($fineData['suspension_type'] ?? 'until_paid') : null,
+                'suspension_matches' => $fineData['suspension_matches'] ?? null,
+                'matches_served' => $fineData['matches_served'] ?? 0,
+                'suspension_lifted_at' => ($fineData['lifted'] ?? false) ? now()->subDays(1) : null,
+                'suspension_lifted_by' => ($fineData['lifted'] ?? false) ? 'JBFA Admin' : null,
             ]);
+
+            if ($fineData['is_suspended'] && !($fineData['lifted'] ?? false) && $playerId) {
+                Player::where('id', $playerId)->update(['status' => 'suspended']);
+            }
         }
     }
 

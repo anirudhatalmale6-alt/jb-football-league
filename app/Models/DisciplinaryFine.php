@@ -20,9 +20,16 @@ class DisciplinaryFine extends Model
         'status',
         'payment_method',
         'payment_url',
+        'proof_file',
         'transaction_id',
         'paid_at',
         'notes',
+        'is_suspended',
+        'suspension_type',
+        'suspension_matches',
+        'matches_served',
+        'suspension_lifted_at',
+        'suspension_lifted_by',
     ];
 
     protected function casts(): array
@@ -30,6 +37,8 @@ class DisciplinaryFine extends Model
         return [
             'amount' => 'decimal:2',
             'paid_at' => 'datetime',
+            'is_suspended' => 'boolean',
+            'suspension_lifted_at' => 'datetime',
         ];
     }
 
@@ -79,5 +88,27 @@ class DisciplinaryFine extends Model
             'waived' => '<span class="badge bg-secondary">Dikecualikan / Waived</span>',
             default => '<span class="badge bg-secondary">' . $this->status . '</span>',
         };
+    }
+
+    public function suspensionBadge(): string
+    {
+        if (!$this->is_suspended) {
+            return '';
+        }
+
+        if ($this->suspension_lifted_at) {
+            return '<span class="badge bg-success"><i class="fas fa-unlock me-1"></i>Dibebaskan / Lifted</span>';
+        }
+
+        if ($this->suspension_type === 'match_ban') {
+            return '<span class="badge bg-danger"><i class="fas fa-ban me-1"></i>Digantung ' . $this->matches_served . '/' . $this->suspension_matches . ' perlawanan</span>';
+        }
+
+        return '<span class="badge bg-danger"><i class="fas fa-ban me-1"></i>Digantung / Suspended</span>';
+    }
+
+    public function isSuspensionActive(): bool
+    {
+        return $this->is_suspended && !$this->suspension_lifted_at;
     }
 }
