@@ -157,11 +157,23 @@
                                     <i class="fas fa-credit-card me-1"></i> {{ __('app.payments') }}
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('disciplinary.*') ? 'active' : '' }}"
+                                   href="{{ route('disciplinary.index') }}">
+                                    <i class="fas fa-gavel me-1"></i> {{ __('app.disciplinary') }}
+                                </a>
+                            </li>
                         @else
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('my.payments') ? 'active' : '' }}"
                                    href="{{ route('my.payments') }}">
                                     <i class="fas fa-receipt me-1"></i> {{ __('app.my_payments') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('my.fines') ? 'active' : '' }}"
+                                   href="{{ route('my.fines') }}">
+                                    <i class="fas fa-gavel me-1"></i> {{ __('app.my_fines') }}
                                 </a>
                             </li>
                         @endif

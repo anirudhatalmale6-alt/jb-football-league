@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Competition;
+use App\Models\DisciplinaryFine;
 use App\Models\Group;
 use App\Models\MatchEvent;
 use App\Models\MatchGame;
@@ -706,6 +707,40 @@ class DatabaseSeeder extends Seeder
                 'payment_method' => 'fpx',
                 'transaction_id' => $paymentStatuses[$idx] === 'paid' ? 'TXN' . str_pad($idx + 1, 8, '0', STR_PAD_LEFT) : null,
                 'paid_at'        => $paymentStatuses[$idx] === 'paid' ? now()->subDays(rand(1, 10)) : null,
+            ]);
+        }
+
+        // ───────────────────────────────────────────────
+        // Section 12: Disciplinary Fines (Sample Data)
+        // ───────────────────────────────────────────────
+        $sampleFines = [
+            ['fine_type' => 'red_card', 'amount' => 200.00, 'description' => 'Violent conduct - straight red card', 'status' => 'paid'],
+            ['fine_type' => 'yellow_accumulation', 'amount' => 100.00, 'description' => '5th yellow card accumulation', 'status' => 'pending'],
+            ['fine_type' => 'misconduct', 'amount' => 500.00, 'description' => 'Offensive language towards match official', 'status' => 'pending'],
+            ['fine_type' => 'late_arrival', 'amount' => 150.00, 'description' => 'Team arrived 30 minutes late', 'status' => 'paid'],
+            ['fine_type' => 'walkover', 'amount' => 1000.00, 'description' => 'Walkover - failed to appear for scheduled match', 'status' => 'pending'],
+        ];
+
+        $allPlayers = Player::all();
+        $allMatches = MatchGame::where('competition_id', $superLeague->id)->get();
+
+        foreach ($sampleFines as $idx => $fineData) {
+            $team = $superLeagueTeams[$idx % count($superLeagueTeams)];
+            $player = $allPlayers->where('team_id', $team->id)->first();
+            $match = $allMatches->isNotEmpty() ? $allMatches->random() : null;
+
+            DisciplinaryFine::create([
+                'team_id' => $team->id,
+                'player_id' => $fineData['fine_type'] === 'late_arrival' || $fineData['fine_type'] === 'walkover' ? null : ($player ? $player->id : null),
+                'competition_id' => $superLeague->id,
+                'match_game_id' => $match ? $match->id : null,
+                'issued_by' => $superAdmin->id,
+                'fine_type' => $fineData['fine_type'],
+                'description' => $fineData['description'],
+                'amount' => $fineData['amount'],
+                'status' => $fineData['status'],
+                'payment_method' => $fineData['status'] === 'paid' ? 'manual' : null,
+                'paid_at' => $fineData['status'] === 'paid' ? now()->subDays(rand(1, 5)) : null,
             ]);
         }
     }

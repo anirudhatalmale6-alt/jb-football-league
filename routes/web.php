@@ -12,6 +12,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\StandingController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\OfficialController;
+use App\Http\Controllers\DisciplinaryController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -99,4 +100,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/payments', [RegistrationController::class, 'adminPayments'])->name('admin.payments');
     Route::post('/admin/payments/{payment}/mark-paid', [RegistrationController::class, 'markAsPaid'])->name('admin.payments.mark-paid');
     Route::get('/payments/{payment}/receipt', [PdfController::class, 'paymentReceipt'])->name('payments.receipt');
+
+    // Disciplinary Fines
+    Route::get('/disciplinary', [DisciplinaryController::class, 'index'])->name('disciplinary.index');
+    Route::get('/disciplinary/create', [DisciplinaryController::class, 'create'])->name('disciplinary.create');
+    Route::post('/disciplinary', [DisciplinaryController::class, 'store'])->name('disciplinary.store');
+    Route::post('/disciplinary/{fine}/mark-paid', [DisciplinaryController::class, 'markAsPaid'])->name('disciplinary.mark-paid');
+    Route::post('/disciplinary/{fine}/waive', [DisciplinaryController::class, 'waive'])->name('disciplinary.waive');
+    Route::delete('/disciplinary/{fine}', [DisciplinaryController::class, 'destroy'])->name('disciplinary.destroy');
+    Route::get('/my-fines', [DisciplinaryController::class, 'myFines'])->name('my.fines');
+    Route::get('/disciplinary/{fine}/receipt', [PdfController::class, 'fineReceipt'])->name('disciplinary.receipt');
+
+    // API endpoints for AJAX
+    Route::get('/api/teams/{team}/players', [DisciplinaryController::class, 'getPlayers'])->name('api.team.players');
+    Route::get('/api/competitions/{competition}/matches', [DisciplinaryController::class, 'getMatches'])->name('api.competition.matches');
 });

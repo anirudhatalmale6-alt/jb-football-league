@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DisciplinaryFine;
 use App\Models\MatchGame;
 use App\Models\RegistrationPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -190,5 +191,47 @@ class PdfController extends Controller
         $receiptNo = 'JBFA-' . str_pad($payment->id, 6, '0', STR_PAD_LEFT);
 
         return $pdf->download('receipt-' . $receiptNo . '.pdf');
+    }
+
+    public function fineReceipt($fineId)
+    {
+        $fine = DisciplinaryFine::with(['team', 'player', 'competition', 'matchGame', 'matchGame.homeTeam', 'matchGame.awayTeam', 'issuedByUser'])->findOrFail($fineId);
+
+        if ($fine->status !== 'paid') {
+            abort(404);
+        }
+
+        $user = Auth::user();
+        $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
+        $isOwner = $fine->team_id === $user->team_id;
+        if (!$isAdmin && !$isOwner) {
+            abort(403);
+        }
+
+        $jbfaLogoBase64 = null;
+        $jbfaLogoPath = public_path('images/jbfa_logo.png');
+        if (file_exists($jbfaLogoPath)) {
+            $jbfaLogoBase64 = 'data:' . mime_content_type($jbfaLogoPath) . ';base64,' . base64_encode(file_get_contents($jbfaLogoPath));
+        }
+
+        $competitionLogoBase64 = null;
+        if ($fine->competition && $fine->competition->logo) {
+            $logoPath = storage_path('app/public/' . $fine->competition->logo);
+            if (file_exists($logoPath)) {
+                $competitionLogoBase64 = 'data:' . mime_content_type($logoPath) . ';base64,' . base64_encode(file_get_contents($logoPath));
+            }
+        }
+
+        $pdf = Pdf::loadView('pdf.fine-receipt', compact(
+            'fine',
+            'jbfaLogoBase64',
+            'competitionLogoBase64',
+        ));
+
+        $pdf->setPaper('a4', 'portrait');
+
+        $receiptNo = 'JBFA-F-' . str_pad($fine->id, 6, '0', STR_PAD_LEFT);
+
+        return $pdf->download('fine-receipt-' . $receiptNo . '.pdf');
     }
 }
