@@ -13,6 +13,12 @@
                     <p class="text-muted">Sign in to your account</p>
                 </div>
 
+                @if (session('status'))
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-1"></i> {{ session('status') }}
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
@@ -68,11 +74,11 @@
                             {{ __('app.forgot_password') }}?
                         </a>
                     @endif
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="text-success text-decoration-none fw-semibold">
-                            {{ __('app.dont_have_account') }}? {{ __('app.register') }}
-                        </a>
-                    @endif
+{{--                     @if (Route::has('register')) --}}
+{{--                         <a href="{{ route('register') }}" class="text-success text-decoration-none fw-semibold"> --}}
+{{--                             {{ __('app.dont_have_account') }}? {{ __('app.register') }} --}}
+{{--                         </a> --}}
+{{--                     @endif --}}
                 </div>
             </div>
         </div>

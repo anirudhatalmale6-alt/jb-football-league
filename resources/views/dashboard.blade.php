@@ -10,6 +10,123 @@
     <span class="text-muted">{{ __('app.welcome_back') }}, {{ Auth::user()->name }}</span>
 </div>
 
+<!-- Match Commissioner assignment notification -->
+@if(isset($mcAssignments) && $mcAssignments->isNotEmpty())
+<div class="alert alert-info mb-4">
+    <h6 class="fw-bold mb-2"><i class="fas fa-user-tag me-1"></i>{{ __('app.mc_assigned_notice_title') }}</h6>
+    @foreach($mcAssignments as $am)
+        <div class="d-flex justify-content-between align-items-center flex-wrap {{ !$loop->last ? 'border-bottom pb-2 mb-2' : '' }}">
+            <div>
+                <strong>{{ $am->homeTeam->name ?? 'Home' }} vs {{ $am->awayTeam->name ?? 'Away' }}</strong>
+                <div class="small text-muted">
+                    {{ $am->competition->name ?? '-' }} &bull;
+                    <i class="fas fa-calendar me-1"></i>{{ $am->match_date ? $am->match_date->format('d M Y, g:i A') : '-' }}
+                    @if($am->venue) &bull; <i class="fas fa-map-marker-alt me-1"></i>{{ $am->venue }} @endif
+                </div>
+            </div>
+            <a href="{{ route('matches.show', $am) }}" class="btn btn-sm btn-primary"><i class="fas fa-gamepad me-1"></i>{{ __('app.match_control') }}</a>
+        </div>
+    @endforeach
+</div>
+@endif
+
+<!-- Payment Confirmed (Team Manager) -->
+@if(isset($paymentConfirmations) && $paymentConfirmations->isNotEmpty())
+<div class="alert alert-success mb-4">
+    <h6 class="fw-bold mb-2"><i class="fas fa-check-circle me-1"></i>{{ __('app.payment_confirmed_title') }}</h6>
+    @foreach($paymentConfirmations as $pc)
+        <div class="d-flex justify-content-between align-items-center flex-wrap {{ !$loop->last ? 'border-bottom pb-2 mb-2' : '' }}">
+            <div>
+                <strong>{{ $pc->team->name ?? '-' }}</strong>
+                <span class="text-muted">&mdash; {{ $pc->competition->name ?? '-' }}</span>
+                <br><small class="text-muted">{{ __('app.payment_confirmed_msg') }} &middot; RM {{ number_format($pc->amount, 2) }} &middot; {{ \App\Support\Tz::myt($pc->paid_at, 'd M Y H:i') }}</small>
+            </div>
+            <a href="{{ route('payments.receipt', $pc->id) }}" class="btn btn-sm btn-outline-success mt-2 mt-md-0">
+                <i class="fas fa-file-pdf me-1"></i>{{ __('app.download_receipt') }}
+            </a>
+        </div>
+    @endforeach
+</div>
+@endif
+
+<!-- Line-Up Reminders (Team Manager) -->
+@if(isset($lineupReminders) && $lineupReminders->isNotEmpty())
+<div class="alert alert-warning mb-4">
+    <h5 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>{{ __("app.lineup_submissions") }}</h5>
+    @foreach($lineupReminders as $reminder)
+        <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-white rounded">
+            <div>
+                <strong>{{ $reminder["match"]->homeTeam->name ?? "-" }} vs {{ $reminder["match"]->awayTeam->name ?? "-" }}</strong>
+                <br><small class="text-muted">{{ $reminder["match"]->match_date ? $reminder["match"]->match_date->format("d M Y H:i") : "-" }} | {{ $reminder["match"]->venue ?? "-" }}</small>
+                @if($reminder["isOverdue"] && (!$reminder["submission"] || $reminder["submission"]->status === "draft"))
+                    <br><span class="badge bg-danger">{{ __("app.overdue") }}</span>
+                @endif
+            </div>
+            <div class="text-end">
+                @if($reminder["submission"])
+                    @if($reminder["submission"]->status === "draft")
+                        <span class="badge bg-secondary">{{ __("app.draft") }}</span>
+                        <a href="{{ route("lineup-submissions.edit", [$reminder["match"]->id, $reminder["team_id"]]) }}" class="btn btn-sm btn-warning ms-2"><i class="fas fa-edit"></i></a>
+                    @elseif($reminder["submission"]->status === "submitted")
+                        <span class="badge bg-warning text-dark">{{ __("app.pending_approval") }}</span>
+                    @elseif($reminder["submission"]->status === "rejected")
+                        <span class="badge bg-danger">{{ __("app.amendment_required") }}</span>
+                        <a href="{{ route("lineup-submissions.edit", [$reminder["match"]->id, $reminder["team_id"]]) }}" class="btn btn-sm btn-danger ms-2"><i class="fas fa-edit"></i></a>
+                    @elseif($reminder["submission"]->status === "approved")
+                        <span class="badge bg-success">{{ __("app.approved") }}</span>
+                    @elseif($reminder["submission"]->status === "locked")
+                        <span class="badge bg-dark"><i class="fas fa-lock me-1"></i>{{ __("app.locked") }}</span>
+                    @endif
+                @else
+                    <a href="{{ route("lineup-submissions.edit", [$reminder["match"]->id, $reminder["team_id"]]) }}" class="btn btn-sm btn-success"><i class="fas fa-plus me-1"></i>{{ __("app.create_lineup") }}</a>
+                @endif
+            </div>
+        </div>
+    @endforeach
+</div>
+@endif
+
+<!-- Jersey Colour Submission Reminders (Team Manager) -->
+@if(isset($jerseyReminders) && $jerseyReminders->isNotEmpty())
+<div class="alert alert-warning mb-4">
+    <h5 class="mb-3"><i class="fas fa-tshirt me-2"></i>Jersey Colour Submission Required</h5>
+    @foreach($jerseyReminders as $r)
+        <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-white rounded">
+            <div>
+                <strong>{{ $r["match"]->homeTeam->name ?? "-" }} vs {{ $r["match"]->awayTeam->name ?? "-" }}</strong>
+                <br><small class="text-muted">{{ $r["match"]->match_date ? $r["match"]->match_date->format("d M Y H:i") : "-" }}
+                    @if($r["deadline"]) | Deadline: {{ $r["deadline"]->format("d M Y") }} @endif
+                </small>
+                @if($r["isOverdue"])
+                    <br><span class="badge bg-danger">Deadline passed</span>
+                @endif
+            </div>
+            <div class="text-end">
+                <span class="badge bg-secondary">Not Submitted</span>
+                <a href="{{ route("jerseys.edit", [$r["match"]->id, $r["team_id"]]) }}" class="btn btn-sm btn-success ms-2"><i class="fas fa-tshirt me-1"></i>Submit</a>
+            </div>
+        </div>
+    @endforeach
+</div>
+@endif
+
+<!-- Pending Line-Up Reviews (Admin) -->
+@if(isset($pendingReviews) && $pendingReviews->isNotEmpty())
+<div class="alert alert-info mb-4">
+    <h5 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>{{ __("app.lineup_submissions") }} - {{ __("app.pending_approval") }}</h5>
+    @foreach($pendingReviews as $pr)
+        <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-white rounded">
+            <div>
+                <strong>{{ $pr->team->name ?? "-" }}</strong>
+                <br><small class="text-muted">{{ $pr->matchGame->homeTeam->name ?? "" }} vs {{ $pr->matchGame->awayTeam->name ?? "" }} | {{ $pr->matchGame->match_date ? $pr->matchGame->match_date->format("d M Y H:i") : "-" }}</small>
+            </div>
+            <div>
+                <a href="{{ route("lineup-submissions.review", $pr->match_game_id) }}" class="btn btn-sm btn-primary"><i class="fas fa-eye me-1"></i>{{ __("app.review") }}</a>
+            </div>
+        </div>
+    @endforeach
+</div>
+@endif
 <!-- Stats Cards -->
 <div class="row g-4 mb-4">
     <!-- Total Competitions -->

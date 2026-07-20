@@ -27,6 +27,7 @@
                         <th>{{ __('app.player') }}</th>
                         <th>{{ __('app.fine_type_label') }}</th>
                         <th>{{ __('app.competition') }}</th>
+                        <th>{{ __('app.match_card') }}</th>
                         <th class="text-end">{{ __('app.amount') }} (RM)</th>
                         <th>{{ __('app.status') }}</th>
                         <th>{{ __('app.suspension') }}</th>
@@ -49,7 +50,7 @@
                                 @endif
                             </td>
                             <td>
-                                @if($fine->fine_type === 'red_card')
+                                @if(in_array($fine->fine_type, ['red_card', 'red_direct', 'red_second_yellow']))
                                     <span class="badge bg-danger">{{ $fine->fineTypeLabel() }}</span>
                                 @elseif($fine->fine_type === 'yellow_accumulation')
                                     <span class="badge bg-warning text-dark">{{ $fine->fineTypeLabel() }}</span>
@@ -61,6 +62,19 @@
                                 @endif
                             </td>
                             <td>{{ $fine->competition->name ?? '-' }}</td>
+                            <td>
+                                @if($fine->matchGame)
+                                    <span class="small fw-semibold">{{ $fine->matchGame->match_code ?? ('#' . $fine->matchGame->id) }}</span>
+                                    @if($fine->matchGame->match_date)
+                                        <br><span class="text-muted" style="font-size:0.72rem;">{{ $fine->matchGame->match_date->format('d/m/Y') }}</span>
+                                    @endif
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                                @if($fine->cardLabel())
+                                    <br><span class="badge {{ $fine->card_type === 'yellow_card' ? 'bg-warning text-dark' : 'bg-danger' }}" style="font-size:0.7rem;">{{ $fine->cardLabel() }}</span>
+                                @endif
+                            </td>
                             <td class="text-end fw-bold">{{ number_format($fine->amount, 2) }}</td>
                             <td>{!! $fine->statusBadge() !!}</td>
                             <td>{!! $fine->suspensionBadge() !!}</td>
@@ -121,7 +135,7 @@
                         @endif
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center py-4 text-muted">
+                            <td colspan="9" class="text-center py-4 text-muted">
                                 <i class="fas fa-check-circle fa-2x mb-2 d-block text-success"></i>
                                 {{ __('app.no_fines_team') }}
                             </td>

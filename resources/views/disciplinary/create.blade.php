@@ -46,7 +46,7 @@
                                 <option value="">-- {{ __('app.select_team') }} --</option>
                                 @foreach($teams as $team)
                                     <option value="{{ $team->id }}" {{ old('team_id') == $team->id ? 'selected' : '' }}>
-                                        {{ $team->name }}
+                                        {{ $team->name }} ({{ $team->competition->short_name ?? $team->competition->name ?? '-' }})
                                     </option>
                                 @endforeach
                             </select>

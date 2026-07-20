@@ -63,6 +63,15 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="match_duration" class="form-label fw-semibold">{{ __('app.match_duration_label') }}</label>
+                    <input type="number" class="form-control @error('match_duration') is-invalid @enderror" id="match_duration" name="match_duration" min="30" max="130" value="{{ old('match_duration', 90) }}">
+                    <div class="form-text">{{ __('app.match_duration_hint') }}</div>
+                    @error('match_duration')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
             <div class="row">

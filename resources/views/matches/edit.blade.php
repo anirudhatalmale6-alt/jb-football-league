@@ -78,7 +78,7 @@
                         <option value="">{{ __('app.select_home_team') }}</option>
                         @foreach($teams as $team)
                             <option value="{{ $team->id }}" {{ old('home_team_id', $match->home_team_id) == $team->id ? 'selected' : '' }}>
-                                {{ $team->name }}
+                                {{ $team->name }} ({{ $team->competition->short_name ?? $team->competition->name ?? '-' }})
                             </option>
                         @endforeach
                     </select>
@@ -93,7 +93,7 @@
                         <option value="">{{ __('app.select_away_team') }}</option>
                         @foreach($teams as $team)
                             <option value="{{ $team->id }}" {{ old('away_team_id', $match->away_team_id) == $team->id ? 'selected' : '' }}>
-                                {{ $team->name }}
+                                {{ $team->name }} ({{ $team->competition->short_name ?? $team->competition->name ?? '-' }})
                             </option>
                         @endforeach
                     </select>

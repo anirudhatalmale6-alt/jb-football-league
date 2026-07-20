@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DisciplinaryFine;
 use App\Models\MatchGame;
 use App\Models\RegistrationPayment;
+use App\Models\Team;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,6 +13,17 @@ class PdfController extends Controller
 {
     public function matchSummary($matchId)
     {
+        $user = Auth::user();
+        if ($user) {
+            $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
+            if (!$isAdmin && $user->isTeamManager()) {
+                $m = MatchGame::findOrFail($matchId);
+                if (!$user->managesTeam($m->home_team_id) && !$user->managesTeam($m->away_team_id)) {
+                    abort(403);
+                }
+            }
+        }
+
         $match = MatchGame::with([
             'homeTeam.players',
             'homeTeam.officials',
@@ -21,6 +33,9 @@ class PdfController extends Controller
             'lineups.player',
             'events.player',
             'events.team',
+            'events.relatedPlayer',
+            'signatures',
+            'jerseys',
         ])->findOrFail($matchId);
 
         // Separate lineups
@@ -35,7 +50,20 @@ class PdfController extends Controller
         $playerEventsMap = [];
         foreach ($match->events as $event) {
             if ($event->player_id) {
-                $playerEventsMap[$event->player_id][] = $event;
+                if ($event->event_type === 'substitution') {
+                    // Player Out gets a substitution_out annotation
+                    $outEvt = clone $event;
+                    $outEvt->event_type = 'substitution_out';
+                    $playerEventsMap[$event->player_id][] = $outEvt;
+                    // Player In gets a substitution_in annotation
+                    if ($event->related_player_id) {
+                        $inEvt = clone $event;
+                        $inEvt->event_type = 'substitution_in';
+                        $playerEventsMap[$event->related_player_id][] = $inEvt;
+                    }
+                } else {
+                    $playerEventsMap[$event->player_id][] = $event;
+                }
             }
         }
 
@@ -70,6 +98,15 @@ class PdfController extends Controller
             }
         }
 
+        // Map signatures by role for easy access in PDF
+        $signatures = [];
+        foreach ($match->signatures as $sig) {
+            $signatures[$sig->role] = $sig;
+        }
+
+        $homeJersey = $match->jerseys->firstWhere('team_id', $match->home_team_id);
+        $awayJersey = $match->jerseys->firstWhere('team_id', $match->away_team_id);
+
         $pdf = Pdf::loadView('pdf.match-summary', compact(
             'match',
             'homeStarters',
@@ -82,6 +119,9 @@ class PdfController extends Controller
             'competitionLogoBase64',
             'homeLogoBase64',
             'awayLogoBase64',
+            'signatures',
+            'homeJersey',
+            'awayJersey',
         ));
 
         $pdf->setPaper('a4', 'portrait');
@@ -91,6 +131,17 @@ class PdfController extends Controller
 
     public function teamSheet($matchId)
     {
+        $user = Auth::user();
+        if ($user) {
+            $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
+            if (!$isAdmin && $user->isTeamManager()) {
+                $m = MatchGame::findOrFail($matchId);
+                if (!$user->managesTeam($m->home_team_id) && !$user->managesTeam($m->away_team_id)) {
+                    abort(403);
+                }
+            }
+        }
+
         $match = MatchGame::with([
             'homeTeam.players',
             'homeTeam.officials',
@@ -98,6 +149,7 @@ class PdfController extends Controller
             'awayTeam.officials',
             'competition',
             'lineups.player',
+            'jerseys',
         ])->findOrFail($matchId);
 
         $homeLineup = $match->lineups->where('team_id', $match->home_team_id);
@@ -137,6 +189,10 @@ class PdfController extends Controller
             }
         }
 
+        $homeJersey = $match->jerseys->firstWhere('team_id', $match->home_team_id);
+        $awayJersey = $match->jerseys->firstWhere('team_id', $match->away_team_id);
+        $signatures = [];
+
         $pdf = Pdf::loadView('pdf.team-sheet', compact(
             'match',
             'homeStarters',
@@ -148,6 +204,9 @@ class PdfController extends Controller
             'competitionLogoBase64',
             'homeLogoBase64',
             'awayLogoBase64',
+            'signatures',
+            'homeJersey',
+            'awayJersey',
         ));
 
         $pdf->setPaper('a4', 'portrait');
@@ -161,7 +220,7 @@ class PdfController extends Controller
 
         $user = Auth::user();
         $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
-        $isOwner = $payment->user_id === $user->id || $payment->team_id === $user->team_id;
+        $isOwner = $payment->user_id === $user->id || $user->managesTeam($payment->team_id);
         if (!$isAdmin && !$isOwner) {
             abort(403);
         }
@@ -203,7 +262,7 @@ class PdfController extends Controller
 
         $user = Auth::user();
         $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
-        $isOwner = $fine->team_id === $user->team_id;
+        $isOwner = $user->managesTeam($fine->team_id);
         if (!$isAdmin && !$isOwner) {
             abort(403);
         }
@@ -234,4 +293,52 @@ class PdfController extends Controller
 
         return $pdf->download('fine-receipt-' . $receiptNo . '.pdf');
     }
+
+
+    public function eligibilityLetter($teamId)
+    {
+        $team = Team::with(['competition', 'players', 'officials', 'group', 'statusLogs'])->findOrFail($teamId);
+
+        if ($team->status !== 'approved') {
+            abort(404, 'Team is not approved.');
+        }
+
+        if ($team->competition_id == 1) {
+            abort(404, 'Eligibility letter not available for this competition.');
+        }
+
+        $user = Auth::user();
+        $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
+        $isOwner = $user->managesTeam($team->id);
+        if (!$isAdmin && !$isOwner) {
+            abort(403);
+        }
+
+        $jbfaLogoBase64 = null;
+        $jbfaLogoPath = public_path('images/jbfa_logo.png');
+        if (file_exists($jbfaLogoPath)) {
+            $jbfaLogoBase64 = 'data:' . mime_content_type($jbfaLogoPath) . ';base64,' . base64_encode(file_get_contents($jbfaLogoPath));
+        }
+
+        $competitionLogoBase64 = null;
+        if ($team->competition && $team->competition->logo) {
+            $logoPath = storage_path('app/public/' . $team->competition->logo);
+            if (file_exists($logoPath)) {
+                $competitionLogoBase64 = 'data:' . mime_content_type($logoPath) . ';base64,' . base64_encode(file_get_contents($logoPath));
+            }
+        }
+
+        $pdf = Pdf::loadView('pdf.eligibility-letter', compact(
+            'team',
+            'jbfaLogoBase64',
+            'competitionLogoBase64',
+        ));
+
+        $pdf->setPaper('a4', 'portrait');
+
+        $refNo = 'JBFA-EL-' . str_pad($team->id, 6, '0', STR_PAD_LEFT);
+
+        return $pdf->download('eligibility-letter-' . $refNo . '.pdf');
+    }
+
 }

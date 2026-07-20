@@ -2,6 +2,15 @@
 
 @section('title', __('app.pra_registration') . ' - ' . $competition->name)
 
+@push('styles')
+<style>
+    input[name="name"], input[name="short_name"], input[name="applicant_name"],
+    input[name="manager_name"], input[name="venue_name"], input[name="venue_coordinator_name"] {
+        text-transform: uppercase;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">
@@ -26,6 +35,24 @@
             <div class="card-body">
                 <form action="{{ route('registration.store', $competition->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+
+                    <input type="hidden" name="reuse_team_id" id="reuse_team_id" value="">
+
+                    @if(isset($existingTeams) && $existingTeams->count())
+                    <div class="alert alert-info d-flex align-items-start mb-4">
+                        <i class="fas fa-clone mt-1 me-2"></i>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold mb-2">{{ __('app.reuse_existing_team') }}</div>
+                            <p class="small mb-2">{{ __('app.reuse_existing_hint') }}</p>
+                            <select class="form-select" id="reuse_select">
+                                <option value="">{{ __('app.reuse_none') }}</option>
+                                @foreach($existingTeams as $et)
+                                    <option value="{{ $et->id }}">{{ $et->name }} &mdash; {{ optional($et->competition)->name }} ({{ $et->players_count }} {{ __('app.players') }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    @endif
 
                     <h6 class="fw-bold text-muted mb-3"><i class="fas fa-shield-halved me-1"></i> {{ __('app.club_information') }}</h6>
 
@@ -257,6 +284,18 @@
                             <td class="fw-bold text-end text-success">RM {{ number_format($competition->matchday_fee, 2) }}</td>
                         </tr>
                     @endif
+                    @if($competition->type === 'league')
+                        <tr>
+                            <td class="small">{{ __('app.receipt_annual_fee') }}</td>
+                            <td class="fw-bold text-end text-success">RM {{ number_format(\App\Models\Team::AFFILIATE_FEE, 2) }}</td>
+                        </tr>
+                    @endif
+                    @if($competition->registration_fee > 0 || $competition->security_deposit > 0 || $competition->matchday_fee > 0)
+                        <tr style="border-top: 2px solid #198754;">
+                            <td class="fw-bold pt-2">{{ __('app.receipt_total') }}</td>
+                            <td class="fw-bold text-end text-success pt-2">RM {{ number_format($competition->baseFee() + ($competition->type === 'league' ? \App\Models\Team::AFFILIATE_FEE : 0), 2) }}</td>
+                        </tr>
+                    @endif
                     @if($competition->registration_fee == 0 && $competition->security_deposit == 0 && $competition->matchday_fee == 0)
                         <tr>
                             <td colspan="2" class="text-center fw-bold text-success fs-4">{{ __('app.free') }}</td>
@@ -271,4 +310,52 @@
         </div>
     </div>
 </div>
+@if(isset($existingTeams) && $existingTeams->count())
+@push('scripts')
+<script>
+(function () {
+    var teams = {
+        @foreach($existingTeams as $et)
+        "{{ $et->id }}": {
+            name: @json($et->name),
+            short_name: @json($et->short_name),
+            contact_email: @json($et->contact_email),
+            contact_phone: @json($et->contact_phone),
+            manager_name: @json($et->manager_name),
+            applicant_name: @json($et->applicant_name),
+            applicant_position: @json($et->applicant_position),
+            venue_name: @json($et->venue_name),
+            venue_location: @json($et->venue_location),
+            venue_coordinator_name: @json($et->venue_coordinator_name),
+            venue_coordinator_phone: @json($et->venue_coordinator_phone)
+        },
+        @endforeach
+    };
+    var sel = document.getElementById('reuse_select');
+    var hidden = document.getElementById('reuse_team_id');
+    function setVal(id, v) { var el = document.getElementById(id); if (el && v != null) el.value = v; }
+    if (sel) {
+        sel.addEventListener('change', function () {
+            hidden.value = this.value || '';
+            var t = teams[this.value];
+            if (!t) return;
+            setVal('name', t.name);
+            setVal('short_name', t.short_name);
+            setVal('contact_email', t.contact_email);
+            setVal('contact_phone', t.contact_phone);
+            setVal('manager_name', t.manager_name);
+            setVal('applicant_name', t.applicant_name);
+            setVal('venue_name', t.venue_name);
+            setVal('venue_location', t.venue_location);
+            setVal('venue_coordinator_name', t.venue_coordinator_name);
+            setVal('venue_coordinator_phone', t.venue_coordinator_phone);
+            var pos = document.getElementById('applicant_position');
+            if (pos && t.applicant_position) pos.value = t.applicant_position;
+        });
+    }
+})();
+</script>
+@endpush
+@endif
+
 @endsection

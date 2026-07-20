@@ -60,7 +60,7 @@
     $teamName = $fine->team->name ?? '-';
     $competitionName = $fine->competition->name ?? '-';
     $receiptNo = 'JBFA-F-' . str_pad($fine->id, 6, '0', STR_PAD_LEFT);
-    $playerName = $fine->player ? $fine->player->name : 'Denda Pasukan / Team Fine';
+    $playerName = $fine->player ? $fine->player->name : 'Team Fine';
     $jerseyNo = $fine->player && $fine->player->jersey_number ? '#' . $fine->player->jersey_number : '';
 @endphp
 
@@ -90,10 +90,10 @@
 <table style="width: 100%; background-color: #003366; color: #ffffff; margin-bottom: 12px;">
     <tr>
         <td style="padding: 5px 12px; font-size: 10px; text-align: left;">
-            <strong>No. Resit / Receipt No:</strong> {{ $receiptNo }}
+            <strong>Receipt No:</strong> {{ $receiptNo }}
         </td>
         <td style="padding: 5px 12px; font-size: 10px; text-align: right;">
-            <strong>Tarikh / Date:</strong> {{ $fine->paid_at ? $fine->paid_at->format('d/m/Y H:i') : $fine->created_at->format('d/m/Y H:i') }}
+            <strong>Date:</strong> {{ \App\Support\Tz::myt($fine->paid_at ?? $fine->created_at, 'd/m/Y H:i') }}
         </td>
     </tr>
 </table>
@@ -102,7 +102,7 @@
 <table style="width: 100%; margin-bottom: 12px;">
     <tr>
         <td style="text-align: center;">
-            <span class="paid-stamp">TELAH DIBAYAR / PAID</span>
+            <span class="paid-stamp">PAID</span>
         </td>
     </tr>
 </table>
@@ -111,11 +111,11 @@
 <div class="blue-bar">Maklumat Denda / Fine Information</div>
 <table class="info-table" style="margin-bottom: 10px;">
     <tr>
-        <td class="label-cell">Pasukan / Team</td>
+        <td class="label-cell">Team</td>
         <td>{{ $teamName }}</td>
     </tr>
     <tr>
-        <td class="label-cell">Pemain / Player</td>
+        <td class="label-cell">Player</td>
         <td>{{ $playerName }} {{ $jerseyNo }}</td>
     </tr>
     <tr>
@@ -141,19 +141,19 @@
 </table>
 
 {{-- ===== PAYMENT DETAILS ===== --}}
-<div class="blue-bar">Maklumat Pembayaran / Payment Details</div>
+<div class="blue-bar">Payment Details</div>
 <table class="info-table" style="margin-bottom: 10px;">
     <tr>
         <td class="label-cell">Jumlah Denda / Fine Amount</td>
         <td><strong style="font-size: 14px; color: #cc0000;">RM {{ number_format($fine->amount, 2) }}</strong></td>
     </tr>
     <tr>
-        <td class="label-cell">Kaedah Bayaran / Payment Method</td>
+        <td class="label-cell">Payment Method</td>
         <td>{{ strtoupper($fine->payment_method ?? 'MANUAL') }}</td>
     </tr>
     <tr>
         <td class="label-cell">Status</td>
-        <td><strong style="color: #006600;">DIBAYAR / PAID</strong></td>
+        <td><strong style="color: #006600;">PAID</strong></td>
     </tr>
     @if($fine->transaction_id)
     <tr>
@@ -163,8 +163,8 @@
     @endif
     @if($fine->paid_at)
     <tr>
-        <td class="label-cell">Tarikh Bayar / Paid Date</td>
-        <td>{{ $fine->paid_at->format('d/m/Y H:i:s') }}</td>
+        <td class="label-cell">Paid Date</td>
+        <td>{{ \App\Support\Tz::myt($fine->paid_at, 'd/m/Y H:i:s') }}</td>
     </tr>
     @endif
     <tr>
@@ -187,7 +187,7 @@
                 Dijana pada / Generated: {{ now()->format('d/m/Y H:i:s') }}
             </div>
             <div style="font-size: 7px; color: #999; margin-top: 3px;">
-                PERSATUAN BOLA SEPAK JOHOR BAHRU — Johor Bahru Football League Management System
+                PERSATUAN BOLA SEPAK JOHOR BAHRU — JBFA Football League Management System
             </div>
         </td>
     </tr>

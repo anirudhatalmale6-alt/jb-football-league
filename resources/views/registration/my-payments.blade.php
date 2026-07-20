@@ -32,7 +32,7 @@
                         <th class="text-end">{{ __('app.amount') }}</th>
                         <th class="text-center">{{ __('app.status') }}</th>
                         <th>{{ __('app.date') }}</th>
-                        <th class="text-center">{{ __('app.receipt') }}</th>
+                        <th class="text-center">{{ __('app.action') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +54,7 @@
                                 @endif
                             </td>
                             <td>
-                                <small>{{ $payment->created_at->format('d M Y H:i') }}</small>
+                                <small>{{ \App\Support\Tz::myt($payment->status === 'paid' && $payment->paid_at ? $payment->paid_at : $payment->created_at, 'd M Y H:i') }}</small>
                             </td>
                             <td class="text-center">
                                 @if($payment->status === 'paid')
@@ -62,7 +62,20 @@
                                         <i class="fas fa-file-pdf me-1"></i> {{ __('app.download_receipt') }}
                                     </a>
                                 @else
-                                    <span class="text-muted small">{{ __('app.receipt_not_available') }}</span>
+                                    @php
+                                        // Prefer the team's own toyyibpay bill (exact amount, real-time
+                                        // status); otherwise fall back to the shared competition link.
+                                        $payUrl = !empty($payment->billcode)
+                                            ? 'https://toyyibpay.com/' . $payment->billcode
+                                            : (optional($payment->competition)->payment_url);
+                                    @endphp
+                                    @if($payUrl)
+                                        <a href="{{ $payUrl }}" class="btn btn-sm btn-warning" target="_blank">
+                                            <i class="fas fa-credit-card me-1"></i> {{ __('app.pay_now') }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted small">{{ __('app.receipt_not_available') }}</span>
+                                    @endif
                                 @endif
                             </td>
                         </tr>

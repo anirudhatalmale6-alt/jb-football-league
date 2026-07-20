@@ -72,7 +72,7 @@
                 @if(session('payment_url'))
                     <div class="mt-4 mb-3">
                         <a href="{{ session('payment_url') }}" target="_blank" class="btn btn-lg btn-success px-5 py-3">
-                            <i class="fas fa-credit-card me-2"></i> {{ __('app.proceed_to_payment') ?? 'Proceed to Payment / Teruskan ke Pembayaran' }}
+                            <i class="fas fa-credit-card me-2"></i> {{ __('app.proceed_to_payment') }}
                         </a>
                         <p class="text-muted small mt-2">{{ __('app.redirect_toyyibpay') ?? 'You will be redirected to Toyyibpay FPX payment page' }}</p>
                     </div>

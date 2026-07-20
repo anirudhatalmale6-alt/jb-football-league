@@ -3,13 +3,27 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'JB Football League') }}</title>
+    <meta property="og:title" content="Liga JBFA 2026 | Johor Bahru Football Association" />
+    <meta property="og:description" content="Portal rasmi Liga JBFA 2026. Jadual perlawanan, keputusan, kedudukan & pendaftaran pasukan. 30 pasukan, 4 pertandingan." />
+    <meta property="og:image" content="{{ asset('images/og-image.png') }}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="{{ url('/') }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Liga JBFA 2026" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Liga JBFA 2026 | Johor Bahru Football Association" />
+    <meta name="twitter:description" content="Portal rasmi Liga JBFA 2026. Jadual perlawanan, keputusan, kedudukan & pendaftaran pasukan. 30 pasukan, 4 pertandingan." />
+    <meta name="twitter:image" content="{{ asset('images/og-image.png') }}" />
+    <meta name="description" content="Portal rasmi Liga JBFA 2026. Jadual perlawanan, keputusan, kedudukan & pendaftaran pasukan. 30 pasukan, 4 pertandingan." />
+<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">    <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
+    <title>{{ config('app.name', 'JBFA Football League') }}</title>
 
     <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- Font Awesome 6 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="{{ asset('css/fontawesome.min.css') }}" rel="stylesheet">
 
     <style>
         :root {
@@ -18,8 +32,13 @@
         }
 
         .hero-section {
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 40%, #1e3a5f 100%);
-            min-height: 70vh;
+            background:
+                radial-gradient(ellipse 120% 60% at 50% 0%, rgba(30, 80, 140, 0.5) 0%, transparent 70%),
+                radial-gradient(ellipse 80% 50% at 20% 20%, rgba(200, 164, 21, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 80% 50% at 80% 20%, rgba(200, 164, 21, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 50% 100%, rgba(25, 135, 84, 0.2) 0%, transparent 60%),
+                linear-gradient(180deg, #050a18 0%, #0a1628 30%, #0d1f3c 60%, #081225 100%);
+            min-height: 80vh;
             display: flex;
             align-items: center;
             position: relative;
@@ -33,8 +52,93 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8a415' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background:
+                linear-gradient(135deg, transparent 40%, rgba(200, 164, 21, 0.08) 45%, transparent 50%),
+                linear-gradient(225deg, transparent 40%, rgba(200, 164, 21, 0.08) 45%, transparent 50%),
+                radial-gradient(circle at 50% 50%, transparent 30%, rgba(0,0,0,0.3) 100%);
             pointer-events: none;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background:
+                conic-gradient(from 0deg at 50% 35%, transparent 0deg, rgba(200, 164, 21, 0.03) 30deg, transparent 60deg, transparent 120deg, rgba(200, 164, 21, 0.03) 150deg, transparent 180deg, transparent 240deg, rgba(200, 164, 21, 0.03) 270deg, transparent 300deg);
+            animation: slowRotate 60s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes slowRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .hero-glow-1 {
+            top: -100px;
+            left: 10%;
+            background: #c8a415;
+        }
+
+        .hero-glow-2 {
+            top: -80px;
+            right: 10%;
+            background: #c8a415;
+        }
+
+        .hero-glow-3 {
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #198754;
+            width: 500px;
+            opacity: 0.1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(200, 164, 21, 0.2), rgba(200, 164, 21, 0.05));
+            border: 1px solid rgba(200, 164, 21, 0.3);
+            border-radius: 50px;
+            padding: 6px 20px;
+            font-size: 0.85rem;
+            color: #c8a415;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #c8a415, transparent);
+            margin: 0 auto 1.5rem;
+            border-radius: 2px;
+        }
+
+        .hero-logo-ring {
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 12px;
+            border-radius: 50%;
+            border: 2px solid rgba(200, 164, 21, 0.3);
+            background: rgba(200, 164, 21, 0.05);
+            margin-bottom: 1.5rem;
         }
 
         .hero-title {
@@ -100,17 +204,68 @@
         }
 
         .footer {
-            background-color: #212529;
+            background-color: #1a1e24;
             color: #adb5bd;
+            padding: 0;
+        }
+
+        .footer-main {
+            padding: 2.5rem 0 1.5rem;
         }
 
         .footer a {
-            color: #198754;
+            color: #adb5bd;
             text-decoration: none;
         }
 
         .footer a:hover {
-            color: #20c997;
+            color: #ffc107;
+        }
+
+        .footer h6 {
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.4rem;
+        }
+
+        .footer-links a {
+            font-size: 0.85rem;
+        }
+
+        .footer-contact p {
+            font-size: 0.82rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            color: #adb5bd;
+            margin-right: 6px;
+            transition: all 0.2s;
+        }
+
+        .footer-social a:hover {
+            background: #198754;
+            color: #fff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 1rem 0;
+            font-size: 0.78rem;
         }
     </style>
 </head>
@@ -168,15 +323,20 @@
 
     <!-- Hero Section -->
     <section class="hero-section text-white">
-        <div class="container position-relative">
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <div class="hero-glow hero-glow-3"></div>
+        <div class="container position-relative" style="z-index:1;">
             <div class="row align-items-center">
                 <div class="col-lg-8 mx-auto text-center">
-                    <div class="mb-3">
-                        <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:120px;" class="mb-3">
+                    <div class="hero-logo-ring">
+                        <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:100px;">
                     </div>
-                    <h1 class="hero-title mb-2">{{ __('app.jbfa_name') }}</h1>
-                    <h3 class="fw-bold mb-3" style="color: #c8a415;">JBFA</h3>
-                    <p class="hero-subtitle mb-4">
+                    <div class="hero-badge">Official League System</div>
+                    <h1 class="hero-title mb-3">{{ __('app.jbfa_name') }}</h1>
+                    <div class="hero-divider"></div>
+                    <h3 class="fw-bold mb-3" style="color: #c8a415; letter-spacing: 4px;">JBFA</h3>
+                    <p class="hero-subtitle mb-4" style="max-width: 600px; margin: 0 auto;">
                         {{ __('app.hero_description') }}
                     </p>
                     <div class="d-flex gap-3 justify-content-center flex-wrap">
@@ -279,7 +439,24 @@
                                             <small class="text-muted">{{ __('app.home') }}</small>
                                         </div>
                                         <div class="text-center px-3">
+                                            @if($match->isLive())
+                                            <div class="bg-success text-white rounded px-3 py-2">
+                                                <h5 class="fw-bold mb-0">{{ $match->home_score ?? 0 }} - {{ $match->away_score ?? 0 }}</h5>
+                                            </div>
+                                            <span class="badge bg-danger mt-1"><i class="fas fa-circle me-1" style="font-size:6px;"></i>LIVE {{ $match->match_minute }}</span>
+                                        @elseif($match->status === "half_time")
+                                            <div class="bg-dark text-white rounded px-3 py-2">
+                                                <h5 class="fw-bold mb-0">{{ $match->home_score ?? 0 }} - {{ $match->away_score ?? 0 }}</h5>
+                                            </div>
+                                            <span class="badge bg-warning text-dark mt-1">HT</span>
+                                        @elseif($match->isFinished())
+                                            <div class="bg-dark text-white rounded px-3 py-2">
+                                                <h5 class="fw-bold mb-0">{{ $match->home_score ?? 0 }} - {{ $match->away_score ?? 0 }}</h5>
+                                            </div>
+                                            <span class="badge bg-secondary mt-1">FT</span>
+                                        @else
                                             <span class="badge bg-dark fs-6 px-3 py-2">VS</span>
+                                        @endif
                                         </div>
                                         <div class="text-center flex-fill">
                                             <h6 class="fw-bold mb-0">{{ $match->awayTeam->name }}</h6>
@@ -388,23 +565,87 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer py-4">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-0">
-                        <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:20px;" class="me-1">
-                        &copy; {{ date('Y') }} JBFA. {{ __('app.all_rights_reserved') }}.
-                    </p>
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="container">
+                <div class="row g-4">
+                    <!-- Left: Contact Info -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{{ asset('images/jbfa_logo.png') }}" alt="JBFA" style="height:40px;" class="me-2">
+                            <div>
+                                <strong class="text-white" style="font-size:0.9rem;">PERSATUAN BOLASEPAK</strong><br>
+                                <strong class="text-white" style="font-size:0.9rem;">JOHOR BAHRU (JBFA)</strong>
+                            </div>
+                        </div>
+                        <div class="footer-contact">
+                            <p><i class="fas fa-map-marker-alt text-success me-2"></i>D/A Pejabat Daerah Johor Bahru</p>
+                            <p class="ps-4">Jalan Datin Halimah</p>
+                            <p class="ps-4">80350 Johor Bahru, Johor</p>
+                            <p class="mt-2"><i class="fas fa-phone text-success me-2"></i>07-2331963</p>
+                            <p><i class="fas fa-fax text-success me-2"></i>07-2233132</p>
+                            <p><i class="fas fa-envelope text-success me-2"></i><a href="mailto:johorbahru.fa.jbfa@gmail.com">johorbahru.fa.jbfa@gmail.com</a></p>
+                        </div>
+                        <div class="footer-social mt-3">
+                            <a href="https://www.facebook.com/p/Johor-Bahru-Football-Association-100085283033451/" target="_blank" title="JBFA Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.instagram.com/ligajohorbahru/" target="_blank" title="JBFA League Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.facebook.com/p/Liga-Johor-Bahru-100077198288508/" target="_blank" title="Liga JB Facebook"><i class="fab fa-facebook"></i></a>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Middle: Quick Links (public pages only) -->
+                    <div class="col-lg-3 col-md-6">
+                        <h6><i class="fas fa-link me-1"></i> Quick Links</h6>
+                        <ul class="list-unstyled footer-links">
+                            <li><a href="{{ route('home') }}"><i class="fas fa-chevron-right me-1" style="font-size:0.6rem;"></i> Home</a></li>
+                            <li><a href="{{ route('competitions.index') }}"><i class="fas fa-chevron-right me-1" style="font-size:0.6rem;"></i> Competitions</a></li>
+                            <li><a href="{{ route('matches.index') }}"><i class="fas fa-chevron-right me-1" style="font-size:0.6rem;"></i> Fixtures & Results</a></li>
+                            <li><a href="{{ route('standings.index') }}"><i class="fas fa-chevron-right me-1" style="font-size:0.6rem;"></i> Standings</a></li>
+                            <li><a href="{{ route('teams.index') }}"><i class="fas fa-chevron-right me-1" style="font-size:0.6rem;"></i> Teams</a></li>
+                            <li><a href="{{ route('players.index') }}"><i class="fas fa-chevron-right me-1" style="font-size:0.6rem;"></i> Players</a></li>
+                            <li><a href="{{ route('top-scorers') }}"><i class="fas fa-chevron-right me-1" style="font-size:0.6rem;"></i> Top Scorers</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Right: Google Maps -->
+                    <div class="col-lg-5 col-md-12">
+                        <h6><i class="fas fa-map-marked-alt me-1"></i> Our Location</h6>
+                        <div style="border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,0.1);">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.3766!2d103.7553!3d1.4740!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da177b62e1d985%3A0x5e4a3eff60753c7d!2sPejabat%20Daerah%20Johor%20Bahru!5e0!3m2!1sen!2smy!4v1718500000000!5m2!1sen!2smy"
+                                width="100%"
+                                height="220"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                        <a href="https://maps.google.com/?q=Pejabat+Daerah+Johor+Bahru,+Jalan+Datin+Halimah,+80350+Johor+Bahru" target="_blank" class="btn btn-sm btn-outline-success mt-2">
+                            <i class="fas fa-external-link-alt me-1"></i> Open in Google Maps
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <small>{{ __('app.jbfa_footer') }}</small>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">
+                            &copy; {{ date('Y') }} Persatuan Bolasepak Johor Bahru (JBFA). {{ __('app.all_rights_reserved') }}.
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <small>JBFA Football League {{ __('app.management_system') }}</small>
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap 5.3 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>

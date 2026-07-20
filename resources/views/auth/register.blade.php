@@ -10,11 +10,26 @@
                 <div class="text-center mb-4">
                     <i class="fas fa-futbol fa-2x text-success"></i>
                     <h4 class="mt-2 fw-bold">{{ __('app.register') }}</h4>
-                    <p class="text-muted">Join the JB Football League</p>
+                    <p class="text-muted">Join the JBFA Football League</p>
                 </div>
 
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
+
+                    <!-- Club/Team -->
+                    <div class="mb-3">
+                        <label for="club_team" class="form-label fw-semibold">
+                            <i class="fas fa-shield-halved me-1 text-muted"></i> Club / Team
+                        </label>
+                        <input id="club_team" type="text"
+                               class="form-control uppercase-input @error('club_team') is-invalid @enderror"
+                               name="club_team" value="{{ old('club_team') }}"
+                               required
+                               placeholder="Enter your club or team name">
+                        @error('club_team')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <!-- Name -->
                     <div class="mb-3">
@@ -22,7 +37,7 @@
                             <i class="fas fa-user me-1 text-muted"></i> {{ __('app.name') }}
                         </label>
                         <input id="name" type="text"
-                               class="form-control @error('name') is-invalid @enderror"
+                               class="form-control uppercase-input @error('name') is-invalid @enderror"
                                name="name" value="{{ old('name') }}"
                                required autocomplete="name" autofocus
                                placeholder="Enter your full name">
@@ -78,7 +93,7 @@
                         </label>
                         <select id="role" name="role"
                                 class="form-select @error('role') is-invalid @enderror">
-                            <option value="viewer" {{ old('role') == 'viewer' ? 'selected' : '' }}>Viewer</option>
+                            <option value="public" {{ old('role') == 'public' ? 'selected' : '' }}>Public</option>
                             <option value="team_manager" {{ old('role') == 'team_manager' ? 'selected' : '' }}>Team Manager</option>
                         </select>
                         @error('role')
@@ -110,4 +125,17 @@
         </div>
     </div>
 </div>
+<style>.uppercase-input { text-transform: uppercase; }</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".uppercase-input").forEach(function(input) {
+        input.addEventListener("input", function() {
+            var s = this.selectionStart, e = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(s, e);
+        });
+    });
+});
+</script>
+
 @endsection

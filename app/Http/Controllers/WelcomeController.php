@@ -11,7 +11,7 @@ class WelcomeController extends Controller
     public function index()
     {
         $upcomingMatches = MatchGame::with(['homeTeam', 'awayTeam', 'competition'])
-            ->where('status', 'scheduled')
+            ->whereIn('status', ['scheduled','live','half_time','second_half'])
             ->where('match_date', '>=', now())
             ->orderBy('match_date')
             ->limit(10)

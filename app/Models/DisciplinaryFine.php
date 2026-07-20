@@ -13,6 +13,11 @@ class DisciplinaryFine extends Model
         'competition_id',
         'match_game_id',
         'issued_by',
+        'source',
+        'auto_key',
+        'source_event_id',
+        'card_type',
+        'card_minute',
         'fine_type',
         'description',
         'amount',
@@ -38,6 +43,7 @@ class DisciplinaryFine extends Model
             'amount' => 'decimal:2',
             'paid_at' => 'datetime',
             'is_suspended' => 'boolean',
+            'card_minute' => 'integer',
             'suspension_lifted_at' => 'datetime',
         ];
     }
@@ -71,6 +77,8 @@ class DisciplinaryFine extends Model
     {
         return match ($this->fine_type) {
             'red_card' => __('app.fine_red_card'),
+            'red_direct' => __('app.fine_red_direct'),
+            'red_second_yellow' => __('app.fine_red_second_yellow'),
             'yellow_accumulation' => __('app.fine_yellow_accumulation'),
             'misconduct' => __('app.fine_misconduct'),
             'late_arrival' => __('app.fine_late_arrival'),
@@ -110,5 +118,43 @@ class DisciplinaryFine extends Model
     public function isSuspensionActive(): bool
     {
         return $this->is_suspended && !$this->suspension_lifted_at;
+    }
+
+    public function isAuto(): bool
+    {
+        return $this->source === 'auto';
+    }
+
+    /** Short card label, e.g. "Yellow 45'" / "Red 55'". */
+    public function cardLabel(): ?string
+    {
+        if (!$this->card_type) {
+            return null;
+        }
+
+        $name = match ($this->card_type) {
+            'yellow_card' => __('app.card_yellow'),
+            'red_card' => __('app.card_red'),
+            'second_yellow' => __('app.card_second_yellow'),
+            default => $this->card_type,
+        };
+
+        return $this->card_minute ? $name . " {$this->card_minute}'" : $name;
+    }
+
+    /** Human suspension status for display (Active / Served / Lifted / None). */
+    public function suspensionStatusLabel(): string
+    {
+        if (!$this->is_suspended) {
+            return __('app.susp_none');
+        }
+        if ($this->suspension_lifted_at) {
+            return __('app.susp_served');
+        }
+        if ($this->suspension_type === 'match_ban' && $this->suspension_matches && $this->matches_served >= $this->suspension_matches) {
+            return __('app.susp_served');
+        }
+
+        return __('app.susp_active');
     }
 }

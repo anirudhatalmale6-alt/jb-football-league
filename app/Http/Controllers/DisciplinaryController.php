@@ -7,38 +7,76 @@ use App\Models\DisciplinaryFine;
 use App\Models\MatchGame;
 use App\Models\Player;
 use App\Models\Team;
+use App\Services\DisciplinarySyncService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DisciplinaryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+        if (!$user->canManageDiscipline()) {
             abort(403);
         }
 
-        $fines = DisciplinaryFine::with(['team', 'player', 'competition', 'matchGame', 'issuedByUser'])
-            ->orderByDesc('created_at')
-            ->paginate(20);
+        $query = DisciplinaryFine::with(['team', 'player', 'competition', 'matchGame', 'issuedByUser']);
 
+        if ($request->filled('competition_id')) {
+            $query->where('competition_id', $request->competition_id);
+        }
+        if ($request->filled('team_id')) {
+            $query->where('team_id', $request->team_id);
+        }
+        if ($request->filled('player')) {
+            $term = $request->player;
+            $query->whereHas('player', fn ($q) => $q->where('name', 'like', "%{$term}%"));
+        }
+        if ($request->filled('card_type')) {
+            $query->where('card_type', $request->card_type);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $fines = $query->orderByDesc('created_at')->paginate(20)->withQueryString();
+
+        // Summary reflects the full data set (not just the current filter/page).
         $totalPending = DisciplinaryFine::where('status', 'pending')->sum('amount');
         $totalPaid = DisciplinaryFine::where('status', 'paid')->sum('amount');
         $activeSuspensions = DisciplinaryFine::where('is_suspended', true)->whereNull('suspension_lifted_at')->count();
 
-        return view('disciplinary.index', compact('fines', 'totalPending', 'totalPaid', 'activeSuspensions'));
+        $competitions = Competition::orderBy('name')->get();
+        $teams = Team::orderBy('name')->get();
+
+        return view('disciplinary.index', compact('fines', 'totalPending', 'totalPaid', 'activeSuspensions', 'competitions', 'teams'));
+    }
+
+    /**
+     * Backfill/refresh all auto fines from recorded match card events.
+     */
+    public function sync()
+    {
+        $user = Auth::user();
+        if (!$user->canManageDiscipline()) {
+            abort(403);
+        }
+
+        $count = app(DisciplinarySyncService::class)->syncAll();
+
+        return redirect()->route('disciplinary.index')
+            ->with('success', __('app.fines_synced', ['count' => $count]));
     }
 
     public function create()
     {
         $user = Auth::user();
-        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+        if (!$user->canManageDiscipline()) {
             abort(403);
         }
 
         $competitions = Competition::orderBy('name')->get();
-        $teams = Team::orderBy('name')->get();
+        $teams = Team::with('competition')->orderBy('name')->get();
 
         return view('disciplinary.create', compact('competitions', 'teams'));
     }
@@ -61,7 +99,7 @@ class DisciplinaryController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+        if (!$user->canManageDiscipline()) {
             abort(403);
         }
 
@@ -109,7 +147,7 @@ class DisciplinaryController extends Controller
     public function markAsPaid($fineId)
     {
         $user = Auth::user();
-        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+        if (!$user->canManageDiscipline()) {
             abort(403);
         }
 
@@ -132,7 +170,7 @@ class DisciplinaryController extends Controller
     public function liftSuspension($fineId)
     {
         $user = Auth::user();
-        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+        if (!$user->canManageDiscipline()) {
             abort(403);
         }
 
@@ -168,7 +206,7 @@ class DisciplinaryController extends Controller
     public function updateMatchesServed(Request $request, $fineId)
     {
         $user = Auth::user();
-        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+        if (!$user->canManageDiscipline()) {
             abort(403);
         }
 
@@ -192,8 +230,8 @@ class DisciplinaryController extends Controller
         $user = Auth::user();
         $fine = DisciplinaryFine::findOrFail($fineId);
 
-        $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
-        $isOwner = $fine->team_id === $user->team_id;
+        $isAdmin = $user->canManageDiscipline();
+        $isOwner = $user->managesTeam($fine->team_id);
         if (!$isAdmin && !$isOwner) {
             abort(403);
         }
@@ -219,8 +257,8 @@ class DisciplinaryController extends Controller
         $user = Auth::user();
         $fine = DisciplinaryFine::findOrFail($fineId);
 
-        $isAdmin = $user->isSuper() || $user->isLeagueAdmin();
-        $isOwner = $fine->team_id === $user->team_id;
+        $isAdmin = $user->canManageDiscipline();
+        $isOwner = $user->managesTeam($fine->team_id);
         if (!$isAdmin && !$isOwner) {
             abort(403);
         }
@@ -240,7 +278,7 @@ class DisciplinaryController extends Controller
     public function waive($fineId)
     {
         $user = Auth::user();
-        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+        if (!$user->canManageDiscipline()) {
             abort(403);
         }
 
@@ -263,13 +301,11 @@ class DisciplinaryController extends Controller
         $user = Auth::user();
 
         $fines = DisciplinaryFine::with(['team', 'player', 'competition', 'matchGame'])
-            ->where(function ($query) use ($user) {
-                $query->where('team_id', $user->team_id);
-            })
+            ->whereIn('team_id', $user->managedTeamIds())
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        $totalPending = DisciplinaryFine::where('team_id', $user->team_id)
+        $totalPending = DisciplinaryFine::whereIn('team_id', $user->managedTeamIds())
             ->where('status', 'pending')
             ->sum('amount');
 
@@ -279,7 +315,7 @@ class DisciplinaryController extends Controller
     public function destroy($fineId)
     {
         $user = Auth::user();
-        if (!$user->isSuper() && !$user->isLeagueAdmin()) {
+        if (!$user->canManageDiscipline()) {
             abort(403);
         }
 

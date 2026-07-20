@@ -18,11 +18,17 @@ class MatchEvent extends Model
         'extra_time_minute',
         'related_player_id',
         'notes',
+        'recorded_by_user_id',
     ];
 
     public function matchGame(): BelongsTo
     {
         return $this->belongsTo(MatchGame::class);
+    }
+
+    public function recordedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'recorded_by_user_id');
     }
 
     public function team(): BelongsTo
@@ -33,5 +39,10 @@ class MatchEvent extends Model
     public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class);
+    }
+
+    public function relatedPlayer(): BelongsTo
+    {
+        return $this->belongsTo(Player::class, 'related_player_id');
     }
 }

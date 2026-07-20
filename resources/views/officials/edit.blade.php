@@ -2,6 +2,14 @@
 
 @section('title', __('app.edit_official'))
 
+@push('styles')
+<style>
+    input[name="name"] {
+        text-transform: uppercase;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">

@@ -109,6 +109,7 @@
         .evt-yellow { color: #cc9900; font-weight: bold; font-size: 7px; }
         .evt-red { color: #cc0000; font-weight: bold; font-size: 7px; }
         .evt-sub { color: #0066aa; font-size: 7px; }
+        .u23-badge { background: #ffc107; color: #000; font-size: 5px; padding: 0px 2px; border-radius: 2px; font-weight: bold; vertical-align: middle; }
         .evt-penalty { color: #006600; font-weight: bold; font-size: 7px; }
 
         /* ---- Footer ---- */
@@ -166,6 +167,9 @@
                     break;
                 case 'substitution_in':
                     $annotations[] = '<span class="evt-sub">[&gt;&gt; ' . $min . ']</span>';
+                    break;
+                case 'substitution':
+                    $annotations[] = '<span class="evt-sub">[&lt;&lt; ' . $min . ']</span>';
                     break;
             }
         }
@@ -274,14 +278,7 @@
     </tr>
 </table>
 
-{{-- Player of the Match --}}
-<table style="width: 100%; margin-bottom: 8px;">
-    <tr>
-        <td style="text-align: center; font-size: 9px; color: #003366; padding: 2px 0;">
-            <strong>Player of the Match:</strong> _______________________________
-        </td>
-    </tr>
-</table>
+
 
 {{-- ===== STARTING LINEUP ===== --}}
 <div class="blue-bar">Starting Lineup</div>
@@ -304,7 +301,7 @@
                             <td style="text-align: center;">{{ $lineup->jersey_number }}</td>
                             <td style="text-align: center;">{{ posAbbr($lineup->position) }}</td>
                             <td>
-                                {{ $lineup->player->name ?? '-' }}
+                                {{ $lineup->player->name ?? '-' }} @if($lineup->player && $lineup->player->is_u23)<span class="u23-badge">U23</span>@endif
                                 {!! getPlayerAnnotations($lineup->player_id, $playerEventsMap) !!}
                             </td>
                         </tr>
@@ -331,7 +328,7 @@
                             <td style="text-align: center;">{{ $lineup->jersey_number }}</td>
                             <td style="text-align: center;">{{ posAbbr($lineup->position) }}</td>
                             <td>
-                                {{ $lineup->player->name ?? '-' }}
+                                {{ $lineup->player->name ?? '-' }} @if($lineup->player && $lineup->player->is_u23)<span class="u23-badge">U23</span>@endif
                                 {!! getPlayerAnnotations($lineup->player_id, $playerEventsMap) !!}
                             </td>
                         </tr>
@@ -365,7 +362,7 @@
                             <td style="text-align: center;">{{ $lineup->jersey_number }}</td>
                             <td style="text-align: center;">{{ posAbbr($lineup->position) }}</td>
                             <td>
-                                {{ $lineup->player->name ?? '-' }}
+                                {{ $lineup->player->name ?? '-' }} @if($lineup->player && $lineup->player->is_u23)<span class="u23-badge">U23</span>@endif
                                 {!! getPlayerAnnotations($lineup->player_id, $playerEventsMap) !!}
                             </td>
                         </tr>
@@ -392,7 +389,7 @@
                             <td style="text-align: center;">{{ $lineup->jersey_number }}</td>
                             <td style="text-align: center;">{{ posAbbr($lineup->position) }}</td>
                             <td>
-                                {{ $lineup->player->name ?? '-' }}
+                                {{ $lineup->player->name ?? '-' }} @if($lineup->player && $lineup->player->is_u23)<span class="u23-badge">U23</span>@endif
                                 {!! getPlayerAnnotations($lineup->player_id, $playerEventsMap) !!}
                             </td>
                         </tr>
@@ -487,13 +484,87 @@
     </tr>
 </table>
 
+
+
+{{-- ===== MATCH REMARKS ===== --}}
+@if($match->match_remarks)
+<div class="blue-bar" style="margin-top: 6px;">Match Remarks / Report Notes</div>
+<table style="width: 100%; border: 1px solid #ccd6e0; margin-bottom: 6px;">
+    <tr>
+        <td style="padding: 5px 8px; font-size: 8px; line-height: 1.5;">
+            {!! nl2br(e($match->match_remarks)) !!}
+        </td>
+    </tr>
+</table>
+@endif
+
+@include('pdf.partials.jersey-block')
+
+{{-- ===== E-SIGNATURES ===== --}}
+<div class="blue-bar" style="margin-top: 4px;">E-Signature Confirmation / Pengesahan Tandatangan</div>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 3px; table-layout: fixed;">
+    <tr>
+        @php
+            $sigRolesData = [
+                ["role" => "head_referee", "label" => "Head Referee", "label_ms" => "Pengadil Utama", "team" => null],
+                ["role" => "home_team_rep", "label" => "Home Team Rep", "label_ms" => "Wakil Tuan Rumah", "team" => $match->homeTeam->name ?? "-"],
+                ["role" => "away_team_rep", "label" => "Away Team Rep", "label_ms" => "Wakil Pelawat", "team" => $match->awayTeam->name ?? "-"],
+                ["role" => "match_commissioner", "label" => "Match Commissioner", "label_ms" => "Pesuruhjaya", "team" => null],
+            ];
+        @endphp
+        @foreach($sigRolesData as $idx => $sigInfo)
+            @php $sig = $signatures[$sigInfo["role"]] ?? null; @endphp
+            <td style="width: 25%; vertical-align: top; padding: 0; border: 1px solid #ccd6e0;">
+                {{-- Row 1: Role Title (fixed height) --}}
+                <div style="font-size: 7px; font-weight: bold; color: #003366; text-align: center; background-color: #e8eef5; padding: 2px 2px; line-height: 1.3;">
+                    {{ $idx + 1 }}. {{ $sigInfo["label"] }}
+                </div>
+                {{-- Row 2: Role label MS + Team (fixed height) --}}
+                <div style="height: 18px; text-align: center; padding: 1px 2px;">
+                    <div style="font-size: 6px; color: #555;">{{ $sigInfo["label_ms"] }}</div>
+                    @if($sigInfo["team"])
+                        <div style="font-size: 6px; color: #003366; font-weight: bold;">{{ strtoupper($sigInfo["team"]) }}</div>
+                    @endif
+                </div>
+                {{-- Row 3: Name (fixed height) --}}
+                <div style="height: 14px; font-size: 7px; padding: 1px 4px; overflow: hidden;">
+                    <span style="color: #555;">Name:</span>
+                    <strong>{{ $sig && $sig->confirmed ? $sig->name : "___________" }}</strong>
+                </div>
+                {{-- Row 4: Signature box (fixed height) --}}
+                <div style="height: 18px; border: 1px solid #ccd6e0; margin: 1px 4px; text-align: center; overflow: hidden;">
+                    @if($sig && $sig->signature_data && str_starts_with($sig->signature_data, "data:image"))
+                        <img src="{{ $sig->signature_data }}" style="max-height: 16px; max-width: 90%;">
+                    @endif
+                </div>
+                {{-- Row 5: Date (fixed height) --}}
+                <div style="height: 12px; font-size: 6px; padding: 1px 4px; color: #555;">
+                    {{ $sig && $sig->confirmed && $sig->signed_at ? $sig->signed_at->format("d/m/Y H:i") : "Date: ___________" }}
+                </div>
+                {{-- Row 6: Status (fixed height) --}}
+                <div style="height: 12px; font-size: 6px; text-align: center; padding: 0 2px;">
+                    @if($sig && $sig->confirmed)
+                        <span style="color: #006600;">&#10004; Confirmed</span>
+                    @else
+                        <span style="color: #cc0000;">&#10008; Pending</span>
+                    @endif
+                </div>
+                {{-- Row 7: Remarks --}}
+                <div style="font-size: 6px; padding: 1px 4px; color: #333; border-top: 1px dotted #ccd6e0;">
+                    <span style="color: #888;">Remarks:</span>
+                    {{ $sig && trim((string) $sig->remarks) !== '' ? $sig->remarks : 'No remarks' }}
+                </div>
+            </td>
+        @endforeach
+    </tr>
+</table>
+
 {{-- ===== FOOTER SECTION ===== --}}
-<table style="width: 100%; margin-top: 15px;">
+<table style="width: 100%; margin-top: 5px;">
     <tr>
         <td style="width: 50%; vertical-align: bottom;">
-            <div style="font-size: 8px; color: #003366; font-weight: bold; margin-bottom: 25px;">Match Commissioner's Signature:</div>
-            <div style="border-top: 1px solid #333; width: 200px; padding-top: 3px; font-size: 7px; color: #555;">
-                {{ $match->match_commissioner ?? '________________________' }}
+            <div style="font-size: 7px; color: #666;">
+                I confirm that all match details, scores, events, and remarks recorded above are correct and acknowledged by the undersigned parties.
             </div>
         </td>
         <td style="width: 50%; text-align: right; vertical-align: bottom;">
@@ -508,7 +579,7 @@
 </table>
 
 {{-- Legend --}}
-<table style="width: 100%; margin-top: 8px; border-top: 1px solid #ccd6e0;">
+<table style="width: 100%; margin-top: 4px; border-top: 1px solid #ccd6e0;">
     <tr>
         <td style="padding-top: 4px;">
             <div class="legend-text">

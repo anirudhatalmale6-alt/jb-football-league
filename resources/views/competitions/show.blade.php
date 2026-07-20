@@ -95,6 +95,7 @@
             <span class="badge bg-secondary ms-1">{{ $competition->teams->count() }}</span>
         </button>
     </li>
+    @if($competition->type !== 'knockout')
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="groups-tab" data-bs-toggle="tab" data-bs-target="#groups-pane"
                 type="button" role="tab" aria-controls="groups-pane" aria-selected="false">
@@ -102,6 +103,15 @@
             <span class="badge bg-secondary ms-1">{{ $competition->groups->count() }}</span>
         </button>
     </li>
+    @endif
+    @if($competition->type === 'knockout')
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="knockout-tab" data-bs-toggle="tab" data-bs-target="#knockout-pane"
+                type="button" role="tab" aria-controls="knockout-pane" aria-selected="false">
+            <i class="fas fa-sitemap me-1"></i> {{ __('app.knockout_stage') }}
+        </button>
+    </li>
+    @endif
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="fixtures-tab" data-bs-toggle="tab" data-bs-target="#fixtures-pane"
                 type="button" role="tab" aria-controls="fixtures-pane" aria-selected="false">
@@ -109,14 +119,19 @@
             <span class="badge bg-secondary ms-1">{{ $competition->matchGames->count() }}</span>
         </button>
     </li>
+    @if($competition->type !== 'knockout')
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="standings-tab" data-bs-toggle="tab" data-bs-target="#standings-pane"
                 type="button" role="tab" aria-controls="standings-pane" aria-selected="false">
             <i class="fas fa-ranking-star me-1"></i> {{ __('app.standings') }}
         </button>
     </li>
+    @endif
 </ul>
 
+@php
+    $canSeeStatus = auth()->check() && (auth()->user()->isSuper() || auth()->user()->isLeagueAdmin());
+@endphp
 <div class="tab-content" id="competitionTabsContent">
     <!-- Teams Tab -->
     <div class="tab-pane fade show active" id="teams-pane" role="tabpanel" aria-labelledby="teams-tab">
@@ -143,7 +158,7 @@
                                     <th>{{ __('app.team_name') }}</th>
                                     <th>{{ __('app.short_name') }}</th>
                                     <th>{{ __('app.manager') }}</th>
-                                    <th>{{ __('app.status') }}</th>
+                                    @if($canSeeStatus)<th>{{ __('app.status') }}</th>@endif
                                     <th class="text-center">{{ __('app.actions') }}</th>
                                 </tr>
                             </thead>
@@ -151,9 +166,17 @@
                                 @foreach($group->teams as $index => $team)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td class="fw-semibold">{{ $team->name }}</td>
+                                        <td class="fw-semibold">
+                                        {{ $team->name }}
+                                        @auth
+                                            @if(auth()->user()->isTeamManager() && auth()->user()->managesTeam($team->id))
+                                                <span class="badge bg-primary ms-1"><i class="fas fa-star me-1"></i>{{ __('app.your_team') }}</span>
+                                            @endif
+                                        @endauth
+                                    </td>
                                         <td>{{ $team->short_name ?? '-' }}</td>
                                         <td>{{ $team->manager_name ?? '-' }}</td>
+                                        @if($canSeeStatus)
                                         <td>
                                             @if($team->status === 'approved')
                                                 <span class="badge bg-success">{{ __('app.approved') }}</span>
@@ -165,10 +188,23 @@
                                                 <span class="badge bg-secondary">{{ ucfirst($team->status) }}</span>
                                             @endif
                                         </td>
+                                        @endif
                                         <td class="text-center">
-                                            <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-eye"></i> {{ __('app.view') }}
-                                            </a>
+                                            @auth
+                                                @if(auth()->user()->isTeamManager() && auth()->user()->managesTeam($team->id))
+                                                    <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-success">
+                                                        <i class="fas fa-arrow-right me-1"></i>{{ __('app.continue_btn') }}
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye"></i> {{ __('app.view') }}
+                                                    </a>
+                                                @endif
+                                            @else
+                                                <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i> {{ __('app.view') }}
+                                                </a>
+                                            @endauth
                                         </td>
                                     </tr>
                                 @endforeach
@@ -193,7 +229,7 @@
                                 <th>Team Name</th>
                                 <th>Short Name</th>
                                 <th>Manager</th>
-                                <th>Status</th>
+                                @if($canSeeStatus)<th>{{ __('app.status') }}</th>@endif
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -201,7 +237,14 @@
                             @foreach($ungroupedTeams as $index => $team)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td class="fw-semibold">{{ $team->name }}</td>
+                                    <td class="fw-semibold">
+                                        {{ $team->name }}
+                                        @auth
+                                            @if(auth()->user()->isTeamManager() && auth()->user()->managesTeam($team->id))
+                                                <span class="badge bg-primary ms-1"><i class="fas fa-star me-1"></i>{{ __('app.your_team') }}</span>
+                                            @endif
+                                        @endauth
+                                    </td>
                                     <td>{{ $team->short_name ?? '-' }}</td>
                                     <td>{{ $team->manager_name ?? '-' }}</td>
                                     <td>
@@ -216,9 +259,21 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
+                                        @auth
+                                            @if(auth()->user()->isTeamManager() && auth()->user()->managesTeam($team->id))
+                                                <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-arrow-right me-1"></i>{{ __('app.continue_btn') }}
+                                                </a>
+                                            @else
+                                                <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i> {{ __('app.view') }}
+                                                </a>
+                                            @endif
+                                        @else
+                                            <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> {{ __('app.view') }}
+                                            </a>
+                                        @endauth
                                     </td>
                                 </tr>
                             @endforeach
@@ -235,7 +290,7 @@
                             <th>{{ __('app.team_name') }}</th>
                             <th>{{ __('app.short_name') }}</th>
                             <th>{{ __('app.manager') }}</th>
-                            <th>{{ __('app.status') }}</th>
+                            @if($canSeeStatus)<th>{{ __('app.status') }}</th>@endif
                             <th class="text-center">{{ __('app.actions') }}</th>
                         </tr>
                     </thead>
@@ -243,9 +298,17 @@
                         @foreach($competition->teams as $index => $team)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td class="fw-semibold">{{ $team->name }}</td>
+                                <td class="fw-semibold">
+                                        {{ $team->name }}
+                                        @auth
+                                            @if(auth()->user()->isTeamManager() && auth()->user()->managesTeam($team->id))
+                                                <span class="badge bg-primary ms-1"><i class="fas fa-star me-1"></i>{{ __('app.your_team') }}</span>
+                                            @endif
+                                        @endauth
+                                    </td>
                                 <td>{{ $team->short_name ?? '-' }}</td>
                                 <td>{{ $team->manager_name ?? '-' }}</td>
+                                @if($canSeeStatus)
                                 <td>
                                     @if($team->status === 'approved')
                                         <span class="badge bg-success">{{ __('app.approved') }}</span>
@@ -257,10 +320,23 @@
                                         <span class="badge bg-secondary">{{ ucfirst($team->status) }}</span>
                                     @endif
                                 </td>
+                                @endif
                                 <td class="text-center">
-                                    <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-eye"></i> {{ __('app.view') }}
-                                    </a>
+                                    @auth
+                                        @if(auth()->user()->isTeamManager() && auth()->user()->managesTeam($team->id))
+                                            <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-success">
+                                                <i class="fas fa-arrow-right me-1"></i>{{ __('app.continue_btn') }}
+                                            </a>
+                                        @else
+                                            <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> {{ __('app.view') }}
+                                            </a>
+                                        @endif
+                                    @else
+                                        <a href="{{ route('teams.show', $team) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> {{ __('app.view') }}
+                                        </a>
+                                    @endauth
                                 </td>
                             </tr>
                         @endforeach
@@ -270,6 +346,7 @@
         @endif
     </div>
 
+    @if($competition->type !== 'knockout')
     <!-- Groups Tab -->
     <div class="tab-pane fade" id="groups-pane" role="tabpanel" aria-labelledby="groups-tab">
         @auth
@@ -345,6 +422,8 @@
         @endif
     </div>
 
+    @endif
+
     <!-- Fixtures Tab -->
     <div class="tab-pane fade" id="fixtures-pane" role="tabpanel" aria-labelledby="fixtures-tab">
         @if($competition->matchGames->isEmpty())
@@ -362,7 +441,7 @@
                             <th>{{ __('app.home_team') }}</th>
                             <th class="text-center">{{ __('app.score') }}</th>
                             <th>{{ __('app.away_team') }}</th>
-                            <th>{{ __('app.status') }}</th>
+                            @if($canSeeStatus)<th>{{ __('app.status') }}</th>@endif
                             <th class="text-center">{{ __('app.actions') }}</th>
                         </tr>
                     </thead>
@@ -408,6 +487,7 @@
         @endif
     </div>
 
+    @if($competition->type !== 'knockout')
     <!-- Standings Tab -->
     <div class="tab-pane fade" id="standings-pane" role="tabpanel" aria-labelledby="standings-tab">
         @if($standings->isEmpty())
@@ -452,5 +532,67 @@
             </div>
         @endif
     </div>
+    @endif
+
+    @if($competition->type === 'knockout')
+    <!-- Knockout Stage Tab -->
+    <div class="tab-pane fade" id="knockout-pane" role="tabpanel" aria-labelledby="knockout-tab">
+        @include('competitions.knockout')
+    </div>
+    @endif
 </div>
+
+@if($competition->type === 'knockout')
+@push('styles')
+<style>
+.bracket-container { overflow-x: auto; padding: 10px 0; }
+.bracket-scroll { display: flex; gap: 8px; min-width: max-content; align-items: flex-start; }
+.bracket-round { display: flex; flex-direction: column; gap: 8px; min-width: 160px; }
+.bracket-round-title { text-align: center; margin-bottom: 4px; }
+.bracket-match { background: #fff; border: 2px solid #dee2e6; border-radius: 6px; padding: 4px 6px; position: relative; }
+.bracket-match.completed { border-color: #198754; }
+.bracket-match-num { font-size: 9px; color: #999; text-align: center; margin-bottom: 2px; }
+.bracket-team { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; border-radius: 3px; margin: 1px 0; font-size: 12px; background: #f8f9fa; }
+.bracket-team.winner { background: #d1e7dd; font-weight: bold; }
+.team-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.team-score { font-weight: bold; min-width: 30px; text-align: right; }
+.team-score small { font-size: 9px; color: #666; }
+.bracket-admin { text-align: center; }
+.champion-slot { border-color: #ffc107; border-width: 3px; background: #fff8e1; }
+.champion-slot .bracket-team { background: #fff3cd; font-size: 14px; }
+@media (max-width: 768px) {
+    .bracket-round { min-width: 140px; }
+    .team-name { max-width: 85px; font-size: 11px; }
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+function showSeedModal(kmId, round, pos, hasHome, hasAway) {
+    document.getElementById('seed_km_id').value = kmId;
+    var sideSelect = document.getElementById('seed_side');
+    if (hasHome && !hasAway) {
+        sideSelect.value = 'away';
+    } else if (!hasHome && hasAway) {
+        sideSelect.value = 'home';
+    } else {
+        sideSelect.value = 'home';
+    }
+    new bootstrap.Modal(document.getElementById('seedModal')).show();
+}
+
+function showWinnerModal(kmId, homeName, homeId, awayName, awayId) {
+    var form = document.getElementById('winnerForm');
+    form.action = '/competitions/' + {{ $competition->id }} + '/knockout/' + kmId + '/winner';
+    var select = document.getElementById('winner_select');
+    select.innerHTML = '<option value="' + homeId + '">' + homeName + '</option><option value="' + awayId + '">' + awayName + '</option>';
+    document.getElementById('pen_home_label').textContent = homeName + ' Pen';
+    document.getElementById('pen_away_label').textContent = awayName + ' Pen';
+    new bootstrap.Modal(document.getElementById('winnerModal')).show();
+}
+</script>
+@endpush
+@endif
+
 @endsection

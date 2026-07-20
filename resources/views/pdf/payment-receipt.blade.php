@@ -100,7 +100,7 @@
     $registrationFee = $payment->competition->registration_fee ?? 0;
     $securityDeposit = $payment->competition->security_deposit ?? 0;
     $matchdayFee = $payment->competition->matchday_fee ?? 0;
-    $annualFee = 50.00;
+    $annualFee = optional($payment->team)->owesAffiliateFee() ? 50.00 : 0;
     $totalFee = $registrationFee + $securityDeposit + $matchdayFee + $annualFee;
 @endphp
 
@@ -133,7 +133,7 @@
             <strong>{{ __('app.receipt_no') }}:</strong> {{ $receiptNo }}
         </td>
         <td style="padding: 5px 12px; font-size: 10px; text-align: right;">
-            <strong>{{ __('app.receipt_date') }}:</strong> {{ $payment->paid_at ? $payment->paid_at->format('d/m/Y H:i') : $payment->created_at->format('d/m/Y H:i') }}
+            <strong>{{ __('app.receipt_date') }}:</strong> {{ \App\Support\Tz::myt($payment->paid_at ?? $payment->created_at, 'd/m/Y H:i') }}
         </td>
     </tr>
 </table>
@@ -143,16 +143,16 @@
     <tr>
         <td style="text-align: center;">
             @if($payment->status === 'paid')
-                <span class="paid-stamp">TELAH DIBAYAR / PAID</span>
+                <span class="paid-stamp">PAID</span>
             @elseif($payment->status === 'pending')
-                <span class="pending-stamp">BELUM DIBAYAR / PENDING</span>
+                <span class="pending-stamp">PENDING</span>
             @endif
         </td>
     </tr>
 </table>
 
 {{-- ===== TEAM & REGISTRATION DETAILS ===== --}}
-<div class="blue-bar">Maklumat Pasukan / Team Information</div>
+<div class="blue-bar">Team Information</div>
 <table class="info-table" style="margin-bottom: 10px;">
     <tr>
         <td class="label-cell">{{ __('app.receipt_team') }}</td>
@@ -188,7 +188,7 @@
     <thead>
         <tr>
             <th style="width: 10%;">#</th>
-            <th>Perkara / Description</th>
+            <th>Description</th>
             <th style="width: 25%; text-align: right;">Jumlah / Amount (RM)</th>
         </tr>
     </thead>
@@ -215,12 +215,14 @@
             <td style="text-align: right;">{{ number_format($matchdayFee, 2) }}</td>
         </tr>
         @endif
+        @if($annualFee > 0)
         @php $annualRow = ($registrationFee > 0 ? 1 : 0) + ($securityDeposit > 0 ? 1 : 0) + ($matchdayFee > 0 ? 1 : 0) + 1; @endphp
         <tr>
             <td>{{ $annualRow }}</td>
             <td>{{ __('app.receipt_annual_fee') }}</td>
             <td style="text-align: right;">{{ number_format($annualFee, 2) }}</td>
         </tr>
+        @endif
         <tr class="total-row">
             <td colspan="2" style="text-align: right;">{{ __('app.receipt_total') }} / TOTAL</td>
             <td style="text-align: right;">RM {{ number_format($totalFee, 2) }}</td>
@@ -229,7 +231,7 @@
 </table>
 
 {{-- ===== PAYMENT DETAILS ===== --}}
-<div class="blue-bar">Maklumat Pembayaran / Payment Details</div>
+<div class="blue-bar">Payment Details</div>
 <table class="info-table" style="margin-bottom: 10px;">
     <tr>
         <td class="label-cell">{{ __('app.receipt_amount') }}</td>
@@ -243,9 +245,9 @@
         <td class="label-cell">{{ __('app.receipt_status') }}</td>
         <td>
             @if($payment->status === 'paid')
-                <strong style="color: #006600;">DIBAYAR / PAID</strong>
+                <strong style="color: #006600;">PAID</strong>
             @elseif($payment->status === 'pending')
-                <strong style="color: #cc6600;">BELUM DIBAYAR / PENDING</strong>
+                <strong style="color: #cc6600;">PENDING</strong>
             @elseif($payment->status === 'failed')
                 <strong style="color: #cc0000;">GAGAL / FAILED</strong>
             @endif
@@ -260,7 +262,7 @@
     @if($payment->paid_at)
     <tr>
         <td class="label-cell">{{ __('app.receipt_paid_at') }}</td>
-        <td>{{ $payment->paid_at->format('d/m/Y H:i:s') }}</td>
+        <td>{{ \App\Support\Tz::myt($payment->paid_at, 'd/m/Y H:i:s') }}</td>
     </tr>
     @endif
     @if($payment->billcode)
@@ -282,10 +284,10 @@
                 RESIT DIJANA KOMPUTER TIDAK MEMERLUKAN TANDATANGAN
             </div>
             <div style="font-size: 8px; color: #666; margin-top: 10px;">
-                Dijana pada / Generated: {{ now()->format('d/m/Y H:i:s') }}
+                Dijana pada / Generated: {{ \App\Support\Tz::myt(now(), 'd/m/Y H:i:s') }}
             </div>
             <div style="font-size: 7px; color: #999; margin-top: 3px;">
-                PERSATUAN BOLA SEPAK JOHOR BAHRU — Johor Bahru Football League Management System
+                PERSATUAN BOLA SEPAK JOHOR BAHRU — JBFA Football League Management System
             </div>
         </td>
     </tr>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Competition;
+use App\Models\KnockoutMatch;
 use App\Models\Group;
 use App\Models\Standing;
 use Illuminate\Http\Request;
@@ -12,9 +13,19 @@ class CompetitionController extends Controller
 {
     public function index()
     {
-        $competitions = Competition::withCount(['teams', 'matchGames'])
-            ->orderByDesc('created_at')
-            ->paginate(12);
+        $user = Auth::user();
+        $isAdmin = $user && ($user->isSuper() || $user->isLeagueAdmin());
+
+        if ($isAdmin) {
+            $competitions = Competition::withCount(['teams', 'matchGames'])
+                ->orderByDesc('created_at')
+                ->paginate(12);
+        } else {
+            $competitions = Competition::withCount([
+                'teams' => function ($q) { $q->where('status', 'approved'); },
+                'matchGames'
+            ])->orderByDesc('created_at')->paginate(12);
+        }
 
         return view('competitions.index', compact('competitions'));
     }
@@ -39,6 +50,7 @@ class CompetitionController extends Controller
             'season' => ['required', 'string', 'max:50'],
             'type' => ['required', 'in:league,cup,friendly'],
             'status' => ['required', 'in:upcoming,active,completed'],
+            'match_duration' => ['nullable', 'integer', 'min:30', 'max:130'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'description' => ['nullable', 'string'],
@@ -59,14 +71,51 @@ class CompetitionController extends Controller
 
     public function show($id)
     {
-        $competition = Competition::with(['teams.group', 'matchGames.homeTeam', 'matchGames.awayTeam', 'groups.teams'])->findOrFail($id);
+        $user = Auth::user();
+        $isAdmin = $user && ($user->isSuper() || $user->isLeagueAdmin());
+
+        if ($isAdmin) {
+            $competition = Competition::with(['teams.group', 'matchGames.homeTeam', 'matchGames.awayTeam', 'groups.teams'])->findOrFail($id);
+        } else {
+            // Non-admin: only show approved teams
+            $competition = Competition::with(['matchGames.homeTeam', 'matchGames.awayTeam'])->findOrFail($id);
+            $competition->setRelation('teams', $competition->teams()->where('status', 'approved')->with('group')->get());
+            $competition->load(['groups' => function ($q) {
+                $q->with(['teams' => function ($q2) {
+                    $q2->where('status', 'approved');
+                }]);
+            }]);
+        }
 
         $standings = Standing::with('team')
             ->where('competition_id', $competition->id)
             ->orderBy('position')
             ->get();
 
-        return view('competitions.show', compact('competition', 'standings'));
+        // Knockout bracket data
+        $bracket = [];
+        $champion = null;
+        $bracketInitialized = false;
+        if ($competition->type === 'knockout') {
+            $knockoutMatches = KnockoutMatch::where('competition_id', $competition->id)
+                ->with(['homeTeam', 'awayTeam', 'matchGame', 'winnerTeam'])
+                ->orderBy('round')
+                ->orderBy('position')
+                ->get();
+
+            $rounds = ['round_of_16', 'quarter_final', 'semi_final', 'final'];
+            foreach ($rounds as $round) {
+                $bracket[$round] = $knockoutMatches->where('round', $round)->sortBy('position')->values();
+            }
+
+            $bracketInitialized = $knockoutMatches->isNotEmpty();
+            $finalMatch = $bracket['final']->first() ?? null;
+            if ($finalMatch && $finalMatch->winner_team_id) {
+                $champion = $finalMatch->winnerTeam;
+            }
+        }
+
+        return view('competitions.show', compact('competition', 'standings', 'bracket', 'champion', 'bracketInitialized'));
     }
 
     public function edit($id)
@@ -93,6 +142,7 @@ class CompetitionController extends Controller
             'season' => ['required', 'string', 'max:50'],
             'type' => ['required', 'in:league,cup,friendly'],
             'status' => ['required', 'in:upcoming,active,completed'],
+            'match_duration' => ['nullable', 'integer', 'min:30', 'max:130'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'description' => ['nullable', 'string'],

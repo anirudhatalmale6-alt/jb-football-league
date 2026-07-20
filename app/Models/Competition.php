@@ -13,6 +13,7 @@ class Competition extends Model
         'season',
         'type',
         'status',
+        'match_duration',
         'start_date',
         'end_date',
         'description',
@@ -51,5 +52,49 @@ class Competition extends Model
     public function groups(): HasMany
     {
         return $this->hasMany(Group::class);
+    }
+
+    public function knockoutMatches(): HasMany
+    {
+        return $this->hasMany(KnockoutMatch::class);
+    }
+
+    /**
+     * Total registration fee = registration + deposit + matchday + RM50 annual (leagues only).
+     * Mirrors the calculation used in RegistrationController and the payment receipt.
+     */
+    public function totalFee(): float
+    {
+        $annual = ($this->type === 'league') ? 50.00 : 0.00;
+
+        return (float) $this->registration_fee
+            + (float) $this->security_deposit
+            + (float) $this->matchday_fee
+            + $annual;
+    }
+
+    /**
+     * Base fee only (registration + deposit + matchday), WITHOUT the RM50
+     * annual affiliate fee. Whether a team also owes the RM50 is decided
+     * per team via Team::owesAffiliateFee().
+     */
+    public function baseFee(): float
+    {
+        return (float) $this->registration_fee
+            + (float) $this->security_deposit
+            + (float) $this->matchday_fee;
+    }
+
+    /**
+     * Malay league name used on letters, banners and emails.
+     */
+    public function malayName(): string
+    {
+        return match ((int) $this->id) {
+            2 => 'Liga Super JBFA',
+            3 => 'Liga Perdana JBFA',
+            4 => 'Liga Divisyen JBFA',
+            default => $this->name,
+        };
     }
 }

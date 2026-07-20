@@ -2,6 +2,14 @@
 
 @section('title', __('app.register_team'))
 
+@push('styles')
+<style>
+    input[name="name"], input[name="short_name"], input[name="manager_name"] {
+        text-transform: uppercase;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">
@@ -119,4 +127,21 @@
         </form>
     </div>
 </div>
+@push('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    ["name", "short_name", "manager_name"].forEach(function(fieldName) {
+        var el = document.querySelector('input[name="' + fieldName + '"]');
+        if (el) {
+            el.addEventListener("input", function() {
+                var s = this.selectionStart, e = this.selectionEnd;
+                this.value = this.value.toUpperCase();
+                this.setSelectionRange(s, e);
+            });
+        }
+    });
+});
+</script>
+@endpush
+
 @endsection

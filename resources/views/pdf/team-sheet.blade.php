@@ -99,6 +99,7 @@
             color: #003366;
             width: 180px;
         }
+            .u23-badge { background: #ffc107; color: #000; font-size: 5px; padding: 0px 2px; border-radius: 2px; font-weight: bold; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -215,7 +216,7 @@
                         <tr>
                             <td style="text-align: center;">{{ $lineup->jersey_number }}</td>
                             <td style="text-align: center;">{{ tsPositionAbbr($lineup->position) }}</td>
-                            <td>{{ $lineup->player->name ?? '-' }}</td>
+                            <td>{{ $lineup->player->name ?? '-' }} @if($lineup->player && $lineup->player->is_u23)<span class="u23-badge">U23</span>@endif</td>
                         </tr>
                     @empty
                         <tr><td colspan="3" style="text-align: center; color: #999; padding: 6px;">No lineup data</td></tr>
@@ -239,7 +240,7 @@
                         <tr>
                             <td style="text-align: center;">{{ $lineup->jersey_number }}</td>
                             <td style="text-align: center;">{{ tsPositionAbbr($lineup->position) }}</td>
-                            <td>{{ $lineup->player->name ?? '-' }}</td>
+                            <td>{{ $lineup->player->name ?? '-' }} @if($lineup->player && $lineup->player->is_u23)<span class="u23-badge">U23</span>@endif</td>
                         </tr>
                     @empty
                         <tr><td colspan="3" style="text-align: center; color: #999; padding: 6px;">No lineup data</td></tr>
@@ -270,7 +271,7 @@
                         <tr>
                             <td style="text-align: center;">{{ $lineup->jersey_number }}</td>
                             <td style="text-align: center;">{{ tsPositionAbbr($lineup->position) }}</td>
-                            <td>{{ $lineup->player->name ?? '-' }}</td>
+                            <td>{{ $lineup->player->name ?? '-' }} @if($lineup->player && $lineup->player->is_u23)<span class="u23-badge">U23</span>@endif</td>
                         </tr>
                     @empty
                         <tr><td colspan="3" style="text-align: center; color: #999; padding: 6px;">No substitutes</td></tr>
@@ -294,7 +295,7 @@
                         <tr>
                             <td style="text-align: center;">{{ $lineup->jersey_number }}</td>
                             <td style="text-align: center;">{{ tsPositionAbbr($lineup->position) }}</td>
-                            <td>{{ $lineup->player->name ?? '-' }}</td>
+                            <td>{{ $lineup->player->name ?? '-' }} @if($lineup->player && $lineup->player->is_u23)<span class="u23-badge">U23</span>@endif</td>
                         </tr>
                     @empty
                         <tr><td colspan="3" style="text-align: center; color: #999; padding: 6px;">No substitutes</td></tr>
@@ -365,6 +366,8 @@
 </table>
 
 {{-- ===== MATCH OFFICIALS ===== --}}
+@include('pdf.partials.jersey-block')
+
 <div class="blue-bar" style="margin-top: 6px;">Match Officials</div>
 <table class="match-officials-table">
     <tr>

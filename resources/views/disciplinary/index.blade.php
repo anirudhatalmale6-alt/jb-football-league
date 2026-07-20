@@ -3,11 +3,25 @@
 @section('title', __('app.disciplinary_fines'))
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-gavel me-2 text-danger"></i>{{ __('app.disciplinary_fines') }}</h2>
-    <a href="{{ route('disciplinary.create') }}" class="btn btn-danger">
-        <i class="fas fa-plus me-1"></i> {{ __('app.issue_fine') }}
-    </a>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h2 class="mb-0"><i class="fas fa-gavel me-2 text-danger"></i>{{ __('app.disciplinary_fines') }}</h2>
+    <div class="d-flex gap-2">
+        <form action="{{ route('disciplinary.sync') }}" method="POST" class="d-inline"
+              onsubmit="return confirm('{{ __('app.confirm_sync_fines') }}')">
+            @csrf
+            <button type="submit" class="btn btn-outline-primary" title="{{ __('app.sync_from_events_help') }}">
+                <i class="fas fa-rotate me-1"></i> {{ __('app.sync_from_events') }}
+            </button>
+        </form>
+        <a href="{{ route('disciplinary.create') }}" class="btn btn-danger">
+            <i class="fas fa-plus me-1"></i> {{ __('app.issue_fine') }}
+        </a>
+    </div>
+</div>
+
+<div class="alert alert-light border small d-flex align-items-center mb-4">
+    <i class="fas fa-robot me-2 text-primary"></i>
+    <div>{{ __('app.auto_fines_note') }}</div>
 </div>
 
 {{-- Summary Cards --}}
@@ -46,6 +60,57 @@
     </div>
 </div>
 
+<div class="card mb-3">
+    <div class="card-body py-3">
+        <form method="GET" action="{{ route('disciplinary.index') }}" class="row g-2 align-items-end">
+            <div class="col-md-3 col-6">
+                <label class="form-label small text-muted mb-1">{{ __('app.competition') }}</label>
+                <select name="competition_id" class="form-select form-select-sm">
+                    <option value="">{{ __('app.all') }}</option>
+                    @foreach($competitions as $c)
+                        <option value="{{ $c->id }}" @selected(request('competition_id') == $c->id)>{{ $c->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3 col-6">
+                <label class="form-label small text-muted mb-1">{{ __('app.team') }}</label>
+                <select name="team_id" class="form-select form-select-sm">
+                    <option value="">{{ __('app.all') }}</option>
+                    @foreach($teams as $t)
+                        <option value="{{ $t->id }}" @selected(request('team_id') == $t->id)>{{ $t->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2 col-6">
+                <label class="form-label small text-muted mb-1">{{ __('app.player') }}</label>
+                <input type="text" name="player" value="{{ request('player') }}" class="form-control form-control-sm" placeholder="{{ __('app.player') }}">
+            </div>
+            <div class="col-md-2 col-6">
+                <label class="form-label small text-muted mb-1">{{ __('app.card_type') }}</label>
+                <select name="card_type" class="form-select form-select-sm">
+                    <option value="">{{ __('app.all') }}</option>
+                    <option value="yellow_card" @selected(request('card_type') === 'yellow_card')>{{ __('app.card_yellow') }}</option>
+                    <option value="red_card" @selected(request('card_type') === 'red_card')>{{ __('app.card_red') }}</option>
+                    <option value="second_yellow" @selected(request('card_type') === 'second_yellow')>{{ __('app.card_second_yellow') }}</option>
+                </select>
+            </div>
+            <div class="col-md-2 col-6">
+                <label class="form-label small text-muted mb-1">{{ __('app.status') }}</label>
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">{{ __('app.all') }}</option>
+                    <option value="pending" @selected(request('status') === 'pending')>{{ __('app.status_pending') }}</option>
+                    <option value="paid" @selected(request('status') === 'paid')>{{ __('app.status_paid') }}</option>
+                    <option value="waived" @selected(request('status') === 'waived')>{{ __('app.status_waived') }}</option>
+                </select>
+            </div>
+            <div class="col-12 d-flex gap-2 mt-2">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-filter me-1"></i>{{ __('app.apply_filters') }}</button>
+                <a href="{{ route('disciplinary.index') }}" class="btn btn-outline-secondary btn-sm">{{ __('app.clear_filters') }}</a>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -57,6 +122,7 @@
                         <th>{{ __('app.player') }}</th>
                         <th>{{ __('app.fine_type_label') }}</th>
                         <th>{{ __('app.competition') }}</th>
+                        <th>{{ __('app.match_card') }}</th>
                         <th class="text-end">{{ __('app.amount') }} (RM)</th>
                         <th>{{ __('app.status') }}</th>
                         <th>{{ __('app.suspension') }}</th>
@@ -81,18 +147,34 @@
                                 @endif
                             </td>
                             <td>
-                                @if($fine->fine_type === 'red_card')
+                                @if(in_array($fine->fine_type, ['red_card', 'red_direct', 'red_second_yellow']))
                                     <span class="badge bg-danger">{{ $fine->fineTypeLabel() }}</span>
                                 @elseif($fine->fine_type === 'yellow_accumulation')
                                     <span class="badge bg-warning text-dark">{{ $fine->fineTypeLabel() }}</span>
                                 @else
                                     <span class="badge bg-info text-dark">{{ $fine->fineTypeLabel() }}</span>
                                 @endif
+                                @if($fine->isAuto())
+                                    <span class="badge bg-dark" title="{{ __('app.from_match_event') }}"><i class="fas fa-robot"></i> {{ __('app.auto') }}</span>
+                                @endif
                                 @if($fine->description)
                                     <br><small class="text-muted">{{ $fine->description }}</small>
                                 @endif
                             </td>
                             <td>{{ $fine->competition->name ?? '-' }}</td>
+                            <td>
+                                @if($fine->matchGame)
+                                    <span class="small fw-semibold">{{ $fine->matchGame->match_code ?? ('#' . $fine->matchGame->id) }}</span>
+                                    @if($fine->matchGame->match_date)
+                                        <br><span class="text-muted" style="font-size:0.72rem;">{{ $fine->matchGame->match_date->format('d/m/Y') }}</span>
+                                    @endif
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                                @if($fine->cardLabel())
+                                    <br><span class="badge {{ $fine->card_type === 'yellow_card' ? 'bg-warning text-dark' : 'bg-danger' }}" style="font-size:0.7rem;">{{ $fine->cardLabel() }}</span>
+                                @endif
+                            </td>
                             <td class="text-end fw-bold">{{ number_format($fine->amount, 2) }}</td>
                             <td>{!! $fine->statusBadge() !!}</td>
                             <td>
@@ -157,7 +239,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10" class="text-center py-4 text-muted">
+                            <td colspan="11" class="text-center py-4 text-muted">
                                 <i class="fas fa-gavel fa-2x mb-2 d-block"></i>
                                 {{ __('app.no_fines') }}
                             </td>

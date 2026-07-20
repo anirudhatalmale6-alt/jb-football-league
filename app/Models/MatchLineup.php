@@ -10,6 +10,7 @@ class MatchLineup extends Model
     protected $table = 'match_lineups';
 
     protected $fillable = [
+        'lineup_submission_id',
         'match_game_id',
         'team_id',
         'player_id',
@@ -23,6 +24,11 @@ class MatchLineup extends Model
         return [
             'is_starting' => 'boolean',
         ];
+    }
+
+    public function lineupSubmission(): BelongsTo
+    {
+        return $this->belongsTo(LineupSubmission::class);
     }
 
     public function matchGame(): BelongsTo

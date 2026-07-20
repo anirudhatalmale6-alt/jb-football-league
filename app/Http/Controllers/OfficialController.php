@@ -14,7 +14,7 @@ class OfficialController extends Controller
         $team = Team::findOrFail($teamId);
         $user = Auth::user();
 
-        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->team_id == $team->id)) {
+        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->managesTeam($team->id))) {
             abort(403);
         }
 
@@ -41,9 +41,12 @@ class OfficialController extends Controller
 
         $team = Team::findOrFail($validated['team_id']);
 
-        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->team_id == $team->id)) {
+        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->managesTeam($team->id))) {
             abort(403);
         }
+
+        // Force uppercase on name
+        $validated['name'] = mb_strtoupper($validated['name']);
 
         if ($request->hasFile('ic_photo')) {
             $validated['ic_photo'] = $request->file('ic_photo')->store('officials/ic', 'public');
@@ -68,7 +71,7 @@ class OfficialController extends Controller
         $official = Official::with('team')->findOrFail($id);
         $user = Auth::user();
 
-        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->team_id == $official->team_id)) {
+        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->managesTeam($official->team_id))) {
             abort(403);
         }
 
@@ -82,7 +85,7 @@ class OfficialController extends Controller
         $official = Official::findOrFail($id);
         $user = Auth::user();
 
-        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->team_id == $official->team_id)) {
+        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->managesTeam($official->team_id))) {
             abort(403);
         }
 
@@ -96,6 +99,9 @@ class OfficialController extends Controller
             'photo' => ['nullable', 'image', 'max:2048'],
             'certificate' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ]);
+
+        // Force uppercase on name
+        $validated['name'] = mb_strtoupper($validated['name']);
 
         if ($request->hasFile('ic_photo')) {
             $validated['ic_photo'] = $request->file('ic_photo')->store('officials/ic', 'public');
@@ -120,7 +126,7 @@ class OfficialController extends Controller
         $official = Official::findOrFail($id);
         $user = Auth::user();
 
-        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->team_id == $official->team_id)) {
+        if (!$user->isSuper() && !$user->isLeagueAdmin() && !($user->isTeamManager() && $user->managesTeam($official->team_id))) {
             abort(403);
         }
 

@@ -93,7 +93,7 @@ class DatabaseSeeder extends Seeder
             'registration_fee' => 3500.00,
             'security_deposit' => 500.00,
             'matchday_fee'     => 0,
-            'payment_url'      => 'https://toyyibpay.com/YURAN-LIGA-SUPER-JBFA-2026-1',
+            'payment_url'      => 'https://toyyibpay.com/YURAN-LIGA-SUPER-JBFA-2026-3',
             'logo'             => 'logos/competitions/super_league.png',
             'max_players'      => 25,
             'max_officials'    => 7,
