@@ -62,37 +62,64 @@
     </div>
 </div>
 
-{{-- Upload modal (shared; category set on open) --}}
+{{-- Upload modal (shared; category set on open) — Take Photo (live camera) or Upload Photo --}}
 @if($mdCanEdit)
 <div class="modal fade" id="mdpUploadModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form id="mdpUploadForm" enctype="multipart/form-data">
-                <div class="modal-header py-2 bg-success text-white">
-                    <h6 class="modal-title"><i class="fas fa-camera me-2"></i>{{ __('app.mdp_upload') }}</h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header py-2 bg-success text-white">
+                <h6 class="modal-title"><i class="fas fa-camera me-2"></i><span id="mdpUploadLabel">-</span></h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="mdpUploadCategory">
+                {{-- Hidden inputs: gallery picker + native-camera fallback --}}
+                <input type="file" id="mdpFileGallery" class="d-none" accept="image/*">
+                <input type="file" id="mdpFileCamera" class="d-none" accept="image/*" capture="environment">
+                <canvas id="mdpCanvas" class="d-none"></canvas>
+
+                {{-- STEP 1: choose source --}}
+                <div id="mdpChooseView">
+                    <p class="text-muted small mb-3">{{ __('app.mdp_choose_source_hint') }}</p>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-success" id="mdpTakePhotoBtn">
+                            <i class="fas fa-camera me-2"></i>{{ __('app.mdp_take_photo') }}
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="mdpChooseFileBtn">
+                            <i class="fas fa-folder-open me-2"></i>{{ __('app.mdp_choose_file') }}
+                        </button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <input type="hidden" name="category" id="mdpUploadCategory">
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold mb-1">{{ __('app.mdp_photo_type') }}</label>
-                        <div class="fw-bold" id="mdpUploadLabel">-</div>
+
+                {{-- STEP 2: live camera --}}
+                <div id="mdpCameraView" class="d-none text-center">
+                    <div class="ratio ratio-4x3 bg-dark rounded overflow-hidden mb-2">
+                        <video id="mdpVideo" playsinline muted autoplay style="object-fit:cover;width:100%;height:100%;"></video>
                     </div>
-                    <div class="mb-2">
-                        <input type="file" name="photo" id="mdpUploadFile" class="form-control form-control-sm" accept="image/*" capture="environment" required>
-                    </div>
-                    <div class="text-center">
-                        <img id="mdpUploadPreview" src="" alt="" class="img-fluid rounded border d-none" style="max-height:220px;">
-                    </div>
-                    <div class="alert alert-danger py-1 px-2 small mt-2 d-none" id="mdpUploadError"></div>
-                </div>
-                <div class="modal-footer py-1">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">{{ __('app.cancel') }}</button>
-                    <button type="submit" class="btn btn-success btn-sm" id="mdpUploadSubmit">
-                        <i class="fas fa-upload me-1"></i>{{ __('app.mdp_upload') }}
+                    <div id="mdpCameraStatus" class="text-muted small mb-2">{{ __('app.mdp_camera_starting') }}</div>
+                    <button type="button" class="btn btn-success" id="mdpCaptureBtn" disabled>
+                        <i class="fas fa-circle me-2"></i>{{ __('app.mdp_capture') }}
                     </button>
                 </div>
-            </form>
+
+                {{-- STEP 3: preview captured/selected photo --}}
+                <div id="mdpPreviewView" class="d-none text-center">
+                    <img id="mdpUploadPreview" src="" alt="" class="img-fluid rounded border mb-2" style="max-height:260px;">
+                    <div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="mdpRetakeBtn">
+                            <i class="fas fa-redo me-1"></i>{{ __('app.mdp_retake') }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alert alert-danger py-1 px-2 small mt-2 d-none" id="mdpUploadError"></div>
+            </div>
+            <div class="modal-footer py-1">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">{{ __('app.cancel') }}</button>
+                <button type="button" class="btn btn-success btn-sm d-none" id="mdpUploadSubmit">
+                    <i class="fas fa-check me-1"></i>{{ __('app.mdp_use_photo') }}
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -129,28 +156,123 @@
     };
 
     var uploadModalEl = document.getElementById('mdpUploadModal');
+    var mdpBlob = null;          // the File/Blob queued for upload
+    var mdpStream = null;        // active camera stream, if any
+
+    function $id(id) { return document.getElementById(id); }
+    function show(el) { el && el.classList.remove('d-none'); }
+    function hide(el) { el && el.classList.add('d-none'); }
+
+    function stopCamera() {
+        if (mdpStream) {
+            mdpStream.getTracks().forEach(function (t) { t.stop(); });
+            mdpStream = null;
+        }
+        var v = $id('mdpVideo');
+        if (v) { v.srcObject = null; }
+    }
+
+    function resetModal() {
+        stopCamera();
+        mdpBlob = null;
+        var prev = $id('mdpUploadPreview');
+        if (prev) { prev.src = ''; }
+        if ($id('mdpFileGallery')) $id('mdpFileGallery').value = '';
+        if ($id('mdpFileCamera')) $id('mdpFileCamera').value = '';
+        hide($id('mdpCameraView'));
+        hide($id('mdpPreviewView'));
+        show($id('mdpChooseView'));
+        hide($id('mdpUploadSubmit'));
+        hide($id('mdpUploadError'));
+    }
+
+    // Show the captured/selected image in the preview step.
+    function goToPreview(blob) {
+        mdpBlob = blob;
+        stopCamera();
+        var prev = $id('mdpUploadPreview');
+        prev.src = URL.createObjectURL(blob);
+        hide($id('mdpChooseView'));
+        hide($id('mdpCameraView'));
+        show($id('mdpPreviewView'));
+        show($id('mdpUploadSubmit'));
+        hide($id('mdpUploadError'));
+    }
+
+    // Open the live camera. Falls back to the native camera input if getUserMedia is unavailable/denied.
+    function startCamera() {
+        hide($id('mdpChooseView'));
+        hide($id('mdpPreviewView'));
+        show($id('mdpCameraView'));
+        var status = $id('mdpCameraStatus');
+        var captureBtn = $id('mdpCaptureBtn');
+        captureBtn.disabled = true;
+        status.textContent = @json(__('app.mdp_camera_starting'));
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            // No live-camera API — use the OS camera via a file input with capture.
+            hide($id('mdpCameraView'));
+            show($id('mdpChooseView'));
+            $id('mdpFileCamera').click();
+            return;
+        }
+
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
+            .then(function (stream) {
+                mdpStream = stream;
+                var v = $id('mdpVideo');
+                v.srcObject = stream;
+                v.onloadedmetadata = function () {
+                    v.play();
+                    status.textContent = '';
+                    captureBtn.disabled = false;
+                };
+            })
+            .catch(function () {
+                // Permission denied or no camera — fall back to native camera input.
+                stopCamera();
+                hide($id('mdpCameraView'));
+                show($id('mdpChooseView'));
+                $id('mdpFileCamera').click();
+            });
+    }
+
     window.mdpUpload = function (cat, label) {
         if (!uploadModalEl) return;
-        document.getElementById('mdpUploadCategory').value = cat;
-        document.getElementById('mdpUploadLabel').textContent = label;
-        document.getElementById('mdpUploadFile').value = '';
-        var prev = document.getElementById('mdpUploadPreview');
-        prev.src = ''; prev.classList.add('d-none');
-        document.getElementById('mdpUploadError').classList.add('d-none');
+        $id('mdpUploadCategory').value = cat;
+        $id('mdpUploadLabel').textContent = label;
+        resetModal();
         bootstrap.Modal.getOrCreateInstance(uploadModalEl).show();
     };
 
-    var fileInput = document.getElementById('mdpUploadFile');
-    if (fileInput) {
-        fileInput.addEventListener('change', function () {
-            var prev = document.getElementById('mdpUploadPreview');
-            if (this.files && this.files[0]) {
-                prev.src = URL.createObjectURL(this.files[0]);
-                prev.classList.remove('d-none');
-            } else {
-                prev.classList.add('d-none');
-            }
+    // Wire up the buttons once.
+    if (uploadModalEl) {
+        $id('mdpTakePhotoBtn').addEventListener('click', startCamera);
+        $id('mdpChooseFileBtn').addEventListener('click', function () { $id('mdpFileGallery').click(); });
+        $id('mdpRetakeBtn').addEventListener('click', function () { resetModal(); });
+
+        // Capture a frame from the live video.
+        $id('mdpCaptureBtn').addEventListener('click', function () {
+            var v = $id('mdpVideo');
+            var canvas = $id('mdpCanvas');
+            var w = v.videoWidth, h = v.videoHeight;
+            if (!w || !h) return;
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(v, 0, 0, w, h);
+            canvas.toBlob(function (blob) {
+                if (blob) goToPreview(blob);
+            }, 'image/jpeg', 0.9);
         });
+
+        // A file chosen from gallery or the native camera goes straight to preview.
+        function onFilePicked() {
+            if (this.files && this.files[0]) { goToPreview(this.files[0]); }
+        }
+        $id('mdpFileGallery').addEventListener('change', onFilePicked);
+        $id('mdpFileCamera').addEventListener('change', onFilePicked);
+
+        // Always release the camera when the modal closes.
+        uploadModalEl.addEventListener('hidden.bs.modal', stopCamera);
     }
 
     function setRowUploaded(cat) {
@@ -178,23 +300,25 @@
         card.className = 'card mb-3 border-' + (complete ? 'success' : 'warning');
     }
 
-    var form = document.getElementById('mdpUploadForm');
-    if (form) {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            var btn = document.getElementById('mdpUploadSubmit');
-            var err = document.getElementById('mdpUploadError');
+    var submitBtn = $id('mdpUploadSubmit');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function () {
+            if (!mdpBlob) return;
+            var err = $id('mdpUploadError');
             err.classList.add('d-none');
-            btn.disabled = true;
-            var cat = document.getElementById('mdpUploadCategory').value;
-            var fd = new FormData(form);
+            submitBtn.disabled = true;
+            var cat = $id('mdpUploadCategory').value;
+            var filename = (mdpBlob.name && mdpBlob.name.indexOf('.') > -1) ? mdpBlob.name : (cat + '.jpg');
+            var fd = new FormData();
+            fd.append('category', cat);
+            fd.append('photo', mdpBlob, filename);
             fetch(uploadUrl, {
                 method: 'POST',
                 headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
                 body: fd
             }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
               .then(function (res) {
-                  btn.disabled = false;
+                  submitBtn.disabled = false;
                   if (!res.ok || !res.j.ok) {
                       err.textContent = res.j.message || 'Upload failed. Please use an image under 10MB.';
                       err.classList.remove('d-none');
@@ -204,7 +328,7 @@
                   updateProgress(res.j.uploaded, res.j.total, res.j.complete);
                   bootstrap.Modal.getInstance(uploadModalEl).hide();
               }).catch(function () {
-                  btn.disabled = false;
+                  submitBtn.disabled = false;
                   err.textContent = 'Network error. Please try again.';
                   err.classList.remove('d-none');
               });

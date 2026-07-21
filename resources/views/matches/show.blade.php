@@ -204,6 +204,13 @@
 @endif
 @endauth
 
+<!-- Match Day Photos (directly below Pre-Match Checklist, per match-day workflow) -->
+@auth
+@if($canOperate)
+@include('matches.partials.match-day-photos-summary')
+@endif
+@endauth
+
 <!-- Quick Match Event Update (embedded) -->
 @if($canEditMatch && $match->status !== 'scheduled')
 <div class="card mb-3">
@@ -659,13 +666,6 @@
     </div>
 </div>
 @endif
-
-<!-- Match Day Photos (moved here per match-operation workflow) -->
-@auth
-@if($canOperate)
-@include('matches.partials.match-day-photos-summary')
-@endif
-@endauth
 
 <!-- E-Signature & Match Remarks (Admin/Commissioner only) -->
 @auth

@@ -26,12 +26,8 @@
     $awayJerseyOk = $awayJersey && $awayJersey->status === 'confirmed';
     $jerseyOk = $homeJerseyOk && $awayJerseyOk;
 
-    $photoCount = $match->matchDayPhotos->count();
-    $photoOk = $photoCount >= 3;
-
     $reviewUrl = route('lineup-submissions.review', $match->id);
     $jerseyUrl = route('matches.show', $match->id) . '#jersey-section';
-    $photoUrl = route('match-photos.index', $match->id);
 
     $allReady = $homeOk && $awayOk && $jerseyOk;
 @endphp
@@ -90,20 +86,6 @@
                     @if($canOp)
                         <a href="{{ $jerseyUrl }}" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-tshirt me-1"></i>Check Jersey Colours
-                        </a>
-                    @endif
-                </li>
-
-                {{-- Match Day Photos --}}
-                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 flex-wrap gap-2">
-                    <span>
-                        <i class="fas fa-{{ $photoOk ? 'check-circle text-success' : 'camera text-muted' }} me-2"></i>
-                        Match Day Photos:
-                        <span class="badge bg-{{ $photoOk ? 'success' : 'secondary' }} ms-1">{{ $photoCount }}/3 Uploaded</span>
-                    </span>
-                    @if($canOp)
-                        <a href="{{ $photoUrl }}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-upload me-1"></i>Upload Photos
                         </a>
                     @endif
                 </li>
