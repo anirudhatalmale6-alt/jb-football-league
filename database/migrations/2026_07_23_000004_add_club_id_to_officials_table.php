@@ -22,8 +22,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('officials', function (Blueprint $table) {
-            $table->dropIndex(['club_id', 'ic_number']);
+            // Drop the FK first — it relies on an index over club_id — then the
+            // composite index, then the column itself.
             $table->dropForeign(['club_id']);
+            $table->dropIndex(['club_id', 'ic_number']);
             $table->dropColumn('club_id');
         });
     }
