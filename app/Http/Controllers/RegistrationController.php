@@ -84,8 +84,14 @@ class RegistrationController extends Controller
             $logoPath = $request->file('logo')->store('logos', 'public');
         }
 
+        // Resolve (or create) the master club this entry belongs to, so the
+        // club's shared squad is available the moment the team joins — no
+        // re-entering players or re-uploading ICs/photos.
+        $club = \App\Models\Club::resolveByName($validated['name']);
+
         $team = Team::create([
             'competition_id' => $competition->id,
+            'club_id' => $club->id,
             'group_id' => $validated['group_id'] ?? null,
             'name' => $validated['name'],
             'short_name' => $validated['short_name'] ?? null,
@@ -114,30 +120,19 @@ class RegistrationController extends Controller
             $user->managedTeams()->syncWithoutDetaching([$team->id]);
         }
 
-        // Reuse an existing team the user manages: copy its logo (when no new
-        // logo was uploaded) and clone its players + officials so the club does
-        // not have to re-enter the whole squad for this competition.
+        // The squad is now owned by the club and shared automatically across
+        // every competition it joins, so there is nothing to clone — the new
+        // entry already sees the club's players and officials. We only carry
+        // over the logo when the manager reused an existing entry and did not
+        // upload a new one.
         $reuseId = (int) $request->input('reuse_team_id');
-        if ($reuseId) {
-            $source = Team::with(['players', 'officials'])->find($reuseId);
+        if ($reuseId && empty($logoPath)) {
+            $source = Team::find($reuseId);
             $managedIds = $user ? $user->managedTeams()->pluck('teams.id')->map(fn ($i) => (int) $i)->all() : [];
             $isAdmin = $user && ($user->isSuper() || $user->isLeagueAdmin());
-            if ($source && $source->id !== $team->id && ($isAdmin || in_array($reuseId, $managedIds, true))) {
-                if (empty($logoPath) && !empty($source->logo)) {
-                    $team->update(['logo' => $source->logo]);
-                }
-                foreach ($source->players as $p) {
-                    $team->players()->create($p->only([
-                        'name', 'jersey_number', 'position', 'date_of_birth', 'nationality',
-                        'ic_number', 'ic_photo', 'photo', 'bg_removed_photo', 'status', 'verification_status',
-                    ]));
-                }
-                foreach ($source->officials as $o) {
-                    $team->officials()->create($o->only([
-                        'name', 'role', 'nationality', 'ic_number', 'ic_photo',
-                        'contact_phone', 'photo', 'certificate',
-                    ]));
-                }
+            if ($source && $source->id !== $team->id && !empty($source->logo)
+                && ($isAdmin || in_array($reuseId, $managedIds, true))) {
+                $team->update(['logo' => $source->logo]);
             }
         }
 

@@ -9,6 +9,7 @@ class Official extends Model
 {
     protected $fillable = [
         'team_id',
+        'club_id',
         'name',
         'role',
         'nationality',
@@ -22,5 +23,14 @@ class Official extends Model
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
+    }
+
+    /**
+     * The master club that owns this official — shared across every
+     * competition entry of the club.
+     */
+    public function club(): BelongsTo
+    {
+        return $this->belongsTo(Club::class);
     }
 }

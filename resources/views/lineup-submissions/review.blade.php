@@ -71,7 +71,7 @@
                             </tr></thead>
                             <tbody>
                                 @foreach($starting as $lineup)
-                                    @php $playerOk = $lineup->player && $lineup->player->team_id === $submission->team_id && $lineup->player->status === 'active'; @endphp
+                                    @php $playerOk = $lineup->player && (int) $lineup->player->club_id === (int) optional($submission->team)->club_id && $lineup->player->status === 'active'; @endphp
                                     <tr class="{{ !$playerOk ? 'table-danger' : '' }}">
                                         <td>{{ $lineup->jersey_number }}</td>
                                         <td>{{ $lineup->player->name ?? '-' }}</td>
@@ -80,7 +80,7 @@
                                         <td>
                                             @if(!$lineup->player)
                                                 <span class="badge bg-danger">{{ __('app.player_not_found') }}</span>
-                                            @elseif($lineup->player->team_id !== $submission->team_id)
+                                            @elseif((int) $lineup->player->club_id !== (int) optional($submission->team)->club_id)
                                                 <span class="badge bg-danger">{{ __('app.wrong_team') }}</span>
                                             @elseif($lineup->player->status === 'suspended')
                                                 <span class="badge bg-danger">{{ __('app.suspended') }}</span>
@@ -107,7 +107,7 @@
                             </tr></thead>
                             <tbody>
                                 @forelse($subs as $lineup)
-                                    @php $playerOk = $lineup->player && $lineup->player->team_id === $submission->team_id && $lineup->player->status === 'active'; @endphp
+                                    @php $playerOk = $lineup->player && (int) $lineup->player->club_id === (int) optional($submission->team)->club_id && $lineup->player->status === 'active'; @endphp
                                     <tr class="{{ !$playerOk ? 'table-danger' : '' }}">
                                         <td>{{ $lineup->jersey_number }}</td>
                                         <td>{{ $lineup->player->name ?? '-' }}</td>
@@ -116,7 +116,7 @@
                                         <td>
                                             @if(!$lineup->player)
                                                 <span class="badge bg-danger">{{ __('app.player_not_found') }}</span>
-                                            @elseif($lineup->player->team_id !== $submission->team_id)
+                                            @elseif((int) $lineup->player->club_id !== (int) optional($submission->team)->club_id)
                                                 <span class="badge bg-danger">{{ __('app.wrong_team') }}</span>
                                             @elseif($lineup->player->status === 'suspended')
                                                 <span class="badge bg-danger">{{ __('app.suspended') }}</span>

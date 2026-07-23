@@ -13,6 +13,7 @@ class Team extends Model
     use SoftDeletes;
     protected $fillable = [
         'competition_id',
+        'club_id',
         'group_id',
         'name',
         'short_name',
@@ -96,19 +97,39 @@ class Team extends Model
         return $this->belongsTo(Competition::class);
     }
 
+    /**
+     * The master club this competition entry belongs to.
+     */
+    public function club(): BelongsTo
+    {
+        return $this->belongsTo(Club::class);
+    }
+
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
     }
 
+    /**
+     * The squad shown for this competition entry.
+     *
+     * Players belong to the CLUB, so the same squad is shared automatically
+     * across every competition the club joins. Keyed on club_id (not the team
+     * row's id) precisely so a manager registers each player once and it shows
+     * up under every competition without re-uploading anything.
+     */
     public function players(): HasMany
     {
-        return $this->hasMany(Player::class);
+        return $this->hasMany(Player::class, 'club_id', 'club_id');
     }
 
+    /**
+     * The officials shown for this competition entry — shared via the club,
+     * exactly like players.
+     */
     public function officials(): HasMany
     {
-        return $this->hasMany(Official::class);
+        return $this->hasMany(Official::class, 'club_id', 'club_id');
     }
 
     /**

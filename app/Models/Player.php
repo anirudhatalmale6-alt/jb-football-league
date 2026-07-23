@@ -10,6 +10,7 @@ class Player extends Model
 {
     protected $fillable = [
         'team_id',
+        'club_id',
         'name',
         'jersey_number',
         'position',
@@ -39,6 +40,15 @@ class Player extends Model
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
+    }
+
+    /**
+     * The master club that owns this player. This is the ownership key; the
+     * player is shared across every competition entry of the club.
+     */
+    public function club(): BelongsTo
+    {
+        return $this->belongsTo(Club::class);
     }
 
     public function getAgeAttribute(): ?int

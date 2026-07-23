@@ -60,6 +60,9 @@ class OfficialController extends Controller
             $validated['certificate'] = $request->file('certificate')->store('officials/certificates', 'public');
         }
 
+        // Officials belong to the club and are shared across competitions.
+        $validated['club_id'] = $team->club_id;
+
         Official::create($validated);
 
         return redirect()->route('teams.show', $team->id)

@@ -108,12 +108,12 @@ class PlayerController extends Controller
     {
         $icClean = preg_replace('/[^0-9]/', '', $icNumber);
         $targetTeam = Team::find($teamId);
-        $targetTeamName = $targetTeam ? mb_strtolower(trim($targetTeam->name)) : null;
+        $targetClubId = $targetTeam ? (int) $targetTeam->club_id : null;
 
         $query = Player::where(function ($q) use ($icNumber, $icClean) {
             $q->where('ic_number', $icNumber)
                ->orWhereRaw("REPLACE(REPLACE(ic_number, '-', ''), ' ', '') = ?", [$icClean]);
-        })->with('team');
+        })->with('club');
 
         if ($excludePlayerId) {
             $query->where('id', '!=', $excludePlayerId);
@@ -122,23 +122,23 @@ class PlayerController extends Controller
         $icMatches = $query->get();
 
         // (a) Same IC under a DIFFERENT club -> real duplicate, block.
-        $otherClub = $icMatches->first(function ($p) use ($targetTeamName) {
-            $n = $p->team ? mb_strtolower(trim($p->team->name)) : null;
-            return $n !== $targetTeamName;
-        });
+        $otherClub = $icMatches->first(fn ($p) => (int) $p->club_id !== $targetClubId);
         if ($otherClub) {
-            return 'No. IC ini telah didaftarkan atas pasukan lain (' . ($otherClub->team->name ?? '-')
-                . '). Sila semak semula. / This IC is already registered under another team ('
-                . ($otherClub->team->name ?? '-') . ').';
+            $otherName = $otherClub->club->name ?? '-';
+            return 'No. IC ini telah didaftarkan atas kelab lain (' . $otherName
+                . '). Sila semak semula. / This IC is already registered under another club ('
+                . $otherName . ').';
         }
 
-        // (b) Same IC already registered for THIS exact team -> prevent duplicate row.
-        $sameTeam = $icMatches->firstWhere('team_id', $teamId);
-        if ($sameTeam) {
-            return 'Pemain ini telah pun didaftarkan untuk pasukan ini. / This player is already registered for this team.';
+        // (b) Same IC already in THIS club -> already part of the shared squad
+        // (visible across every competition the club joins), so a second row
+        // would just be a duplicate. Block it.
+        $sameClub = $icMatches->first(fn ($p) => (int) $p->club_id === $targetClubId);
+        if ($sameClub) {
+            return 'Pemain ini telah pun berada dalam skuad kelab dan dikongsi merentas semua pertandingan. / '
+                . 'This player is already in the club squad and shared across all competitions.';
         }
 
-        // (c) Same club, different competition -> allowed.
         return null;
     }
 
@@ -342,6 +342,9 @@ class PlayerController extends Controller
             }
         }
 
+        // Players belong to the club, so stamp the owning club from the team.
+        $validated['club_id'] = Team::whereKey($validated['team_id'])->value('club_id');
+
         Player::create($validated);
 
         return redirect()->route('players.index')
@@ -455,6 +458,11 @@ class PlayerController extends Controller
             $validated['verification_status'] = 'flagged';
         } elseif ($player->verification_status === 'flagged' || $player->verification_status === 'pending') {
             $validated['verification_status'] = 'verified';
+        }
+
+        // Keep the owning club in step if an admin moved the player's origin team.
+        if ((int) $validated['team_id'] !== (int) $player->team_id) {
+            $validated['club_id'] = Team::whereKey($validated['team_id'])->value('club_id');
         }
 
         $player->update($validated);

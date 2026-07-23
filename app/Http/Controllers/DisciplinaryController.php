@@ -83,7 +83,12 @@ class DisciplinaryController extends Controller
 
     public function getPlayers($teamId)
     {
-        $players = Player::where('team_id', $teamId)->orderBy('name')->get(['id', 'name', 'jersey_number']);
+        // Squad is shared at club level; read it through the team's club-keyed
+        // relationship so every competition entry sees the full squad.
+        $team = Team::find($teamId);
+        $players = $team
+            ? $team->players()->orderBy('name')->get(['id', 'name', 'jersey_number'])
+            : collect();
         return response()->json($players);
     }
 

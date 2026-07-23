@@ -49,7 +49,10 @@ class LineupSubmissionController extends Controller
             abort(403);
         }
 
-        $players = Player::where('team_id', $team->id)
+        // The squad belongs to the club and is shared across competitions, so
+        // fetch by the club (via the team's club-keyed relationship), not by the
+        // per-competition team row.
+        $players = $team->players()
             ->where('status', 'active')
             ->orderBy('jersey_number')
             ->get();
@@ -254,9 +257,12 @@ class LineupSubmissionController extends Controller
             return back()->with('error', __('app.lineup_not_submitted'));
         }
 
+        // Squad is shared at club level, so validate membership against the
+        // club, not the per-competition team row.
+        $submissionClubId = (int) Team::whereKey($teamId)->value('club_id');
         $players = $submission->lineups()->with('player')->get();
         foreach ($players as $lineup) {
-            if ($lineup->player->team_id !== (int) $teamId) {
+            if ((int) $lineup->player->club_id !== $submissionClubId) {
                 return back()->with('error', __('app.lineup_wrong_team', ['player' => $lineup->player->name]));
             }
             if ($lineup->player->status === 'suspended') {
